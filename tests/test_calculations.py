@@ -170,7 +170,14 @@ def test_ineligible_comparables(change):
 
 def test_equipment_depreciation():
     result = valuation(
-        inputs(object_type="equipment", purchase_price="200", depreciation_percent="25", object_value="150")
+        inputs(
+            object_type="equipment",
+            purchase_price="200",
+            depreciation_percent="25",
+            object_value="150",
+            purchase_source="Invoice",
+            purchase_date="2025-01-01",
+        )
     )
     assert result["estimate"] == "150.00"
     assert result["status"] == "confirmed"

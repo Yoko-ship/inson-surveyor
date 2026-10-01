@@ -6,6 +6,8 @@ from sqlalchemy import select
 
 from surveyor.calculations import calculate, loss_summary, valuation
 from surveyor.db import Calibration, ClassTemplate, Document, Loss, Product, Report, Survey, audit
+from surveyor.document_values import derive_document_term
+from surveyor.reserves import classify_rnp
 from surveyor.sources import latest_indicators
 
 
@@ -66,10 +68,19 @@ def context_for(db, inputs):
     return product, template_data, indicators, losses, calibration_data, calc
 
 
+def validate_borrower_document(db, survey_id, inputs):
+    borrower = inputs.get("borrower")
+    if borrower:
+        doc = db.get(Document, borrower["document_id"])
+        if not doc or doc.survey_id != survey_id:
+            raise HTTPException(422, "Выберите отчёт кредитного бюро, загруженный в этот осмотр")
+
+
 def build_report(db, survey, user):
     inputs = survey.inputs
     if not inputs or not inputs.get("manual_review_confirmed"):
         raise HTTPException(422, "Проверьте данные и подтвердите ручную проверку")
+    validate_borrower_document(db, survey.id, inputs)
     product, template, indicators, losses, calibration, calc = context_for(db, inputs)
     docs = db.scalars(select(Document).where(Document.survey_id == survey.id)).all()
     documents = [
@@ -81,6 +92,15 @@ def build_report(db, survey, user):
         for field, item in document["extracted"]["fields"].items():
             if item.get("value") is not None:
                 sources.setdefault(field, []).append(item)
+        date_fields = {
+            key: item
+            for key, item in document["extracted"]["fields"].items()
+            if key in {"contract_start", "contract_end"}
+        }
+        derive_document_term(date_fields, document["filename"])
+        derived = date_fields.get("term_days", {})
+        if derived.get("value") is not None:
+            sources.setdefault("term_days", []).append(derived)
     for field, values in sources.items():
 
         def comparable_value(value):
@@ -123,6 +143,7 @@ def build_report(db, survey, user):
         "author": {"name": user.name, "branch": user.branch, "id": user.id},
         "inputs": inputs,
         "product": {**product.data, "version_id": product.id},
+        "rnp_classification": classify_rnp(inputs["rnp_context"]) if inputs.get("rnp_context") else None,
         "template": template,
         "calculation": calc,
         "valuation": valuation(inputs, exchange=fx, policy=template),

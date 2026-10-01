@@ -975,6 +975,13 @@ dialog::backdrop {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+.pilot-scan {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  margin-block: 1rem;
+}
 .report-section p,
 .file-card a {
   overflow-wrap: anywhere;

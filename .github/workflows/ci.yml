@@ -24,11 +24,25 @@ jobs:
       - run: uv run ruff format --check .
       - run: node --check surveyor/static/app.js
       - run: node --check surveyor/static/i18n.js
+      - run: node --check surveyor/static/source_setup.js
+      - run: node --check surveyor/static/tariff_policy.js
+      - run: node --check surveyor/static/codex_pilot.js
       - run: uv run pytest --cov=surveyor --cov-report=term-missing
       - run: uv run alembic upgrade head
       - run: uv run alembic check
       - run: uv run python scripts/check_secrets.py --history
       - run: uv run pip-audit
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - run: uv run pytest
+      - run: uv run alembic upgrade head
+      - run: uv run alembic check
   postgres:
     runs-on: ubuntu-latest
     services:

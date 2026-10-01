@@ -1,4 +1,5 @@
 import io
+import os
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -69,7 +70,7 @@ def sections(report):
 
     def pairs(data, keys):
         return [
-            f"{tr(k)}: {tr(str(data[k])) if k in {'method', 'status', 'rate_type', 'risk_level', 'comparison'} and data.get(k) else value(data.get(k))}"
+            f"{tr(k)}: {tr(str(data[k])) if k in {'method', 'status', 'rate_type', 'basis', 'risk_level', 'comparison'} and data.get(k) else value(data.get(k))}"
             for k in keys
         ]
 
@@ -99,8 +100,19 @@ def sections(report):
         (r[{"ru": 1, "uz": 2, "en": 3}[lang]] for r in REGIONS if r[0] == code), inputs["region"]
     )
     object_lines += pairs(
-        inputs, ["insured_sum", "object_value", "region", "term_days", "object_description"]
+        inputs,
+        [
+            "insured_sum",
+            "object_value",
+            "region",
+            "term_days",
+            "contract_start",
+            "contract_end",
+            "object_description",
+        ],
     )
+    if inputs.get("contract_start") and inputs.get("contract_end"):
+        object_lines.append(tr("term_date_convention"))
     object_lines.append(tr("manual_input"))
     for doc in s["documents"]:
         object_lines.append(f"{tr('document')}: {doc['filename']} · SHA256 {doc['sha256']}")
@@ -126,12 +138,24 @@ def sections(report):
         )
     if not s["conflicts"]:
         object_lines.append(tr("none"))
+    borrower = inputs.get("borrower")
+    if borrower:
+        object_lines.append(tr("borrower"))
+        object_lines += pairs(
+            borrower, ["organization_name", "bureau_name", "report_date", "score", "score_scale", "summary"]
+        )
+        evidence = next((d for d in s["documents"] if d["id"] == borrower["document_id"]), None)
+        if evidence:
+            object_lines.append(f"{tr('source')}: {evidence['filename']} · SHA256 {evidence['sha256']}")
+        object_lines.append(tr("external_credit_score"))
     v = s["valuation"]
     value_lines = pairs(
         v,
         [
             "method",
             "estimate",
+            "minimum",
+            "maximum",
             "raw_median",
             "deviation_percent",
             "second_method_deviation_percent",
@@ -139,6 +163,8 @@ def sections(report):
         ],
     )
     value_lines += comparable_lines(v["comparables"]) + [tr("excluded")] + comparable_lines(v["rejected"])
+    if v.get("evidence_missing"):
+        value_lines.append(tr("missing_evidence") + ": " + ", ".join(tr(k) for k in v["evidence_missing"]))
     policy = v.get("policy", {})
     value_lines += [tr("policy")] + pairs(
         policy, ["outlier_low", "outlier_high", "tolerance", "requires_appraiser", "approved_by"]
@@ -147,6 +173,8 @@ def sections(report):
         value_lines.append(tr("unapproved"))
     for key in [
         "purchase_price",
+        "purchase_source",
+        "purchase_date",
         "depreciation_percent",
         "appraiser_value",
         "appraiser_source",
@@ -178,6 +206,25 @@ def sections(report):
     )
     if s["product"].get("normative_source"):
         rate_lines.append(s["product"]["normative_source"])
+    source = s["product"].get("tariff_policy")
+    if source:
+        rate_lines.append(
+            f"{tr('tariff_source')}: {source['source_filename']} · {source['page']} · SHA256 {source['sha256']}"
+        )
+        rate_lines.append(f"{source['code']} · {source.get('variant') or '—'}")
+        rate_lines += pairs(
+            s["product"],
+            [
+                "policy_basis_reference",
+                "policy_terms_reference",
+                "policy_approval_reference",
+                "agent_commission_percent",
+            ],
+        )
+    if s.get("rnp_classification"):
+        rnp = s["rnp_classification"]
+        rate_lines.append(f"{tr('rnp_group')}: {rnp['group'] or missing}")
+        rate_lines += [rnp["reason"], rnp["source_url"], rnp["rule_version"], tr("rnp_scope")]
     if c.get("reason"):
         rate_lines.append(warning(c["reason"], lang))
     risk_lines = pairs(
@@ -211,6 +258,8 @@ def sections(report):
             f"{indicator['metric']}: {indicator['value']} {indicator['unit']} · {indicator['period']} · {indicator['source_url']} · {indicator['fetched_at']}"
             + (" · " + tr("stale") if indicator["stale"] else "")
         )
+        if indicator.get("quote"):
+            risk_lines += pairs(indicator["quote"], ["rate", "basis", "term_days", "coverage"])
     for reference in s.get("references", []):
         risk_lines += [
             reference["title"],
@@ -267,6 +316,7 @@ def export_pdf(report):
         settings.pdf_font_path,
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
         "/System/Library/Fonts/Supplemental/Arial.ttf",
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "arial.ttf"),
     ]
     font_path = next((p for p in candidates if p and Path(p).is_file()), None)
     if not font_path:

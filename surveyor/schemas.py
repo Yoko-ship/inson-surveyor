@@ -1,3 +1,4 @@
+import re
 from datetime import date
 from decimal import Decimal
 from typing import Annotated, Literal
@@ -24,6 +25,13 @@ class ProductInput(Strict):
     program_basis: Literal["annual", "fixed"] = "annual"
     normative_basis: Literal["annual", "fixed"] | None = None
     normative_source: HttpUrl | None = None
+    policy_code: str | None = Field(default=None, pattern=r"^[0-9]{4}$")
+    policy_variant: str | None = Field(default=None, max_length=60)
+    policy_current_confirmed: bool = False
+    policy_basis_reference: str = Field(default="", max_length=1000)
+    policy_terms_reference: str = Field(default="", max_length=1000)
+    policy_approval_reference: str = Field(default="", max_length=1000)
+    agent_commission_percent: Rate | None = None
 
     @model_validator(mode="after")
     def rates(self):
@@ -31,6 +39,25 @@ class ProductInput(Strict):
             raise ValueError("Ставка не может быть ниже минимальной")
         if self.rate_type == "normative" and (not self.normative_basis or not self.normative_source):
             raise ValueError("Для нормативного тарифа нужны формула и ссылка на акт")
+        from surveyor.tariff_policy import validate_product
+
+        validate_product(self.model_dump(mode="json"))
+        return self
+
+
+class RnpInput(Strict):
+    insurance_class: int | None = Field(default=None, ge=1, le=17)
+    borrower_nonrepayment: bool | None = None
+    crop_insurance: bool | None = None
+    open_dates: bool = False
+    reinsurance: Literal["none", "proportional", "non_proportional"] = "none"
+
+    @model_validator(mode="after")
+    def exceptions(self):
+        if self.borrower_nonrepayment is not None and self.insurance_class != 13:
+            raise ValueError("Признак ответственности заёмщика относится только к классу 13")
+        if self.crop_insurance is not None and self.insurance_class != 16:
+            raise ValueError("Признак страхования урожая относится только к классу 16")
         return self
 
 
@@ -57,6 +84,24 @@ class Comparable(Strict):
     edit_reason: str = Field(default="", max_length=500)
 
 
+class BorrowerInput(Strict):
+    organization_name: str = Field(min_length=3, max_length=200)
+    bureau_name: str = Field(min_length=2, max_length=200)
+    document_id: str = Field(min_length=1, max_length=36)
+    report_date: date
+    score: str = Field(min_length=1, max_length=100)
+    score_scale: str = Field(min_length=1, max_length=200)
+    summary: str = Field(default="", max_length=3000)
+
+    @model_validator(mode="after")
+    def evidence(self):
+        if not re.search(r"\b(?:ООО|АО|ОАО|ЗАО|МЧЖ|АЖ|MChJ|AJ|LLC|JSC)\b", self.organization_name, re.I):
+            raise ValueError("В блоке заёмщика укажите организацию с организационно-правовой формой")
+        if self.report_date > date.today():
+            raise ValueError("Дата отчёта кредитного бюро не может быть в будущем")
+        return self
+
+
 class SurveyInput(Strict):
     revision: int = Field(ge=1)
     product_code: str = Field(min_length=1, max_length=60)
@@ -64,6 +109,8 @@ class SurveyInput(Strict):
     object_value: Money
     region: str = Field(min_length=1, max_length=100)
     term_days: int = Field(default=365, ge=1, le=36500)
+    contract_start: date | None = None
+    contract_end: date | None = None
     tariff_date: date = Field(default_factory=date.today)
     object_type: Literal["vehicle", "equipment", "housing", "large", "other"] = "other"
     object_description: str = Field(default="", max_length=2000)
@@ -74,6 +121,8 @@ class SurveyInput(Strict):
     declared_premium: Money | None = None
     comparables: list[Comparable] = Field(default_factory=list, max_length=100)
     purchase_price: Money | None = None
+    purchase_source: str = Field(default="", max_length=500)
+    purchase_date: date | None = None
     depreciation_percent: Rate = Decimal(0)
     appraiser_value: Money | None = None
     appraiser_source: str = Field(default="", max_length=500)
@@ -85,6 +134,8 @@ class SurveyInput(Strict):
     override_reason: str = Field(default="", max_length=1000)
     language: Literal["ru", "uz", "en"] = "ru"
     manual_review_confirmed: bool = False
+    borrower: BorrowerInput | None = None
+    rnp_context: RnpInput | None = None
 
     @model_validator(mode="after")
     def edits(self):
@@ -92,6 +143,20 @@ class SurveyInput(Strict):
             raise ValueError("Укажите причину правок")
         if self.insured_sum <= 0 or self.object_value <= 0:
             raise ValueError("Суммы должны быть положительными")
+        if self.contract_start and self.contract_end:
+            days = (self.contract_end - self.contract_start).days
+            if not 1 <= days <= 36500:
+                raise ValueError("Дата окончания должна быть позже начала; максимум 100 лет")
+            if "term_days" not in self.model_fields_set:
+                self.term_days = days
+            elif days != self.term_days and not self.override_reason:
+                raise ValueError("Срок отличается от разницы дат. Укажите причину и правило подсчёта дней")
+        if self.object_type == "equipment" and self.purchase_price is not None:
+            if not self.purchase_source or not self.purchase_date:
+                raise ValueError("Для цены покупки нужны источник и дата")
+        for observed in (self.purchase_date, self.appraiser_date, self.second_method_date):
+            if observed and observed > date.today():
+                raise ValueError("Дата источника оценки не может быть в будущем")
         return self
 
 

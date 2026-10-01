@@ -4,6 +4,7 @@ import hashlib
 import json
 import shutil
 import sqlite3
+from contextlib import closing
 from datetime import timedelta
 from pathlib import Path
 
@@ -36,8 +37,8 @@ def create_backup(database_url=None, backup_dir=None):
     try:
         (dest / "uploads").mkdir(mode=0o700)
         with (
-            sqlite3.connect(f"file:{source}?mode=ro", uri=True) as conn,
-            sqlite3.connect(dest / "database.sqlite") as copy,
+            closing(sqlite3.connect(f"file:{source}?mode=ro", uri=True)) as conn,
+            closing(sqlite3.connect(dest / "database.sqlite")) as copy,
         ):
             conn.backup(copy)
             documents = copy.execute("SELECT id, path, sha256 FROM documents").fetchall()
@@ -84,7 +85,7 @@ def verify_backup(directory):
             raise ValueError("Unsafe backup path")
         if checksum(path) != expected:
             raise ValueError("Backup checksum mismatch")
-    with sqlite3.connect(f"file:{directory / 'database.sqlite'}?mode=ro", uri=True) as conn:
+    with closing(sqlite3.connect(f"file:{directory / 'database.sqlite'}?mode=ro", uri=True)) as conn:
         if conn.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
             raise ValueError("Database integrity check failed")
         for doc_id, expected in conn.execute("SELECT id, sha256 FROM documents"):
@@ -110,7 +111,7 @@ def restore_backup(directory, destination):
         for name in manifest["files"]:
             shutil.copyfile(directory / name, dest / name)
             (dest / name).chmod(0o600)
-        with sqlite3.connect(dest / "database.sqlite") as conn:
+        with closing(sqlite3.connect(dest / "database.sqlite")) as conn:
             for doc_id, name in manifest["documents"].items():
                 conn.execute("UPDATE documents SET path=? WHERE id=?", (str(dest / name), doc_id))
             # Existing session cookies must not authenticate against a restored environment.

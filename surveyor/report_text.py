@@ -2,6 +2,78 @@
 
 # key: Russian, Uzbek, English
 TEXT = {
+    "tariff_source": (
+        "Источник тарифной политики, страница",
+        "Tarif siyosati manbasi, sahifa",
+        "Tariff policy source, page",
+    ),
+    "policy_basis_reference": (
+        "Основание базы и даты тарифа",
+        "Tarif asosi va sanasi hujjati",
+        "Rate basis and effective date evidence",
+    ),
+    "policy_terms_reference": ("Правила / программа", "Qoidalar / dastur", "Terms / programme"),
+    "policy_approval_reference": ("Согласование с ЦО", "Bosh ofis tasdig‘i", "Head-office approval"),
+    "agent_commission_percent": ("Агентское вознаграждение, %", "Agent mukofoti, %", "Agent commission, %"),
+    "rnp_group": ("Учётная группа РНП", "RNP hisob guruhi", "Unearned premium reserve accounting group"),
+    "rnp_scope": (
+        "Указана только учётная группа. Сумма РНП и возврат премии не рассчитаны.",
+        "Faqat hisob guruhi ko‘rsatilgan. RNP va mukofot qaytarilishi hisoblanmagan.",
+        "Accounting classification only. Reserve amounts and premium refunds were not calculated.",
+    ),
+    "rate": (
+        "Исходная ставка котировки, %",
+        "Kotirovkaning dastlabki stavkasi, %",
+        "Original quoted rate, %",
+    ),
+    "basis": ("Тип исходной котировки", "Dastlabki kotirovka turi", "Original quote basis"),
+    "coverage": (
+        "Сопоставимые условия страхования",
+        "Taqqoslanadigan sug‘urta shartlari",
+        "Comparable insurance coverage",
+    ),
+    "borrower": (
+        "Заёмщик: отчёт кредитного бюро",
+        "Qarz oluvchi: kredit byurosi hisoboti",
+        "Borrower: credit bureau report",
+    ),
+    "organization_name": ("Организация-заёмщик", "Qarz oluvchi tashkilot", "Borrower organization"),
+    "bureau_name": ("Кредитное бюро", "Kredit byurosi", "Credit bureau"),
+    "report_date": ("Дата отчёта бюро", "Byuro hisoboti sanasi", "Bureau report date"),
+    "score": ("Оценка бюро", "Byuro bahosi", "Bureau score"),
+    "score_scale": ("Шкала оценки бюро", "Byuroning baholash shkalasi", "Bureau scoring scale"),
+    "summary": ("Результат проверки сотрудником", "Xodim tekshiruvi natijasi", "Employee review summary"),
+    "external_credit_score": (
+        "Оценка перенесена из отчёта бюро сотрудником. Она не изменяет страховой балл и тариф автоматически.",
+        "Baho byuro hisobotidan xodim tomonidan kiritilgan. Sug‘urta bali va tarifini avtomatik o‘zgartirmaydi.",
+        "The employee transcribed the bureau score. It does not automatically change the insurance score or tariff.",
+    ),
+    "minimum": (
+        "Нижняя граница стоимости, UZS",
+        "Qiymatning quyi chegarasi, UZS",
+        "Value range minimum, UZS",
+    ),
+    "maximum": (
+        "Верхняя граница стоимости, UZS",
+        "Qiymatning yuqori chegarasi, UZS",
+        "Value range maximum, UZS",
+    ),
+    "purchase_source": ("Источник цены покупки", "Xarid narxi manbasi", "Purchase price source"),
+    "purchase_date": (
+        "Дата источника цены покупки",
+        "Xarid narxi manbasi sanasi",
+        "Purchase price source date",
+    ),
+    "missing_evidence": (
+        "Не хватает подтверждения",
+        "Tasdiqlovchi ma’lumot yetishmaydi",
+        "Missing valuation evidence",
+    ),
+    "term_date_convention": (
+        "Разница дат не включает дату окончания; иной срок объясняется причиной исправления.",
+        "Sanalar farqi tugash kunini hisobga olmaydi; boshqa muddat tuzatish sababi bilan izohlanadi.",
+        "Date difference excludes the end date; a different term requires a correction reason.",
+    ),
     "date": ("Дата", "Sana", "Date"),
     "author": ("Автор", "Muallif", "Author"),
     "insured_sum": ("Страховая сумма", "Sug‘urta summasi", "Insured sum"),
@@ -185,6 +257,22 @@ TEXT = {
     ),
 }
 WARNINGS = {
+    "Поправки риска не применены: шаблон не утверждён страховщиком": (
+        "Xatar tuzatishlari qo‘llanilmadi: shablon sug‘urtalovchi tomonidan tasdiqlanmagan",
+        "Risk adjustments were not applied: the template lacks insurer approval",
+    ),
+    "База тарифа — сумма лимита; в поле страховой суммы должен быть указан лимит": (
+        "Tarif asosi limit summasi; sug‘urta summasi maydonida limit ko‘rsatilishi kerak",
+        "The rate applies to the limit; enter the limit in the insured sum field",
+    ),
+    "Региональная поправка не рассчитана: нет актуальных данных, связанных с правилами для этого объекта": (
+        "Hududiy tuzatish hisoblanmadi: ushbu obyekt qoidalariga bog‘langan dolzarb ma’lumot yo‘q",
+        "Regional adjustment unavailable: no current data is linked to rules for this object",
+    ),
+    "Рыночная годовая ставка недоступна: требуется сопоставимая котировка с источником и датой": (
+        "Bozor yillik stavkasi yo‘q: manbasi va sanasi ko‘rsatilgan taqqoslanadigan kotirovka kerak",
+        "Annual market rate unavailable: provide a comparable quote with its source and date",
+    ),
     "Поправки и страховой балл — оценка разработчика, не утверждено страховщиком": (
         "Xatar tuzatishlari va ball sug‘urtalovchi tomonidan tasdiqlanmagan",
         "Risk adjustments and score are not insurer-approved",

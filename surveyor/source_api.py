@@ -13,6 +13,7 @@ from surveyor.api import manager, upload_bytes
 from surveyor.auth import roles
 from surveyor.db import Audit, Channel, ImportBatch, audit, get_db, now
 from surveyor.documents import read_table
+from surveyor.market import MarketQuoteInput
 from surveyor.regions import REGIONS
 from surveyor.schemas import IndicatorInput, ReferenceInput, Strict
 from surveyor.source_adapters import SourceConfig, checked_url
@@ -20,6 +21,22 @@ from surveyor.sources import collect_channel, store_indicator
 
 router = APIRouter(prefix="/api")
 admin = roles("admin")
+
+
+@router.get("/admin/source-coverage")
+def coverage(user=Depends(manager), db=Depends(get_db)):
+    from surveyor.source_coverage import source_coverage
+
+    return source_coverage(db)
+
+
+@router.post("/admin/market-quotes", status_code=201)
+def market_quote(body: MarketQuoteInput, user=Depends(manager), db=Depends(get_db)):
+    channel_for(db, "market_quotes")
+    row = store_indicator(db, "market_quotes", body.indicator(), user)
+    audit(db, user, "market_quote.created", row.id, {"class_code": body.class_code})
+    db.commit()
+    return {"id": row.id, "annual_market_rate": row.data["annual_market_rate"]}
 
 
 @router.get("/regions")
@@ -158,7 +175,7 @@ def operations(user=Depends(admin), db=Depends(get_db)):
     channels = db.scalars(select(Channel)).all()
     errors = db.scalars(
         select(Audit)
-        .where(Audit.action.in_(["source.error", "backup.failed", "reference.changed"]))
+        .where(Audit.action.in_(["source.error", "backup.failed", "reference.changed", "worker.failed"]))
         .order_by(Audit.created_at.desc())
         .limit(30)
     ).all()

@@ -2,7 +2,7 @@
 
 ## Local setup and credentials
 
-Run `sh scripts/run_local.sh`. `.env` is intentionally untracked. Bootstrap credentials create the first admin only on an empty users table. Login and change that password, then create employees/underwriters/actuaries in Administration. All local data is synthetic by default.
+Run `.\scripts\run_local.ps1` in Windows PowerShell or `sh scripts/run_local.sh` on macOS/Linux. `.env` is intentionally untracked. Bootstrap credentials create the first admin only on an empty users table. Login and change that password, then create employees/underwriters/actuaries in Administration. All local data is synthetic by default.
 
 Never commit `.env`, databases, uploaded client files or generated reports. Before any release run `uv run python scripts/check_secrets.py` after staging the intended files. The script reports filenames rather than secret values.
 
@@ -66,6 +66,16 @@ Upload file offers CSV/Excel preview and confirmation for every registered chann
 
 The current provider review is in `docs/source-access-review.json`. Permission for one provider/path does not authorize another. Do not turn on a restricted provider merely because its homepage opens.
 
+### Completing insurer data setup
+
+1. Import actual tariff versions and three completed years of company claims; retain existing reports as snapshots.
+2. In Administration → Class templates, review the statistics coverage panel. Connect the relevant available metric names to insurer-supplied baselines, sensitivity and object types. Save a version and have an actuary approve it. A loaded dataset alone does not create an approved risk adjustment.
+3. In Administration → Indicators, enter comparable insurance offers through the market-quote form. Supply the original annual/fixed basis, quoted term, source, observation date, region, object type and coverage. The form previews the annual equivalent. CSV/Excel indicator imports remain available for normalized annual quotes. NAPP aggregate premiums/liabilities are not substituted for a tariff quote.
+4. For borrower evidence, upload the bureau report to the inspection, enable the borrower section, and enter the organization's score and the bureau's own scale. The system preserves the evidence and does not convert that score into an insurance adjustment.
+5. For equipment purchase valuation, supply the invoice/source and its date. A legacy estimate without those fields is displayed as needing clarification.
+
+Transient network/storage collection errors keep the source enabled, preserve saved observations, record a visible error and retry after one hour. Manual collection is limited to one attempt per minute. Refusal and schema changes still disable the source until review. Unexpected adapter failures roll back that channel's pending writes and do not stop other channels. Collection and maintenance use separate database sessions; a collection failure cannot skip the maintenance phase. Worker-cycle failures appear in System status. Backup verification and restoration explicitly close SQLite connections on Windows.
+
 ## Telegram development updates
 
-The temporary tunnel runner now watches the application Python directory and reloads the local Telegram listener when backend files change, preserving the current tunnel URL. Stopping the runner still removes only its own webhook. Static assets use no-cache responses. The regular local listener remains separate.
+On macOS/Linux, the temporary tunnel runner watches the application Python directory and reloads the local Telegram listener when backend files change, preserving the current tunnel URL. On Windows, restart the runner after backend changes; it uses one listener process so cleanup also works after errors. Stopping the runner still removes only its own webhook. Static assets use no-cache responses. The regular local listener remains separate.

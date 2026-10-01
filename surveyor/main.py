@@ -14,6 +14,9 @@ from surveyor.bootstrap import bootstrap
 from surveyor.config import settings
 from surveyor.db import engine
 from surveyor.document_api import router as document_router
+from surveyor.pilot_api import enabled as pilot_enabled
+from surveyor.pilot_api import router as pilot_router
+from surveyor.policy_api import router as policy_router
 from surveyor.source_api import router as source_router
 from surveyor.telegram import router as telegram_router
 
@@ -39,6 +42,8 @@ app.include_router(router)
 
 app.include_router(source_router)
 app.include_router(document_router)
+app.include_router(policy_router)
+app.include_router(pilot_router)
 app.include_router(telegram_router)
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
@@ -92,7 +97,12 @@ async def validation_error(request, exc):
 def health():
     with engine.connect() as conn:
         conn.execute(text("SELECT 1"))
-    return {"status": "ok", "ai_enabled": False, "data_mode": settings.data_mode}
+    return {
+        "status": "ok",
+        "ai_enabled": False,
+        "data_mode": settings.data_mode,
+        "codex_local_pilot": bool(pilot_enabled()),
+    }
 
 
 @app.get("/")

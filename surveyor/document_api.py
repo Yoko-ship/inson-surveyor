@@ -11,6 +11,7 @@ from sqlalchemy import update
 
 from surveyor.auth import current_user
 from surveyor.db import Document, Survey, audit, get_db
+from surveyor.document_values import derive_document_term, document_number
 from surveyor.schemas import Strict
 from surveyor.services import survey_for
 
@@ -50,7 +51,12 @@ def review_document(document_id: str, body: DocumentReview, user=Depends(current
                 value = None
         if value is not None and field in NUMERIC:
             try:
-                amount = Decimal(value.replace(",", ".").replace(" ", ""))
+                if not re.fullmatch(r"[0-9][0-9 ,.\u00a0\u202f]*", value):
+                    raise ValueError()
+                parsed = document_number(value, field)
+                if parsed is None:
+                    raise ValueError()
+                amount = Decimal(parsed)
                 if not amount.is_finite() or not 0 <= amount <= Decimal("1e18"):
                     raise ValueError()
                 if field == "declared_rate" and amount > 100:
@@ -83,6 +89,9 @@ def review_document(document_id: str, body: DocumentReview, user=Depends(current
             "reviewed_by": user.id,
             "review_reason": body.reason,
         }
+        if field == "term_days":
+            fields[field].pop("derived_from", None)
+    derive_document_term(fields, document.filename)
     changed = db.execute(
         update(Survey)
         .where(Survey.id == survey.id, Survey.revision == body.revision)

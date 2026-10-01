@@ -8,27 +8,45 @@ Local-first insurance surveying platform implementing the deterministic workflow
 
 Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 
+On Windows, run from PowerShell:
+
+```powershell
+.\scripts\run_local.ps1
+```
+
+If PowerShell blocks local scripts, use `powershell -ExecutionPolicy Bypass -File .\scripts\run_local.ps1` (only this process changes policy). The launcher accepts `uv` on PATH or the project-local `.tools/uv-package/bin/uv.exe`.
+
+On macOS/Linux:
+
 ```sh
 sh scripts/run_local.sh
 ```
 
+Both launchers install the locked dependencies, preserve/create `.env`, apply migrations and start the browser app plus worker. With dependencies already installed, Windows can also run `.\.venv\Scripts\python.exe scripts/run_local.py` directly. No Docker, WSL, Node.js or Telegram credential is needed for browser use.
+
 Open **http://localhost:8010**. Login: `admin`. The generated initial password is `BOOTSTRAP_ADMIN_PASSWORD` in the ignored `.env` file. Change it at first login. Changing this environment variable later does not reset an existing account.
 
-The setup script preserves existing `.env` files, generates a random bootstrap password and webhook secret, and sets file permissions to `0600`. The supplied Telegram token is configured locally; it is not included in Git. No default shared password is checked in.
+The setup script preserves existing `.env` files and generates a random bootstrap password and webhook secret. Unix permissions are `0600`; on Windows, access follows the project folder's Windows permissions. Leave the Telegram fields empty for browser-only use. No default shared password is checked in.
 
 Local SQLite data is in `data/surveyor.db`; documents are in `data/uploads/`. Restarting the app preserves both. Stop with Ctrl+C. Port 8010 avoids another application already using port 8000 on the development machine. Update both `PORT` and `PUBLIC_URL` if changing ports.
+
+PDF export automatically finds Arial in the Windows fonts directory. `PDF_FONT_PATH` can override it, for example `C:/Windows/Fonts/arial.ttf`. Linux needs DejaVu Sans (already included in the Docker image).
 
 ## Workflows
 
 - **Фото → Проверить → Акт:** upload text PDF/DOCX/XLSX/TXT/CSV or images; inspect rule-extracted fields with source excerpts; enter/correct values; confirm review; generate a five-section report; export Word/PDF.
 - **Tariffs:** annual, fixed, program-based and statutory products; effective-date versions; minimum floor; annual equivalents for comparison; deterministic premium and document-discrepancy calculation.
-- **Valuation:** dated comparable listings, original/edited prices, explicit outlier filtering, mean/range, 15% deviation check, purchase less depreciation, appraiser plus second method for large objects; CBU conversion when a current saved exchange rate exists.
+- **Valuation:** dated comparable listings, original/edited prices, explicit outlier filtering, mean and minimum/maximum range in screen/Word/PDF, 15% deviation check, purchase less depreciation with a required purchase source/date, appraiser plus second method for large objects; CBU conversion when a current saved exchange rate exists.
+- **Contract dates:** date-only documents suggest the actual date difference (end date excluded). The review form shows both dates and recalculates the term when they change. A different day-count convention requires an explanation; source discrepancies remain visible in the report.
+- **Borrower:** optionally transcribe an organization's credit-bureau score, its scale and date, linked to a report uploaded to the same inspection. The evidence and score are frozen into the act without automatically changing the insurance tariff.
+- **Market quotes:** Administration → Indicators accepts dated annual/fixed insurance quotes with comparable coverage, class, object type and region. Fixed quotes are annualized by their own term. Actual market offers must be supplied; NAPP aggregates are not treated as annual quotes.
 - **Administration:** employee creation, unique login/phone/Telegram ID, forced first-password change, role management, versioned products and class templates, two-step Excel/CSV imports, claims by product/year, audit history.
 - **Actuarial approval:** only the `actuary` role approves risk templates, public-data adjustments and loss-based calibration. Three complete calendar years and premiums are required. Editing claims invalidates the previous calibration automatically.
 - **Underwriting:** only the `underwriter` role records approval, rejection or requested changes. Reports retain their original inputs, tariff version, source data and calculations after later edits.
 - **Open data:** live CBU, four SIAT feeds and NAPP insurance-class workbooks; daily worker and on-demand collection; configurable permitted JSON/CSV/Excel/HTML sources; file preview/confirmation; versioned laws/notices; source history, stale dates, cached values and disablement on access/schema failures.
-- **Document review:** correct each document or manually transcribe a scan with original values, reviewer and reason retained.
-- **Operations:** local worker, daily verified SQLite/document backups, restore-to-new-directory command, source alerts and worker status.
+- **Document review:** correct each document or manually transcribe a scan with original values, reviewer and reason retained. Grouped millions are parsed without truncation; ambiguous separators, unsupported scales and ranges require review.
+- **Source mapping:** the class-template screen shows linked statistics, missing observations and loaded metrics without rules. The rule editor suggests available metric names; the insurer still sets and approves baselines/sensitivity.
+- **Operations:** local worker, daily verified SQLite/document backups, restore-to-new-directory command, source alerts and worker status. Source failures are isolated; maintenance runs independently, and transient collection errors retry in the next hourly cycle.
 - **Telegram:** verified Mini App authorization, account linking inside Telegram, authenticated webhook, private `/start` and `/id` handling, explicit delivery of report PDFs to the signed-in employee's linked chat.
 
 The calculator can use statutory products (including ОСГОР) once an administrator supplies the actual normative rate, formula basis and source. No statutory tariff is fabricated or seeded.
@@ -53,6 +71,14 @@ uv run python -m surveyor.cli telegram-check
 ```
 
 To run the Mini App **inside Telegram while developing locally**:
+
+On Windows, after local setup:
+
+```powershell
+.\scripts\run_telegram_dev.ps1
+```
+
+On macOS/Linux:
 
 ```sh
 uv run python scripts/install_cloudflared.py

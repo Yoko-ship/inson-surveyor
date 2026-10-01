@@ -182,7 +182,13 @@ def save_product(db, body, user):
     )
     if existing:
         raise HTTPException(409, "Версия с этой датой уже существует. Выберите новую дату действия")
-    row = Product(code=body.code, effective_from=body.effective_from, data=body.model_dump(mode="json"))
+    from surveyor.tariff_policy import validate_product
+
+    data = body.model_dump(mode="json")
+    source = validate_product(data)
+    if source:
+        data["tariff_policy"] = source
+    row = Product(code=body.code, effective_from=body.effective_from, data=data)
     db.add(row)
     db.flush()
     audit(db, user, "product.version_created", row.id, row.data)
@@ -305,9 +311,12 @@ def survey_detail(survey_id: str, user=Depends(current_user), db=Depends(get_db)
 
 @router.put("/surveys/{survey_id}")
 def update_survey(survey_id: str, body: SurveyInput, user=Depends(current_user), db=Depends(get_db)):
+    from surveyor.services import validate_borrower_document
+
     row = survey_for(db, survey_id, user, write=True)
     before = row.inputs
     data = body.model_dump(mode="json", exclude={"revision"})
+    validate_borrower_document(db, row.id, data)
     changed = db.execute(
         update(Survey)
         .where(Survey.id == row.id, Survey.revision == body.revision)

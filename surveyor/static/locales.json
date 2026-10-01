@@ -1,4 +1,111 @@
 {
+  "Тариф, %": { "uz": "Tarif, %", "en": "Rate, %" },
+  "Премия": { "uz": "Sug‘urta mukofoti", "en": "Premium" },
+  "Codex · учебный пилот": {
+    "uz": "Codex · o‘quv sinovi",
+    "en": "Codex · sample pilot"
+  },
+  "Распознавание вымышленных документов через ваш вход в Codex.": {
+    "uz": "Codex hisobingiz orqali uydirma hujjatlarni tanish.",
+    "en": "Read fictional documents using your Codex sign-in."
+  },
+  "Выбранный учебный пример отправляется в облако OpenAI и расходует лимит Codex. Доступны только встроенные вымышленные документы.": {
+    "uz": "Tanlangan o‘quv namunasi OpenAI bulutiga yuboriladi va Codex limitingizdan foydalanadi. Faqat o‘rnatilgan uydirma hujjatlar mavjud.",
+    "en": "The selected sample is sent to OpenAI’s cloud and uses your Codex allowance. Only the built-in fictional documents are available."
+  },
+  "Учебный пример": { "uz": "O‘quv namunasi", "en": "Sample document" },
+  "Учебный документ": { "uz": "O‘quv hujjati", "en": "Sample document" },
+  "Учебный договор · текст": {
+    "uz": "O‘quv shartnomasi · matn",
+    "en": "Sample contract · text"
+  },
+  "Учебный договор · изображение": {
+    "uz": "O‘quv shartnomasi · rasm",
+    "en": "Sample contract · image"
+  },
+  "Учебный запрос · пропуски": {
+    "uz": "O‘quv so‘rovi · yetishmayotgan maydonlar",
+    "en": "Sample request · missing fields"
+  },
+  "Прочитать через Codex": {
+    "uz": "Codex orqali o‘qish",
+    "en": "Read with Codex"
+  },
+  "Codex читает пример. Это может занять до двух минут…": {
+    "uz": "Codex namunani o‘qimoqda. Bu ikki daqiqagacha davom etishi mumkin…",
+    "en": "Codex is reading the sample. This may take up to two minutes…"
+  },
+  "Предложения для проверки": {
+    "uz": "Tekshirish uchun takliflar",
+    "en": "Suggestions for review"
+  },
+  "Сравнение с известными значениями учебного примера. Результат не сохранён в осмотр.": {
+    "uz": "O‘quv namunasining ma’lum qiymatlari bilan solishtirish. Natija ko‘rikka saqlanmadi.",
+    "en": "Compared with the known sample values. The result has not been saved to an inspection."
+  },
+  "Ответ Codex": { "uz": "Codex javobi", "en": "Codex response" },
+  "Ожидаемое значение": { "uz": "Kutilgan qiymat", "en": "Expected value" },
+  "Проверка": { "uz": "Tekshiruv", "en": "Check" },
+  "Цитаты из документа": {
+    "uz": "Hujjatdan iqtiboslar",
+    "en": "Source excerpts"
+  },
+  "Все предложения требуют проверки сотрудником. Этот тест не подтверждает качество распознавания реальных документов.": {
+    "uz": "Barcha takliflar xodim tomonidan tekshirilishi kerak. Ushbu sinov haqiqiy hujjatlarni tanish sifatini tasdiqlamaydi.",
+    "en": "Every suggestion needs staff review. This test does not establish recognition quality for real documents."
+  },
+  "Вход через ChatGPT найден.": {
+    "uz": "ChatGPT orqali kirish topildi.",
+    "en": "ChatGPT sign-in found."
+  },
+  "Войдите в Codex через ChatGPT на этом компьютере.": {
+    "uz": "Ushbu kompyuterda ChatGPT orqali Codex’ga kiring.",
+    "en": "Sign in to Codex with ChatGPT on this computer."
+  },
+  "Codex не найден на этом компьютере.": {
+    "uz": "Ushbu kompyuterda Codex topilmadi.",
+    "en": "Codex was not found on this computer."
+  },
+  "Не удалось запустить Codex. Проверьте локальную установку.": {
+    "uz": "Codex ishga tushmadi. Mahalliy o‘rnatishni tekshiring.",
+    "en": "Could not start Codex. Check the local installation."
+  },
+  "Codex не ответил вовремя. Попробуйте позже.": {
+    "uz": "Codex vaqtida javob bermadi. Keyinroq urinib ko‘ring.",
+    "en": "Codex timed out. Try again later."
+  },
+  "Codex не завершил запрос. Проверьте вход, соединение и лимиты в Codex.": {
+    "uz": "Codex so‘rovni yakunlamadi. Kirish, ulanish va Codex limitlarini tekshiring.",
+    "en": "Codex could not complete the request. Check sign-in, connectivity and your Codex limits."
+  },
+  "Ответ Codex слишком большой.": {
+    "uz": "Codex javobi juda katta.",
+    "en": "The Codex response is too large."
+  },
+  "Codex вернул неполный ответ. Поля не приняты; попробуйте снова.": {
+    "uz": "Codex to‘liq javob bermadi. Maydonlar qabul qilinmadi; qayta urinib ko‘ring.",
+    "en": "Codex returned an incomplete response. Fields were not accepted; try again."
+  },
+  "Неизвестный учебный пример.": {
+    "uz": "Noma’lum o‘quv namunasi.",
+    "en": "Unknown sample document."
+  },
+  "Локальный пилот Codex недоступен.": {
+    "uz": "Codex mahalliy sinovi mavjud emas.",
+    "en": "The local Codex pilot is unavailable."
+  },
+  "Другой учебный запрос уже выполняется. Дождитесь результата.": {
+    "uz": "Boshqa o‘quv so‘rovi bajarilmoqda. Natijani kuting.",
+    "en": "Another sample request is running. Wait for it to finish."
+  },
+  "Тарифы рассчитываются по правилам. Фото и сканы осмотра проверяет сотрудник.": {
+    "uz": "Tariflar qoidalar asosida hisoblanadi. Ko‘rik fotosuratlari va skanlarini xodim tekshiradi.",
+    "en": "Tariffs follow configured rules. Staff review inspection photos and scans."
+  },
+  "Проверка документов сотрудником": {
+    "uz": "Hujjatlarni xodim tekshiradi",
+    "en": "Staff document review"
+  },
   "Дата": {
     "uz": "Sana",
     "en": "Date"
@@ -2094,5 +2201,489 @@
   "region": {
     "uz": "Hudud",
     "en": "Region"
+  },
+  "Исходная ставка котировки, %": {
+    "uz": "Kotirovkaning dastlabki stavkasi, %",
+    "en": "Original quoted rate, %"
+  },
+  "Тип исходной котировки": {
+    "uz": "Dastlabki kotirovka turi",
+    "en": "Original quote basis"
+  },
+  "Сопоставимые условия страхования": {
+    "uz": "Taqqoslanadigan sug‘urta shartlari",
+    "en": "Comparable insurance coverage"
+  },
+  "Заёмщик: отчёт кредитного бюро": {
+    "uz": "Qarz oluvchi: kredit byurosi hisoboti",
+    "en": "Borrower: credit bureau report"
+  },
+  "Организация-заёмщик": {
+    "uz": "Qarz oluvchi tashkilot",
+    "en": "Borrower organization"
+  },
+  "Кредитное бюро": {
+    "uz": "Kredit byurosi",
+    "en": "Credit bureau"
+  },
+  "Дата отчёта бюро": {
+    "uz": "Byuro hisoboti sanasi",
+    "en": "Bureau report date"
+  },
+  "Оценка бюро": {
+    "uz": "Byuro bahosi",
+    "en": "Bureau score"
+  },
+  "Шкала оценки бюро": {
+    "uz": "Byuroning baholash shkalasi",
+    "en": "Bureau scoring scale"
+  },
+  "Результат проверки сотрудником": {
+    "uz": "Xodim tekshiruvi natijasi",
+    "en": "Employee review summary"
+  },
+  "Оценка перенесена из отчёта бюро сотрудником. Она не изменяет страховой балл и тариф автоматически.": {
+    "uz": "Baho byuro hisobotidan xodim tomonidan kiritilgan. Sug‘urta bali va tarifini avtomatik o‘zgartirmaydi.",
+    "en": "The employee transcribed the bureau score. It does not automatically change the insurance score or tariff."
+  },
+  "Нижняя граница стоимости, UZS": {
+    "uz": "Qiymatning quyi chegarasi, UZS",
+    "en": "Value range minimum, UZS"
+  },
+  "Верхняя граница стоимости, UZS": {
+    "uz": "Qiymatning yuqori chegarasi, UZS",
+    "en": "Value range maximum, UZS"
+  },
+  "Источник цены покупки": {
+    "uz": "Xarid narxi manbasi",
+    "en": "Purchase price source"
+  },
+  "Дата источника цены покупки": {
+    "uz": "Xarid narxi manbasi sanasi",
+    "en": "Purchase price source date"
+  },
+  "Не хватает подтверждения": {
+    "uz": "Tasdiqlovchi ma’lumot yetishmaydi",
+    "en": "Missing valuation evidence"
+  },
+  "Разница дат не включает дату окончания; иной срок объясняется причиной исправления.": {
+    "uz": "Sanalar farqi tugash kunini hisobga olmaydi; boshqa muddat tuzatish sababi bilan izohlanadi.",
+    "en": "Date difference excludes the end date; a different term requires a correction reason."
+  },
+  "Региональная поправка не рассчитана: нет актуальных данных, связанных с правилами для этого объекта": {
+    "uz": "Hududiy tuzatish hisoblanmadi: ushbu obyekt qoidalariga bog‘langan dolzarb ma’lumot yo‘q",
+    "en": "Regional adjustment unavailable: no current data is linked to rules for this object"
+  },
+  "Рыночная годовая ставка недоступна: требуется сопоставимая котировка с источником и датой": {
+    "uz": "Bozor yillik stavkasi yo‘q: manbasi va sanasi ko‘rsatilgan taqqoslanadigan kotirovka kerak",
+    "en": "Annual market rate unavailable: provide a comparable quote with its source and date"
+  },
+  "Дата начала договора": {
+    "uz": "Shartnoma boshlanish sanasi",
+    "en": "Contract start date"
+  },
+  "Дата окончания договора": {
+    "uz": "Shartnoma tugash sanasi",
+    "en": "Contract end date"
+  },
+  "При изменении дат срок считается без даты окончания. Если договор использует другой подсчёт, измените срок и укажите причину.": {
+    "uz": "Sanalar o‘zgarganda muddat tugash kunisiz hisoblanadi. Shartnomada boshqa qoida bo‘lsa, muddatni o‘zgartiring va sababini yozing.",
+    "en": "Changing the dates recalculates the term excluding the end date. For a different contract convention, edit the term and explain why."
+  },
+  "Заёмщик": {
+    "uz": "Qarz oluvchi",
+    "en": "Borrower"
+  },
+  "Добавить сведения из отчёта кредитного бюро": {
+    "uz": "Kredit byurosi hisobotidan ma’lumot qo‘shish",
+    "en": "Add details from a credit bureau report"
+  },
+  "Только организация. Загрузите отчёт в этот осмотр и перенесите оценку вместе со шкалой бюро. Страховой тариф автоматически не меняется.": {
+    "uz": "Faqat tashkilot. Hisobotni ushbu ko‘rikka yuklang va byuro bahosi hamda shkalasini kiriting. Sug‘urta tarifi avtomatik o‘zgarmaydi.",
+    "en": "Organizations only. Upload the report to this inspection and enter the bureau score and scale. The insurance tariff does not change automatically."
+  },
+  "Загруженный отчёт бюро": {
+    "uz": "Yuklangan byuro hisoboti",
+    "en": "Uploaded bureau report"
+  },
+  "Выберите файл": {
+    "uz": "Faylni tanlang",
+    "en": "Select a file"
+  },
+  "Связь статистики с тарифом": {
+    "uz": "Statistikaning tarif bilan bog‘lanishi",
+    "en": "Statistics linked to tariff rules"
+  },
+  "Загруженные данные влияют на тариф через правила класса. Базовые значения и чувствительность задаёт страховщик, затем утверждает актуарий.": {
+    "uz": "Yuklangan ma’lumot tarifga sinf qoidalari orqali ta’sir qiladi. Bazaviy qiymatlar va sezgirlikni sug‘urtalovchi belgilaydi, aktuariy tasdiqlaydi.",
+    "en": "Loaded statistics affect tariffs through class rules. The insurer sets baselines and sensitivity, then the actuary approves them."
+  },
+  "Связанные показатели:": {
+    "uz": "Bog‘langan ko‘rsatkichlar:",
+    "en": "Linked indicators:"
+  },
+  "В правилах есть, актуальных данных нет:": {
+    "uz": "Qoidada bor, dolzarb ma’lumot yo‘q:",
+    "en": "Configured but current data is missing:"
+  },
+  "Данные есть, правила не настроены:": {
+    "uz": "Ma’lumot bor, qoida sozlanmagan:",
+    "en": "Data available without configured rules:"
+  },
+  "Рыночная котировка:": {
+    "uz": "Bozor kotirovkasi:",
+    "en": "Market quote:"
+  },
+  "Доступна для класса": {
+    "uz": "Sinf uchun mavjud",
+    "en": "Available for the class"
+  },
+  "Нужна котировка с источником и датой": {
+    "uz": "Manbasi va sanasi ko‘rsatilgan kotirovka kerak",
+    "en": "A quote with its source and date is needed"
+  },
+  "Наличие данных по классу не гарантирует данные для каждого региона и вида объекта.": {
+    "uz": "Sinf bo‘yicha ma’lumot mavjudligi barcha hudud va obyekt turlari uchun ma’lumot borligini anglatmaydi.",
+    "en": "Class data availability does not guarantee coverage for every region and object type."
+  },
+  "Рыночная страховая котировка": {
+    "uz": "Bozor sug‘urta kotirovkasi",
+    "en": "Market insurance quote"
+  },
+  "Внесите проверенное предложение с сопоставимым покрытием. Фиксированная ставка пересчитывается в годовую по сроку. Отношение премий NAPP к обязательствам не является годовой котировкой.": {
+    "uz": "Taqqoslanadigan qoplamali tekshirilgan taklifni kiriting. Belgilangan stavka muddatga ko‘ra yillik stavkaga aylantiriladi. NAPP mukofotlarining majburiyatlarga nisbati yillik kotirovka emas.",
+    "en": "Enter a verified offer with comparable coverage. Fixed rates are annualized using the quoted term. NAPP premiums divided by liabilities are not an annual quote."
+  },
+  "Тип ставки котировки": {
+    "uz": "Kotirovka stavkasi turi",
+    "en": "Quoted rate basis"
+  },
+  "Срок котировки, дней": {
+    "uz": "Kotirovka muddati, kun",
+    "en": "Quoted term, days"
+  },
+  "Дата котировки": {
+    "uz": "Kotirovka sanasi",
+    "en": "Quote date"
+  },
+  "Годовой эквивалент котировки:": {
+    "uz": "Kotirovkaning yillik ekvivalenti:",
+    "en": "Annual equivalent of the quote:"
+  },
+  "Сохранить котировку": {
+    "uz": "Kotirovkani saqlash",
+    "en": "Save quote"
+  },
+  "Рыночная котировка сохранена": {
+    "uz": "Bozor kotirovkasi saqlandi",
+    "en": "Market quote saved"
+  },
+  "Для цены покупки нужны источник и дата": {
+    "uz": "Xarid narxi uchun manba va sana kerak",
+    "en": "Purchase price requires its source and date"
+  },
+  "Срок отличается от разницы дат. Укажите причину и правило подсчёта дней": {
+    "uz": "Muddat sanalar farqidan boshqacha. Sabab va kunlarni hisoblash qoidasini kiriting",
+    "en": "The term differs from the date interval. Explain the reason and day-count convention"
+  },
+  "Тарифная политика и РНП": {
+    "uz": "Tarif siyosati va RNP",
+    "en": "Tariff policy and reserves"
+  },
+  "Данные из предоставленного документа INSON.": {
+    "uz": "Taqdim etilgan INSON hujjati ma’lumotlari.",
+    "en": "Data from the supplied INSON document."
+  },
+  "Открыть исходный PDF": {
+    "uz": "Asl PDFni ochish",
+    "en": "Open source PDF"
+  },
+  "Дата документа": {
+    "uz": "Hujjat sanasi",
+    "en": "Document date"
+  },
+  "Строк в каталоге": {
+    "uz": "Katalogdagi satrlar",
+    "en": "Catalogue rows"
+  },
+  "Это справочник минимумов. Актуальность, дата начала действия и база расчёта подтверждаются при настройке версии тарифа.": {
+    "uz": "Bu eng kam tariflar ma’lumotnomasi. Amal qilishi, boshlanish sanasi va hisoblash asosi tarif versiyasini sozlashda tasdiqlanadi.",
+    "en": "This is a reference of minimum rates. Confirm applicability, effective date and calculation basis when configuring a tariff version."
+  },
+  "Поиск по коду или названию": {
+    "uz": "Kod yoki nom bo‘yicha qidirish",
+    "en": "Search by code or name"
+  },
+  "Условия тарифа": {
+    "uz": "Tarif shartlari",
+    "en": "Tariff conditions"
+  },
+  "Все": {
+    "uz": "Barchasi",
+    "en": "All"
+  },
+  "Числовой минимум": {
+    "uz": "Sonli eng kam tarif",
+    "en": "Numeric minimum"
+  },
+  "Варианты тарифа": {
+    "uz": "Tarif variantlari",
+    "en": "Rate variants"
+  },
+  "Составной продукт": {
+    "uz": "Bir nechta qoplamali mahsulot",
+    "en": "Composite product"
+  },
+  "Нужна программа": {
+    "uz": "Dastur kerak",
+    "en": "Programme required"
+  },
+  "Согласование с ЦО": {
+    "uz": "Bosh ofis tasdig‘i",
+    "en": "Head-office approval"
+  },
+  "Нужен основной договор": {
+    "uz": "Asosiy shartnoma kerak",
+    "en": "Master agreement required"
+  },
+  "Нужен нормативный акт": {
+    "uz": "Normativ hujjat kerak",
+    "en": "Regulation required"
+  },
+  "Строка не заполнена": {
+    "uz": "Satr to‘ldirilmagan",
+    "en": "Unspecified row"
+  },
+  "Нужно уточнение": {
+    "uz": "Aniqlashtirish kerak",
+    "en": "Clarification required"
+  },
+  "КОД / ПРОДУКТ": {
+    "uz": "KOD / MAHSULOT",
+    "en": "CODE / PRODUCT"
+  },
+  "МИНИМУМ / УСЛОВИЯ": {
+    "uz": "MINIMUM / SHARTLAR",
+    "en": "MINIMUM / CONDITIONS"
+  },
+  "КОМИССИЯ": {
+    "uz": "KOMISSIYA",
+    "en": "COMMISSION"
+  },
+  "СТРАНИЦА": {
+    "uz": "SAHIFA",
+    "en": "PAGE"
+  },
+  "Открыть": {
+    "uz": "Ochish",
+    "en": "Open"
+  },
+  "Ничего не найдено": {
+    "uz": "Hech narsa topilmadi",
+    "en": "No results"
+  },
+  "Учётная группа РНП": {
+    "uz": "RNP hisob guruhi",
+    "en": "Reserve accounting group"
+  },
+  "Учётная группа РНП (необязательно)": {
+    "uz": "RNP hisob guruhi (ixtiyoriy)",
+    "en": "Reserve accounting group (optional)"
+  },
+  "Определение группы по пункту 10. Сумма резерва и возврат премии здесь не рассчитываются.": {
+    "uz": "10-band bo‘yicha guruh aniqlanadi. Rezerv summasi va mukofot qaytarilishi bu yerda hisoblanmaydi.",
+    "en": "Classification under paragraph 10. Reserve amounts and premium refunds are not calculated here."
+  },
+  "Класс страхования покрытия": {
+    "uz": "Qoplamaning sug‘urta klassi",
+    "en": "Coverage insurance class"
+  },
+  "Не указан": {
+    "uz": "Ko‘rsatilmagan",
+    "en": "Unspecified"
+  },
+  "Перестрахование": {
+    "uz": "Qayta sug‘urta",
+    "en": "Reinsurance"
+  },
+  "Пропорциональное": {
+    "uz": "Proporsional",
+    "en": "Proportional"
+  },
+  "Непропорциональное": {
+    "uz": "Noproporsional",
+    "en": "Nonproportional"
+  },
+  "Класс 13: ответственность заёмщика за непогашение": {
+    "uz": "13-klass: qarz oluvchining qaytarmaslik javobgarligi",
+    "en": "Class 13: borrower nonrepayment liability"
+  },
+  "Класс 16: страхование урожая": {
+    "uz": "16-klass: hosil sug‘urtasi",
+    "en": "Class 16: crop insurance"
+  },
+  "Не уточнено": {
+    "uz": "Aniqlashtirilmagan",
+    "en": "Unconfirmed"
+  },
+  "Открытые даты начала и окончания договора": {
+    "uz": "Shartnomaning ochiq boshlanish va tugash sanalari",
+    "en": "Open contract start and end dates"
+  },
+  "Для составного договора каждое покрытие классифицируется отдельно. Учётная группа не изменяет страховой балл или тариф.": {
+    "uz": "Murakkab shartnomada har bir qoplama alohida tasniflanadi. Hisob guruhi sug‘urta bali yoki tarifni o‘zgartirmaydi.",
+    "en": "Classify each coverage separately for a composite contract. Accounting groups do not change risk scores or tariffs."
+  },
+  "Определить группу": {
+    "uz": "Guruhni aniqlash",
+    "en": "Determine group"
+  },
+  "Учётная группа": {
+    "uz": "Hisob guruhi",
+    "en": "Accounting group"
+  },
+  "Положение о страховых резервах": {
+    "uz": "Sug‘urta rezervlari to‘g‘risidagi nizom",
+    "en": "Insurance reserve regulation"
+  },
+  "Страница источника": {
+    "uz": "Manba sahifasi",
+    "en": "Source page"
+  },
+  "Проверка сравнивает проценты с документом. Комиссия проверяется отдельно и не прибавляется к тарифу.": {
+    "uz": "Tekshiruv foizlarni hujjat bilan solishtiradi. Komissiya alohida tekshiriladi va tarifga qo‘shilmaydi.",
+    "en": "The check compares percentages with the document. Commission is checked separately and is not added to the rate."
+  },
+  "Вариант продукта": {
+    "uz": "Mahsulot varianti",
+    "en": "Product variant"
+  },
+  "Выберите вариант": {
+    "uz": "Variantni tanlang",
+    "en": "Select a variant"
+  },
+  "Проверяемая ставка, %": {
+    "uz": "Tekshiriladigan stavka, %",
+    "en": "Rate to check, %"
+  },
+  "Агентское вознаграждение, %": {
+    "uz": "Agent mukofoti, %",
+    "en": "Agent commission, %"
+  },
+  "Проверить ограничения": {
+    "uz": "Cheklovlarni tekshirish",
+    "en": "Check limits"
+  },
+  "Настроить версию тарифа": {
+    "uz": "Tarif versiyasini sozlash",
+    "en": "Configure a tariff version"
+  },
+  "Минимальный тариф": {
+    "uz": "Eng kam tarif",
+    "en": "Minimum rate"
+  },
+  "Лимит агентского вознаграждения": {
+    "uz": "Agent mukofoti chegarasi",
+    "en": "Agent commission cap"
+  },
+  "Проверены только ограничения предоставленного документа. Итоговая премия и актуальность тарифа не подтверждены.": {
+    "uz": "Faqat taqdim etilgan hujjat chegaralari tekshirildi. Yakuniy mukofot va tarifning amal qilishi tasdiqlanmagan.",
+    "en": "Only the supplied document limits were checked. The final premium and current applicability are unconfirmed."
+  },
+  "Источник тарифа INSON": {
+    "uz": "INSON tarifi manbasi",
+    "en": "INSON tariff source"
+  },
+  "Для строк из каталога укажите действующие условия и основание расчёта. Дата документа не подставляется как дата начала действия.": {
+    "uz": "Katalog satrlari uchun amaldagi shartlar va hisoblash asosini kiriting. Hujjat sanasi amal qilish sanasi sifatida olinmaydi.",
+    "en": "For catalogue entries, provide applicable terms and calculation evidence. The document date is not used as the effective date."
+  },
+  "Код в исходной политике": {
+    "uz": "Asl siyosatdagi kod",
+    "en": "Code in the source policy"
+  },
+  "Основание базы ставки и даты действия": {
+    "uz": "Stavka asosi va amal qilish sanasi hujjati",
+    "en": "Evidence for rate basis and effective date"
+  },
+  "Правила / программа / основной договор": {
+    "uz": "Qoidalar / dastur / asosiy shartnoma",
+    "en": "Terms / programme / master agreement"
+  },
+  "Документ согласования с ЦО": {
+    "uz": "Bosh ofis tasdiq hujjati",
+    "en": "Head-office approval reference"
+  },
+  "Актуальность политики для этой версии подтверждена компанией": {
+    "uz": "Bu versiya uchun siyosatning amal qilishi kompaniya tomonidan tasdiqlangan",
+    "en": "The company confirmed policy applicability for this version"
+  },
+  "Выберите базу по условиям": {
+    "uz": "Shartlarga ko‘ra asosni tanlang",
+    "en": "Select the basis from the terms"
+  },
+  "Физические лица": {
+    "uz": "Jismoniy shaxslar",
+    "en": "Individuals"
+  },
+  "Юридические лица": {
+    "uz": "Yuridik shaxslar",
+    "en": "Legal entities"
+  },
+  "Электромобиль": {
+    "uz": "Elektromobil",
+    "en": "Electric vehicle"
+  },
+  "Легковой автомобиль": {
+    "uz": "Yengil avtomobil",
+    "en": "Passenger car"
+  },
+  "Грузовой автомобиль": {
+    "uz": "Yuk avtomobili",
+    "en": "Truck"
+  },
+  "Страхование урожая сельскохозяйственных культур": {
+    "uz": "Qishloq xo‘jaligi ekinlari hosilini sug‘urtalash",
+    "en": "Agricultural crop insurance"
+  },
+  "Ответственность заёмщика за непогашение кредита": {
+    "uz": "Qarz oluvchining kreditni qaytarmaslik javobgarligi",
+    "en": "Borrower liability for loan nonrepayment"
+  },
+  "Общая гражданская ответственность": {
+    "uz": "Umumiy fuqarolik javobgarligi",
+    "en": "General civil liability"
+  },
+  "Прочие финансовые риски, кроме урожая": {
+    "uz": "Hosildan tashqari boshqa moliyaviy xatarlar",
+    "en": "Other financial risks excluding crops"
+  },
+  "Страхование кредитов или поручительства (гарантий)": {
+    "uz": "Kredit yoki kafolat sug‘urtasi",
+    "en": "Credit or guarantee insurance"
+  },
+  "Класс страхования входит в первую учётную группу": {
+    "uz": "Sug‘urta klassi birinchi hisob guruhiga kiradi",
+    "en": "The insurance class belongs to accounting group 1"
+  },
+  "Укажите класс страхования каждого покрытия": {
+    "uz": "Har bir qoplamaning sug‘urta klassini kiriting",
+    "en": "Specify the insurance class for each coverage"
+  },
+  "Уточните, относится ли класс 13 к ответственности заёмщика за непогашение кредита": {
+    "uz": "13-klass qarz oluvchining kreditni qaytarmaslik javobgarligiga tegishliligini aniqlang",
+    "en": "Confirm whether class 13 covers borrower nonrepayment liability"
+  },
+  "Уточните, относится ли класс 16 к страхованию урожая сельскохозяйственных культур": {
+    "uz": "16-klass hosil sug‘urtasiga tegishliligini aniqlang",
+    "en": "Confirm whether class 16 covers agricultural crops"
+  },
+  "Поправки риска не применены: шаблон не утверждён страховщиком": {
+    "uz": "Xatar tuzatishlari qo‘llanilmadi: shablon sug‘urtalovchi tomonidan tasdiqlanmagan",
+    "en": "Risk adjustments were not applied: the template lacks insurer approval"
+  },
+  "База тарифа — сумма лимита; в поле страховой суммы должен быть указан лимит": {
+    "uz": "Tarif asosi limit summasi; sug‘urta summasi maydonida limit ko‘rsatilishi kerak",
+    "en": "The rate applies to the limit; enter the limit in the insured sum field"
   }
 }

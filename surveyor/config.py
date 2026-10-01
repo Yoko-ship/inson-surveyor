@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     backup_dir: Path = Path("data/backups")
     backup_enabled: bool = True
     backup_retention_days: int = 14
+    codex_local_pilot: bool = False
+    codex_cli_path: str = ""
 
     @model_validator(mode="after")
     def deployment_guard(self):
