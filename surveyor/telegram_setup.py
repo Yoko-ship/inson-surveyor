@@ -18,7 +18,6 @@ COMMANDS = [
 
 async def set_menu(menu):
     # Telegram documents this parameter as a JSON-serialized MenuButton.
-    # Form encoding also gives reliable default-menu read-back across API servers.
     return await call_telegram(
         "setChatMenuButton", data={"menu_button": json.dumps(menu, ensure_ascii=False)}
     )
@@ -78,14 +77,15 @@ async def configure_webhook(*, replace_existing=False):
         },
     )
     await set_menu({"type": "web_app", "text": "Открыть Сюрвейер", "web_app": {"url": settings.public_url}})
-    for _ in range(5):
+    # Telegram may briefly return cached menu settings after a successful write.
+    for _ in range(40):
         info = await call_telegram("getWebhookInfo")
         menu = await call_telegram("getChatMenuButton")
         if info.get("url", "").rstrip("/") == target and menu.get("web_app", {}).get("url", "").rstrip(
             "/"
         ) == settings.public_url.rstrip("/"):
             return bot
-        await asyncio.sleep(1)
+        await asyncio.sleep(3)
     raise ValueError(
         f"Telegram read-back differs: webhook origin={urlsplit(info.get('url', '')).hostname}, menu type={menu.get('type')}, menu origin={urlsplit(menu.get('web_app', {}).get('url', '')).hostname}"
     )

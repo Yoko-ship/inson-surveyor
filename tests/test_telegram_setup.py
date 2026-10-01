@@ -1,5 +1,6 @@
 import asyncio
 import json
+from unittest.mock import AsyncMock
 
 import httpx
 import pytest
@@ -77,6 +78,28 @@ def test_setup_reads_back_webhook_and_menu(monkeypatch):
     assert asyncio.run(configure_webhook())["username"] == "example_bot"
     assert "setMyCommands" in calls
     assert calls[-2:] == ["getWebhookInfo", "getChatMenuButton"]
+
+
+def test_menu_cache_can_take_multiple_reads_to_update(monkeypatch):
+    from surveyor import telegram_setup
+
+    setup_api(monkeypatch)
+    fake = telegram_setup.call_telegram
+    menu_reads = 0
+
+    async def delayed_menu(method, **kwargs):
+        nonlocal menu_reads
+        result = await fake(method, **kwargs)
+        if method == "getChatMenuButton":
+            menu_reads += 1
+            if menu_reads <= 6:
+                return {"type": "commands"}
+        return result
+
+    monkeypatch.setattr(telegram_setup, "call_telegram", delayed_menu)
+    monkeypatch.setattr(telegram_setup.asyncio, "sleep", AsyncMock())
+    assert asyncio.run(configure_webhook())["username"] == "example_bot"
+    assert menu_reads == 7
 
 
 def test_telegram_cookie_requires_https():
