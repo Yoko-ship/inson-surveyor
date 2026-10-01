@@ -490,3 +490,14 @@ def test_corrupt_external_workbook_disables_channel(admin, monkeypatch):
         result = collect_channel(db, "napp_market")
         assert result["status"] == "error"
         assert not db.get(Channel, "napp_market").enabled
+
+
+def test_empty_excel_and_duplicate_csv_headers_are_clear_errors(admin):
+    from openpyxl import Workbook
+
+    stream = io.BytesIO()
+    Workbook().save(stream)
+    for filename, data in [("empty.xlsx", stream.getvalue()), ("duplicate.csv", b"metric,metric\na,b\n")]:
+        response = admin.post("/api/admin/sources/stat/imports/preview", files={"file": (filename, data)})
+        assert response.status_code == 422, response.text
+        assert "detail" in response.json()

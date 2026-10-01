@@ -114,3 +114,29 @@ def test_secure_cookie_for_telegram_iframe(client, monkeypatch):
     assert response.status_code == 200
     cookie = response.headers["set-cookie"].lower()
     assert "secure" in cookie and "httponly" in cookie and "samesite=none" in cookie
+
+
+def test_profile_setup_skips_unchanged_name(monkeypatch):
+    import asyncio
+
+    from surveyor import telegram_setup
+    from surveyor.config import settings
+
+    calls = []
+    monkeypatch.setattr(settings, "telegram_expected_bot_id", "12345")
+
+    async def fake(method, **kwargs):
+        calls.append(method)
+        if method == "getMe":
+            return {"id": 12345, "username": "test_bot"}
+        if method == "getMyCommands":
+            return telegram_setup.COMMANDS
+        if method == "getMyName":
+            return {"name": "Сюрвейер · INSON"}
+        if method == "setMyName":
+            raise AssertionError("Unchanged name must not be written")
+        return {}
+
+    monkeypatch.setattr(telegram_setup, "call_telegram", fake)
+    assert asyncio.run(telegram_setup.configure_profile())["id"] == 12345
+    assert "setMyCommands" not in calls and "setMyName" not in calls

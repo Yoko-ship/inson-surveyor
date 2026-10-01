@@ -1,4 +1,4 @@
-"""Human-authored report labels; source excerpts and company clauses are never machine-translated."""
+"""Static report labels; source excerpts and company clauses are preserved verbatim."""
 
 # key: Russian, Uzbek, English
 TEXT = {

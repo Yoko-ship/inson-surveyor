@@ -34,18 +34,27 @@ async def verify_identity():
 
 async def configure_profile():
     bot = await verify_identity()
-    await call_telegram("setMyCommands", json={"commands": COMMANDS})
-    await call_telegram("setMyName", json={"name": "Сюрвейер · INSON"})
-    await call_telegram(
-        "setMyShortDescription",
-        json={"short_description": "Осмотры, документы, расчёт страховой премии и сюрвейерские акты."},
-    )
-    await call_telegram(
-        "setMyDescription",
-        json={
-            "description": "Рабочее пространство страхового специалиста: загрузите документы, проверьте данные и сформируйте акт. Для начала нажмите /start. Доступ — по учётной записи сотрудника."
-        },
-    )
+    current_commands = await call_telegram("getMyCommands")
+    if current_commands != COMMANDS:
+        await call_telegram("setMyCommands", json={"commands": COMMANDS})
+    properties = [
+        ("Name", "name", "Сюрвейер · INSON"),
+        (
+            "ShortDescription",
+            "short_description",
+            "Осмотры, документы, расчёт страховой премии и сюрвейерские акты.",
+        ),
+        (
+            "Description",
+            "description",
+            "Рабочее пространство страхового специалиста: загрузите документы, проверьте данные и сформируйте акт. Для начала нажмите /start. Доступ — по учётной записи сотрудника.",
+        ),
+    ]
+    for suffix, key, value in properties:
+        current = await call_telegram("getMy" + suffix)
+        # Telegram may reject redundant profile writes as not modified, or rate-limit them.
+        if not isinstance(current, dict) or current.get(key) != value:
+            await call_telegram("setMy" + suffix, json={key: value})
     return bot
 
 

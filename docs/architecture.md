@@ -73,7 +73,7 @@ A future recognizer can implement the same extraction result shape (`kind`, `mod
 - `references.py` versions public laws, notices and other text sources separately from numeric indicators. Selected versions are copied into report snapshots; a changed source creates an administrator audit alert.
 - `regions.py` provides stable territory identifiers and aliases, preventing region spelling from silently dropping applicable statistics.
 - `report_text.py` and `reports.sections` produce the same five readable sections for screen, Word and PDF. Source quotations remain original.
-- `static/i18n.js` translates a fixed, human-authored catalog of interface copy. Inputs, evidence JSON and report source text are excluded. There is no translation API or AI dependency.
+- `static/i18n.js` translates a fixed translation catalog of interface copy. Inputs, evidence JSON and report source text are excluded. There is no translation API or AI dependency.
 - `maintenance.py` uses SQLite's consistent backup API, copies referenced immutable document files, verifies hashes/database integrity and restores only into a new directory. Restores invalidate old login sessions. The local worker schedules verified daily backups and prunes only valid backups beyond retention.
 
 Class templates now include object-scoped statistical adjustment rules and valuation policy. The calculation is `(observation / baseline - 1) × sensitivity`, bounded by the rule and template limits. Regional series take priority over the same national metric. No automatic statistical association is presented as an insurer-approved model.
