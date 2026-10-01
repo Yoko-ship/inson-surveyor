@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: surveyor
+      POSTGRES_USER: surveyor
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U surveyor"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  app:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://surveyor:${POSTGRES_PASSWORD}@db:5432/surveyor
+      STORAGE_DIR: /app/data/uploads
+      PORT: 8000
+    ports: ["127.0.0.1:8010:8000"]
+    volumes: ["uploads:/app/data"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  sources:
+    build: .
+    profiles: ["sources"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://surveyor:${POSTGRES_PASSWORD}@db:5432/surveyor
+    command: ["python", "-m", "surveyor.cli", "worker"]
+    depends_on: [app]
+    restart: unless-stopped
+volumes:
+  postgres:
+  uploads:
