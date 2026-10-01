@@ -9,11 +9,62 @@ window.SurveyorI18n = (() => {
   let catalog = {};
   const records = new WeakMap();
   const normalize = (s) => s.replace(/\s+/g, " ").trim();
+  const patterns = [
+    [
+      /^(.+) ставка · (\d+) дней · (.+)$/,
+      "$1 stavka · $2 kun · $3",
+      "$1 rate · $2 days · $3",
+    ],
+    [
+      /^Годовой эквивалент рекомендации: (.+)%. Рыночная ставка всегда сравнивается в годовом выражении\.$/,
+      "Tavsiyaning yillik ekvivalenti: $1%. Bozor stavkasi yillik asosda solishtiriladi.",
+      "Annual equivalent of the recommendation: $1%. Market rates are compared on an annual basis.",
+    ],
+    [
+      /^Настройки источника · (.+)$/,
+      "Manba sozlamalari · $1",
+      "Source settings · $1",
+    ],
+    [/^Множитель: (.+)$/, "Koeffitsiyent: $1", "Multiplier: $1"],
+    [/^(\d+) \/ 20 файлов$/, "$1 / 20 fayl", "$1 / 20 files"],
+    [/^Осмотр № (.+) · (.+)$/, "Ko‘rik № $1 · $2", "Inspection № $1 · $2"],
+    [/^№ (.+) · версия (\d+)$/, "№ $1 · versiya $2", "№ $1 · version $2"],
+    [
+      /^Акт № (.+) · (.+) · Подлежит подтверждению андеррайтером · Не является кредитным скорингом$/,
+      "Dalolatnoma № $1 · $2 · Anderrayter tasdig‘i talab qilinadi · Kredit skoringi emas",
+      "Report № $1 · $2 · Subject to underwriter confirmation · Not a credit score",
+    ],
+    [
+      /^Строк: (\d+) · Добавить: (\d+) · Изменить: (\d+) · Ошибок: (\d+)$/,
+      "Satrlar: $1 · Qo‘shish: $2 · O‘zgartirish: $3 · Xatolar: $4",
+      "Rows: $1 · Add: $2 · Update: $3 · Errors: $4",
+    ],
+    [
+      /^Последний запуск фоновых задач: (.+)$/,
+      "Fon vazifalarining oxirgi ishga tushishi: $1",
+      "Last background worker run: $1",
+    ],
+    [
+      /^Режим: (.+) · ИИ отключён$/,
+      "Rejim: $1 · SI o‘chirilgan",
+      "Mode: $1 · AI disabled",
+    ],
+    [
+      /^Калибровка утверждена. Поправка: (.+)%$/,
+      "Kalibrlash tasdiqlandi. Tuzatish: $1%",
+      "Calibration approved. Adjustment: $1%",
+    ],
+  ];
   function text(source) {
     if (language === "ru") return source;
     const key = normalize(source);
     const translated = catalog[key]?.[language];
-    return translated ? source.replace(source.trim(), translated) : source;
+    if (translated) return source.replace(source.trim(), translated);
+    for (const [pattern, uz, en] of patterns) {
+      if (pattern.test(key))
+        return key.replace(pattern, language === "uz" ? uz : en);
+    }
+    return source;
   }
   function translateNode(node) {
     if (

@@ -105,6 +105,12 @@ test("local browser: first login, documents, fixed premium, exports, admin and m
   await expect(
     page.getByRole("button", { name: "Calculate premium →" }),
   ).toBeVisible();
+  await page.locator("#calculator-form [name=insured_sum]").fill("2000");
+  await page.locator("#calculator-form [name=object_value]").fill("2000");
+  await page.locator("#calculator-form button[type=submit]").click();
+  await expect(page.locator("#calculator-result")).toContainText(
+    "Annual equivalent of the recommendation",
+  );
   await page.locator("[data-nav=admin]").click();
   await page.locator("[data-tab=templates]").click();
   await page.locator("#new-template").click();
