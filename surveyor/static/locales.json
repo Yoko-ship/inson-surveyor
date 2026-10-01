@@ -1,0 +1,2098 @@
+{
+  "Дата": {
+    "uz": "Sana",
+    "en": "Date"
+  },
+  "Автор": {
+    "uz": "Muallif",
+    "en": "Author"
+  },
+  "Страховая сумма": {
+    "uz": "Sug‘urta summasi",
+    "en": "Insured sum"
+  },
+  "Стоимость объекта": {
+    "uz": "Obyekt qiymati",
+    "en": "Object value"
+  },
+  "Регион": {
+    "uz": "Hudud",
+    "en": "Region"
+  },
+  "Срок, дней": {
+    "uz": "Muddat, kun",
+    "en": "Term, days"
+  },
+  "Объект страхования": {
+    "uz": "Sug‘urta obyekti",
+    "en": "Insured object"
+  },
+  "Минимальная ставка, %": {
+    "uz": "Eng kam stavka, %",
+    "en": "Minimum rate, %"
+  },
+  "Рекомендуемая ставка, %": {
+    "uz": "Tavsiya etilgan stavka, %",
+    "en": "Recommended rate, %"
+  },
+  "Годовой эквивалент, %": {
+    "uz": "Yillik ekvivalent, %",
+    "en": "Annual equivalent, %"
+  },
+  "Рыночная годовая ставка, %": {
+    "uz": "Bozor yillik stavkasi, %",
+    "en": "Annual market rate, %"
+  },
+  "Премия, UZS": {
+    "uz": "Sug‘urta mukofoti, UZS",
+    "en": "Premium, UZS"
+  },
+  "Формула": {
+    "uz": "Formula",
+    "en": "Formula"
+  },
+  "Тип ставки": {
+    "uz": "Stavka turi",
+    "en": "Rate type"
+  },
+  "Отклонение премии документа, UZS": {
+    "uz": "Hujjat mukofotidagi farq, UZS",
+    "en": "Document premium difference, UZS"
+  },
+  "Сверка тарифа": {
+    "uz": "Tarifni solishtirish",
+    "en": "Rate comparison"
+  },
+  "Страховой балл": {
+    "uz": "Sug‘urta bali",
+    "en": "Insurance score"
+  },
+  "Уровень риска": {
+    "uz": "Xatar darajasi",
+    "en": "Risk level"
+  },
+  "Множитель риска": {
+    "uz": "Xatar koeffitsiyenti",
+    "en": "Risk multiplier"
+  },
+  "Поправка региона": {
+    "uz": "Hududiy tuzatish",
+    "en": "Regional adjustment"
+  },
+  "Поправка убытков": {
+    "uz": "Zararlar bo‘yicha tuzatish",
+    "en": "Claims adjustment"
+  },
+  "Оценка, UZS": {
+    "uz": "Baholangan qiymat, UZS",
+    "en": "Estimate, UZS"
+  },
+  "Медиана до правок, UZS": {
+    "uz": "Tuzatishlardan oldingi mediana, UZS",
+    "en": "Original median, UZS"
+  },
+  "Метод": {
+    "uz": "Usul",
+    "en": "Method"
+  },
+  "Статус": {
+    "uz": "Holat",
+    "en": "Status"
+  },
+  "Отклонение, %": {
+    "uz": "Farq, %",
+    "en": "Deviation, %"
+  },
+  "Расхождение второго метода, %": {
+    "uz": "Ikkinchi usuldagi farq, %",
+    "en": "Second method difference, %"
+  },
+  "Источник": {
+    "uz": "Manba",
+    "en": "Source"
+  },
+  "Документ": {
+    "uz": "Hujjat",
+    "en": "Document"
+  },
+  "Ввод сотрудника; сверьте с документами": {
+    "uz": "Xodim kiritgan; hujjatlar bilan solishtiring",
+    "en": "Employee input; reconcile against documents"
+  },
+  "Правки сотрудника": {
+    "uz": "Xodim tuzatishlari",
+    "en": "Employee corrections"
+  },
+  "Причина": {
+    "uz": "Sabab",
+    "en": "Reason"
+  },
+  "Расхождения": {
+    "uz": "Tafovutlar",
+    "en": "Discrepancies"
+  },
+  "Исключённые предложения": {
+    "uz": "Chiqarib tashlangan takliflar",
+    "en": "Excluded comparables"
+  },
+  "Продукт": {
+    "uz": "Mahsulot",
+    "en": "Product"
+  },
+  "Версия тарифной политики": {
+    "uz": "Tarif siyosati versiyasi",
+    "en": "Tariff policy version"
+  },
+  "Действует с": {
+    "uz": "Amal qilish sanasi",
+    "en": "Effective from"
+  },
+  "Убытки за три полных года": {
+    "uz": "Uch to‘liq yil uchun zararlar",
+    "en": "Claims for three complete years"
+  },
+  "Утверждённая калибровка": {
+    "uz": "Tasdiqlangan kalibrlash",
+    "en": "Approved calibration"
+  },
+  "Версия шаблона": {
+    "uz": "Shablon versiyasi",
+    "en": "Template version"
+  },
+  "УСТАРЕЛИ": {
+    "uz": "ESKIRGAN",
+    "en": "STALE"
+  },
+  "Нет": {
+    "uz": "Yo‘q",
+    "en": "None"
+  },
+  "Правила оценки": {
+    "uz": "Baholash qoidalari",
+    "en": "Valuation rules"
+  },
+  "Нижняя граница медианы": {
+    "uz": "Mediananing quyi chegarasi",
+    "en": "Median lower bound"
+  },
+  "Верхняя граница медианы": {
+    "uz": "Mediananing yuqori chegarasi",
+    "en": "Median upper bound"
+  },
+  "Допустимое отклонение": {
+    "uz": "Ruxsat etilgan farq",
+    "en": "Allowed deviation"
+  },
+  "Требуется оценщик и второй метод": {
+    "uz": "Baholovchi va ikkinchi usul talab qilinadi",
+    "en": "Appraiser and second method required"
+  },
+  "Утвердил актуарий": {
+    "uz": "Aktuariy tasdiqlagan",
+    "en": "Actuary approval"
+  },
+  "Экспертная оценка, не утверждена страховщиком": {
+    "uz": "Ekspert bahosi, sug‘urtalovchi tasdiqlamagan",
+    "en": "Expert estimate, not insurer-approved"
+  },
+  "Годовая": {
+    "uz": "Yillik",
+    "en": "Annual"
+  },
+  "Фиксированная": {
+    "uz": "Belgilangan",
+    "en": "Fixed"
+  },
+  "По программе": {
+    "uz": "Dastur bo‘yicha",
+    "en": "Program"
+  },
+  "По нормативному акту": {
+    "uz": "Normativ hujjat bo‘yicha",
+    "en": "Statutory"
+  },
+  "Низкий": {
+    "uz": "Past",
+    "en": "Low"
+  },
+  "Умеренный": {
+    "uz": "O‘rtacha",
+    "en": "Moderate"
+  },
+  "Высокий": {
+    "uz": "Yuqori",
+    "en": "High"
+  },
+  "Данные недоступны": {
+    "uz": "Ma’lumot mavjud emas",
+    "en": "Data unavailable"
+  },
+  "Стоимость подтверждена": {
+    "uz": "Qiymat tasdiqlandi",
+    "en": "Value confirmed"
+  },
+  "Стоимость нужно уточнить": {
+    "uz": "Qiymatni aniqlashtirish kerak",
+    "en": "Value needs clarification"
+  },
+  "Ниже минимума": {
+    "uz": "Eng kam stavkadan past",
+    "en": "Below minimum"
+  },
+  "Выше рынка": {
+    "uz": "Bozordan yuqori",
+    "en": "Above market"
+  },
+  "Внутри вилки": {
+    "uz": "Oraliq ichida",
+    "en": "Within range"
+  },
+  "Не ниже минимума; рынок недоступен": {
+    "uz": "Eng kam stavkadan past emas; bozor ma’lumoti yo‘q",
+    "en": "At or above minimum; market unavailable"
+  },
+  "Цена покупки минус износ": {
+    "uz": "Xarid narxi minus eskirish",
+    "en": "Purchase price less depreciation"
+  },
+  "Отчёт оценщика и второй метод": {
+    "uz": "Baholovchi hisoboti va ikkinchi usul",
+    "en": "Appraiser and independent second method"
+  },
+  "Среднее сопоставимых предложений": {
+    "uz": "O‘xshash takliflarning o‘rtachasi",
+    "en": "Comparable mean"
+  },
+  "Не заполнено": {
+    "uz": "To‘ldirilmagan",
+    "en": "Blank"
+  },
+  "Нужна проверка": {
+    "uz": "Tekshirish kerak",
+    "en": "Needs review"
+  },
+  "Извлечено правилами": {
+    "uz": "Qoidalar bilan ajratilgan",
+    "en": "Extracted by rules"
+  },
+  "Ручная проверка": {
+    "uz": "Qo‘lda tekshirish",
+    "en": "Manual review"
+  },
+  "Тариф документа, %": {
+    "uz": "Hujjat tarifi, %",
+    "en": "Document rate, %"
+  },
+  "Премия документа": {
+    "uz": "Hujjat mukofoti",
+    "en": "Document premium"
+  },
+  "Страхователь (организация)": {
+    "uz": "Sug‘urta qildiruvchi (tashkilot)",
+    "en": "Policyholder organization"
+  },
+  "Страховщик (организация)": {
+    "uz": "Sug‘urtalovchi (tashkilot)",
+    "en": "Insurer organization"
+  },
+  "Дата начала": {
+    "uz": "Boshlanish sanasi",
+    "en": "Start date"
+  },
+  "Дата окончания": {
+    "uz": "Tugash sanasi",
+    "en": "End date"
+  },
+  "Цена покупки": {
+    "uz": "Xarid narxi",
+    "en": "Purchase price"
+  },
+  "Износ, %": {
+    "uz": "Eskirish, %",
+    "en": "Depreciation, %"
+  },
+  "Оценка оценщика": {
+    "uz": "Baholovchi qiymati",
+    "en": "Appraiser value"
+  },
+  "Источник оценки": {
+    "uz": "Baholash manbasi",
+    "en": "Appraiser source"
+  },
+  "Дата оценки": {
+    "uz": "Baholash sanasi",
+    "en": "Appraiser date"
+  },
+  "Второй метод": {
+    "uz": "Ikkinchi usul",
+    "en": "Second method value"
+  },
+  "Источник второго метода": {
+    "uz": "Ikkinchi usul manbasi",
+    "en": "Second method source"
+  },
+  "Дата второго метода": {
+    "uz": "Ikkinchi usul sanasi",
+    "en": "Second method date"
+  },
+  "Цена": {
+    "uz": "Narx",
+    "en": "Price"
+  },
+  "Цена до правок": {
+    "uz": "Tuzatishdan oldingi narx",
+    "en": "Original price"
+  },
+  "Цена, UZS": {
+    "uz": "Narx, UZS",
+    "en": "Price, UZS"
+  },
+  "Причина правки": {
+    "uz": "Tuzatish sababi",
+    "en": "Correction reason"
+  },
+  "Год": {
+    "uz": "Yil",
+    "en": "Year"
+  },
+  "Страховые случаи": {
+    "uz": "Sug‘urta hodisalari",
+    "en": "Claims"
+  },
+  "Выплаты": {
+    "uz": "To‘lovlar",
+    "en": "Payments"
+  },
+  "Премии": {
+    "uz": "Mukofotlar",
+    "en": "Premiums"
+  },
+  "Договоры": {
+    "uz": "Shartnomalar",
+    "en": "Contracts"
+  },
+  "Убыточность": {
+    "uz": "Zararlilik",
+    "en": "Loss ratio"
+  },
+  "Частота": {
+    "uz": "Chastota",
+    "en": "Frequency"
+  },
+  "Доли рисков": {
+    "uz": "Xatar ulushlari",
+    "en": "Risk shares"
+  },
+  "Подлежит подтверждению андеррайтером": {
+    "uz": "Anderrayter tasdig‘i talab qilinadi",
+    "en": "Subject to underwriter confirmation"
+  },
+  "Не является кредитным скорингом": {
+    "uz": "Kredit skoringi emas",
+    "en": "Not a credit score"
+  },
+  "ИИ отключён; фото и сканы проверяются сотрудником вручную": {
+    "uz": "SI o‘chirilgan; foto va skanlarni xodim qo‘lda tekshiradi",
+    "en": "AI disabled; photos and scans require employee review"
+  },
+  "Проверить суммы, сроки и источники": {
+    "uz": "Summalar, muddatlar va manbalarni tekshiring",
+    "en": "Check amounts, terms and sources"
+  },
+  "Разрешить расхождения документов": {
+    "uz": "Hujjatlardagi tafovutlarni hal qiling",
+    "en": "Resolve document discrepancies"
+  },
+  "Проверить оценку стоимости": {
+    "uz": "Qiymat bahosini tekshiring",
+    "en": "Verify valuation"
+  },
+  "Проверить актуальность тарифов и нормативных актов": {
+    "uz": "Tarif va normativ hujjatlar dolzarbligini tekshiring",
+    "en": "Verify tariff and statutory validity"
+  },
+  "Утвердить условия андеррайтером": {
+    "uz": "Shartlarni anderrayter tasdiqlasin",
+    "en": "Obtain underwriter approval"
+  },
+  "Текст источника / оговорки сохранён на исходном языке": {
+    "uz": "Manba / shart matni asl tilida saqlangan",
+    "en": "Source / clause text retained in its original language"
+  },
+  "Поправки и страховой балл — оценка разработчика, не утверждено страховщиком": {
+    "uz": "Xatar tuzatishlari va ball sug‘urtalovchi tomonidan tasdiqlanmagan",
+    "en": "Risk adjustments and score are not insurer-approved"
+  },
+  "Шаблон класса отсутствует; аналитика риска недоступна": {
+    "uz": "Sinf shabloni yo‘q; xatar tahlili mavjud emas",
+    "en": "No class template; risk analysis unavailable"
+  },
+  "Поправки открытых данных — экспертные, не утверждены страховщиком": {
+    "uz": "Ochiq ma’lumot tuzatishlari ekspert bahosi, tasdiqlanmagan",
+    "en": "Public-data adjustments are expert estimates, not insurer-approved"
+  },
+  "Рыночная ставка ниже минимума компании; минимум сохраняется": {
+    "uz": "Bozor stavkasi kompaniya minimumidan past; minimum saqlanadi",
+    "en": "Market rate is below company minimum; minimum is retained"
+  },
+  "Ставка не определена: выберите утверждённую программу": {
+    "uz": "Stavka aniqlanmagan: tasdiqlangan dasturni tanlang",
+    "en": "Rate undefined: select an approved program"
+  },
+  "Ставка не определена: нет нормативной формулы": {
+    "uz": "Stavka aniqlanmagan: normativ formula yo‘q",
+    "en": "Rate undefined: statutory formula unavailable"
+  },
+  "Сюрвейер": {
+    "uz": "Syurveyer",
+    "en": "Surveyor"
+  },
+  "Войти": {
+    "uz": "Kirish",
+    "en": "Sign in"
+  },
+  "Логин": {
+    "uz": "Login",
+    "en": "Username"
+  },
+  "Пароль": {
+    "uz": "Parol",
+    "en": "Password"
+  },
+  "Вход в рабочее пространство": {
+    "uz": "Ish maydoniga kirish",
+    "en": "Sign in to your workspace"
+  },
+  "Выйти": {
+    "uz": "Chiqish",
+    "en": "Sign out"
+  },
+  "Смена пароля": {
+    "uz": "Parolni almashtirish",
+    "en": "Change password"
+  },
+  "При первом входе задайте личный пароль.": {
+    "uz": "Birinchi kirishda shaxsiy parol o‘rnating.",
+    "en": "Set a personal password on your first sign-in."
+  },
+  "Текущий пароль": {
+    "uz": "Joriy parol",
+    "en": "Current password"
+  },
+  "Новый пароль (от 8 символов)": {
+    "uz": "Yangi parol (kamida 8 belgi)",
+    "en": "New password (at least 8 characters)"
+  },
+  "Сохранить пароль": {
+    "uz": "Parolni saqlash",
+    "en": "Save password"
+  },
+  "Пароль изменён": {
+    "uz": "Parol o‘zgartirildi",
+    "en": "Password changed"
+  },
+  "Загрузка…": {
+    "uz": "Yuklanmoqda…",
+    "en": "Loading…"
+  },
+  "Всего осмотров": {
+    "uz": "Jami ko‘riklar",
+    "en": "Total inspections"
+  },
+  "В вашем рабочем пространстве": {
+    "uz": "Ish maydoningizda",
+    "en": "In your workspace"
+  },
+  "Ожидают решения": {
+    "uz": "Qaror kutilmoqda",
+    "en": "Awaiting decision"
+  },
+  "На проверке у андеррайтера": {
+    "uz": "Anderrayter tekshiruvida",
+    "en": "Underwriter review"
+  },
+  "Утверждены": {
+    "uz": "Tasdiqlangan",
+    "en": "Approved"
+  },
+  "С зафиксированным решением": {
+    "uz": "Qaror qayd etilgan",
+    "en": "Decision recorded"
+  },
+  "Журнал осмотров": {
+    "uz": "Ko‘riklar jurnali",
+    "en": "Inspection register"
+  },
+  "Последние 200 записей": {
+    "uz": "Oxirgi 200 yozuv",
+    "en": "Latest 200 records"
+  },
+  "ОБЪЕКТ": {
+    "uz": "OBYEKT",
+    "en": "OBJECT"
+  },
+  "ДАТА СОЗДАНИЯ": {
+    "uz": "YARATILGAN SANA",
+    "en": "CREATED"
+  },
+  "СТАТУС": {
+    "uz": "HOLAT",
+    "en": "STATUS"
+  },
+  "Начните с первого осмотра": {
+    "uz": "Birinchi ko‘rikni boshlang",
+    "en": "Start your first inspection"
+  },
+  "Загрузите документы, проверьте данные": {
+    "uz": "Hujjatlarni yuklang, ma’lumotlarni tekshiring",
+    "en": "Upload documents, review the data"
+  },
+  "и получите акт с прозрачным расчётом.": {
+    "uz": "va aniq hisob-kitobli dalolatnoma oling.",
+    "en": "and get a report with a transparent calculation."
+  },
+  "Каждая цифра имеет источник. Каждое решение — автора.": {
+    "uz": "Har bir raqamning manbasi, har bir qarorning muallifi bor.",
+    "en": "Every number has a source. Every decision has an author."
+  },
+  "Новый осмотр": {
+    "uz": "Yangi ko‘rik",
+    "en": "New inspection"
+  },
+  "Дайте объекту понятное название.": {
+    "uz": "Obyektga tushunarli nom bering.",
+    "en": "Give the object a clear name."
+  },
+  "Название осмотра": {
+    "uz": "Ko‘rik nomi",
+    "en": "Inspection title"
+  },
+  "Например: Учебный автомобиль № 01": {
+    "uz": "Masalan: O‘quv avtomobili № 01",
+    "en": "For example: Training vehicle 01"
+  },
+  "Создать осмотр →": {
+    "uz": "Ko‘rik yaratish →",
+    "en": "Create inspection →"
+  },
+  "← Все осмотры": {
+    "uz": "← Barcha ko‘riklar",
+    "en": "← All inspections"
+  },
+  "Фото и документы": {
+    "uz": "Foto va hujjatlar",
+    "en": "Photos and documents"
+  },
+  "Проверить": {
+    "uz": "Tekshirish",
+    "en": "Review"
+  },
+  "Акт": {
+    "uz": "Dalolatnoma",
+    "en": "Report"
+  },
+  "Материалы осмотра": {
+    "uz": "Ko‘rik materiallari",
+    "en": "Inspection materials"
+  },
+  "Добавьте фото, договор или запрос филиала": {
+    "uz": "Foto, shartnoma yoki filial so‘rovini qo‘shing",
+    "en": "Add photos, a contract or a branch request"
+  },
+  "До 15 МБ на файл · PDF до 50 страниц": {
+    "uz": "Har bir fayl 15 MB gacha · PDF 50 sahifagacha",
+    "en": "Up to 15 MB per file · PDF up to 50 pages"
+  },
+  "Загрузить выбранные файлы": {
+    "uz": "Tanlangan fayllarni yuklash",
+    "en": "Upload selected files"
+  },
+  "Фото и сканы не распознаются автоматически: ИИ отключён. После загрузки проверьте их вручную.": {
+    "uz": "Foto va skanlar avtomatik o‘qilmaydi: SI o‘chirilgan. Yuklagach qo‘lda tekshiring.",
+    "en": "Photos and scans are not read automatically: AI is disabled. Review them manually after upload."
+  },
+  "Проверить данные →": {
+    "uz": "Ma’lumotlarni tekshirish →",
+    "en": "Review data →"
+  },
+  "КАК ЭТО РАБОТАЕТ": {
+    "uz": "QANDAY ISHLAYDI",
+    "en": "HOW IT WORKS"
+  },
+  "Факты остаются фактами": {
+    "uz": "Faktlar saqlanadi",
+    "en": "Facts stay traceable"
+  },
+  "Текстовые документы читаются правилами. У каждого извлечённого значения сохраняется имя файла и исходная строка.": {
+    "uz": "Matnli hujjatlar qoidalar bilan o‘qiladi. Har bir qiymat bilan fayl nomi va asl satr saqlanadi.",
+    "en": "Text documents are parsed by rules. Every extracted value retains its filename and original line."
+  },
+  "Ваши правки показываются отдельно. Расхождения между документами попадут в акт.": {
+    "uz": "Tuzatishlaringiz alohida ko‘rsatiladi. Hujjatlardagi tafovutlar dalolatnomaga kiritiladi.",
+    "en": "Your corrections are shown separately. Document discrepancies appear in the report."
+  },
+  "Файлы загружены": {
+    "uz": "Fayllar yuklandi",
+    "en": "Files uploaded"
+  },
+  "Проверить / исправить поля": {
+    "uz": "Maydonlarni tekshirish / tuzatish",
+    "en": "Review / correct fields"
+  },
+  "Исходное распознавание сохраняется. Правки будут отмечены в акте.": {
+    "uz": "Asl ajratilgan ma’lumot saqlanadi. Tuzatishlar dalolatnomada belgilanadi.",
+    "en": "The original extraction is preserved. Corrections are marked in the report."
+  },
+  "Вид документа": {
+    "uz": "Hujjat turi",
+    "en": "Document type"
+  },
+  "Причина / результат проверки": {
+    "uz": "Tekshirish sababi / natijasi",
+    "en": "Review reason / result"
+  },
+  "Сохранить проверку": {
+    "uz": "Tekshirishni saqlash",
+    "en": "Save review"
+  },
+  "Фото объекта": {
+    "uz": "Obyekt fotosi",
+    "en": "Object photo"
+  },
+  "Договор": {
+    "uz": "Shartnoma",
+    "en": "Contract"
+  },
+  "Запрос филиала": {
+    "uz": "Filial so‘rovi",
+    "en": "Branch request"
+  },
+  "Отчёт": {
+    "uz": "Hisobot",
+    "en": "Report"
+  },
+  "Объект и условия": {
+    "uz": "Obyekt va shartlar",
+    "en": "Object and terms"
+  },
+  "Страховая сумма, UZS": {
+    "uz": "Sug‘urta summasi, UZS",
+    "en": "Insured sum, UZS"
+  },
+  "Стоимость объекта, UZS": {
+    "uz": "Obyekt qiymati, UZS",
+    "en": "Object value, UZS"
+  },
+  "Срок страхования, дней": {
+    "uz": "Sug‘urta muddati, kun",
+    "en": "Insurance term, days"
+  },
+  "Дата применения тарифа": {
+    "uz": "Tarifni qo‘llash sanasi",
+    "en": "Tariff date"
+  },
+  "Вид объекта": {
+    "uz": "Obyekt turi",
+    "en": "Object type"
+  },
+  "Автомобиль": {
+    "uz": "Avtomobil",
+    "en": "Vehicle"
+  },
+  "Оборудование": {
+    "uz": "Uskuna",
+    "en": "Equipment"
+  },
+  "Жильё / техника": {
+    "uz": "Uy-joy / texnika",
+    "en": "Housing / appliances"
+  },
+  "Крупный объект": {
+    "uz": "Yirik obyekt",
+    "en": "Large object"
+  },
+  "Другое": {
+    "uz": "Boshqa",
+    "en": "Other"
+  },
+  "Программа (если применимо)": {
+    "uz": "Dastur (mavjud bo‘lsa)",
+    "en": "Program (if applicable)"
+  },
+  "Описание объекта": {
+    "uz": "Obyekt tavsifi",
+    "en": "Object description"
+  },
+  "Четыре основных поля: продукт, страховая сумма, стоимость, регион. Срок нужен для годовой ставки и сравнения с рынком.": {
+    "uz": "To‘rtta asosiy maydon: mahsulot, sug‘urta summasi, qiymat, hudud. Muddat yillik stavka va bozor taqqoslashi uchun kerak.",
+    "en": "Four main fields: product, insured sum, value and region. The term is needed for annual rates and market comparisons."
+  },
+  "Признаки риска": {
+    "uz": "Xatar belgilari",
+    "en": "Risk features"
+  },
+  "Сверка документов": {
+    "uz": "Hujjatlarni solishtirish",
+    "en": "Document reconciliation"
+  },
+  "Тариф из запроса / договора, %": {
+    "uz": "So‘rov / shartnoma tarifi, %",
+    "en": "Request / contract rate, %"
+  },
+  "Премия из запроса / договора, UZS": {
+    "uz": "So‘rov / shartnoma mukofoti, UZS",
+    "en": "Request / contract premium, UZS"
+  },
+  "Причина исправлений распознанных значений": {
+    "uz": "Ajratilgan qiymatlarni tuzatish sababi",
+    "en": "Reason for correcting extracted values"
+  },
+  "Если исправили значение документа — объясните почему": {
+    "uz": "Hujjat qiymatini tuzatgan bo‘lsangiz, sababini tushuntiring",
+    "en": "If you corrected a document value, explain why"
+  },
+  "Оценка стоимости": {
+    "uz": "Qiymatni baholash",
+    "en": "Valuation"
+  },
+  "Сопоставимые предложения: то же изделие, цена и дата обязательны, не старше 6 месяцев. Медиана до ручных правок сохраняется рядом с оценкой.": {
+    "uz": "O‘xshash takliflar: bir xil buyum, narx va sana majburiy, 6 oydan eski emas. Tuzatishdan oldingi mediana baho bilan saqlanadi.",
+    "en": "Comparables: same item, price and date required, no older than 6 months. The original median is retained alongside the estimate."
+  },
+  "＋ Сопоставимое предложение": {
+    "uz": "＋ O‘xshash taklif",
+    "en": "＋ Comparable"
+  },
+  "Оборудование: цена покупки и износ": {
+    "uz": "Uskuna: xarid narxi va eskirish",
+    "en": "Equipment: purchase price and depreciation"
+  },
+  "Цена покупки, UZS": {
+    "uz": "Xarid narxi, UZS",
+    "en": "Purchase price, UZS"
+  },
+  "Крупный объект: отчёт оценщика + второй метод": {
+    "uz": "Yirik obyekt: baholovchi hisoboti + ikkinchi usul",
+    "en": "Large object: appraiser report + second method"
+  },
+  "Второй метод, UZS": {
+    "uz": "Ikkinchi usul, UZS",
+    "en": "Second method, UZS"
+  },
+  "ПЕРЕД ФОРМИРОВАНИЕМ": {
+    "uz": "YARATISHDAN OLDIN",
+    "en": "BEFORE GENERATING"
+  },
+  "Проверьте исходные данные": {
+    "uz": "Boshlang‘ich ma’lumotlarni tekshiring",
+    "en": "Review the inputs"
+  },
+  "Расчёт использует версию тарифа на выбранную дату. Все введённые сотрудником значения отмечаются в акте.": {
+    "uz": "Hisoblash tanlangan sanadagi tarif versiyasidan foydalanadi. Xodim kiritgan barcha qiymatlar dalolatnomada belgilanadi.",
+    "en": "The calculation uses the tariff version effective on the selected date. Employee-entered values are marked in the report."
+  },
+  "Язык акта": {
+    "uz": "Dalolatnoma tili",
+    "en": "Report language"
+  },
+  "Тексты источников и оговорок сохраняются на исходном языке.": {
+    "uz": "Manba va shart matnlari asl tilida saqlanadi.",
+    "en": "Source text and clauses retain their original language."
+  },
+  "Я проверил(а) документы, суммы, сроки и фотографии.": {
+    "uz": "Hujjatlar, summalar, muddatlar va fotolarni tekshirdim.",
+    "en": "I reviewed the documents, amounts, terms and photographs."
+  },
+  "Сохранить и сформировать →": {
+    "uz": "Saqlash va yaratish →",
+    "en": "Save and generate →"
+  },
+  "Страховой балл не является кредитным скорингом. Окончательное решение принимает андеррайтер.": {
+    "uz": "Sug‘urta bali kredit skoringi emas. Yakuniy qarorni anderrayter qabul qiladi.",
+    "en": "The insurance score is not a credit score. The underwriter makes the final decision."
+  },
+  "Для класса пока нет шаблона риска.": {
+    "uz": "Bu sinf uchun xatar shabloni hali yo‘q.",
+    "en": "No risk template exists for this class yet."
+  },
+  "Акт сформирован": {
+    "uz": "Dalolatnoma yaratildi",
+    "en": "Report generated"
+  },
+  "Изделие": {
+    "uz": "Buyum",
+    "en": "Item"
+  },
+  "Ссылка / файл источника": {
+    "uz": "Manba havolasi / fayli",
+    "en": "Source link / file"
+  },
+  "Валюта": {
+    "uz": "Valyuta",
+    "en": "Currency"
+  },
+  "То же изделие / сопоставимый объект": {
+    "uz": "Bir xil buyum / o‘xshash obyekt",
+    "en": "Same item / comparable object"
+  },
+  "Удалить предложение": {
+    "uz": "Taklifni o‘chirish",
+    "en": "Remove comparable"
+  },
+  "Версии акта": {
+    "uz": "Dalolatnoma versiyalari",
+    "en": "Report versions"
+  },
+  "Открыть акт →": {
+    "uz": "Dalolatnomani ochish →",
+    "en": "Open report →"
+  },
+  "Заполните и подтвердите данные на шаге «Проверить».": {
+    "uz": "«Tekshirish» bosqichida ma’lumotlarni to‘ldiring va tasdiqlang.",
+    "en": "Complete and confirm the data in the Review step."
+  },
+  "Черновик": {
+    "uz": "Qoralama",
+    "en": "Draft"
+  },
+  "На проверке": {
+    "uz": "Tekshirilmoqda",
+    "en": "In review"
+  },
+  "Утверждён": {
+    "uz": "Tasdiqlangan",
+    "en": "Approved"
+  },
+  "Нужны правки": {
+    "uz": "Tuzatishlar kerak",
+    "en": "Changes requested"
+  },
+  "Отклонён": {
+    "uz": "Rad etilgan",
+    "en": "Rejected"
+  },
+  "Сотрудник": {
+    "uz": "Xodim",
+    "en": "Employee"
+  },
+  "Администратор": {
+    "uz": "Administrator",
+    "en": "Administrator"
+  },
+  "Актуарий": {
+    "uz": "Aktuariy",
+    "en": "Actuary"
+  },
+  "Андеррайтер": {
+    "uz": "Anderrayter",
+    "en": "Underwriter"
+  },
+  "Видимые повреждения": {
+    "uz": "Ko‘rinadigan shikastlar",
+    "en": "Visible damage"
+  },
+  "Плохое обслуживание": {
+    "uz": "Yomon texnik xizmat",
+    "en": "Poor maintenance"
+  },
+  "Нет защиты": {
+    "uz": "Himoya yo‘q",
+    "en": "No protection"
+  },
+  "Опасное расположение": {
+    "uz": "Xavfli joylashuv",
+    "en": "Hazardous location"
+  },
+  "Распознано": {
+    "uz": "Ajratilgan",
+    "en": "Extracted"
+  },
+  "Текстовый слой": {
+    "uz": "Matn qatlami",
+    "en": "Text layer"
+  },
+  "Не привязан": {
+    "uz": "Bog‘lanmagan",
+    "en": "Not linked"
+  },
+  "Сменить пароль": {
+    "uz": "Parolni almashtirish",
+    "en": "Change password"
+  },
+  "Привязать текущий Telegram": {
+    "uz": "Joriy Telegramni bog‘lash",
+    "en": "Link this Telegram account"
+  },
+  "Для привязки откройте приложение в Telegram или попросите администратора указать ваш ID.": {
+    "uz": "Bog‘lash uchun ilovani Telegramda oching yoki administratordan ID raqamingizni kiritishni so‘rang.",
+    "en": "Open the app in Telegram to link it, or ask an administrator to enter your ID."
+  },
+  "Telegram привязан": {
+    "uz": "Telegram bog‘landi",
+    "en": "Telegram linked"
+  },
+  "У каждого показателя — источник, период и история версий.": {
+    "uz": "Har bir ko‘rsatkichning manbasi, davri va versiyalar tarixi bor.",
+    "en": "Every indicator has a source, period and version history."
+  },
+  "Реестр каналов": {
+    "uz": "Kanallar reyestri",
+    "en": "Source registry"
+  },
+  "ИСТОЧНИК": {
+    "uz": "MANBA",
+    "en": "SOURCE"
+  },
+  "ДОСТУП И СОСТОЯНИЕ": {
+    "uz": "KIRISH VA HOLAT",
+    "en": "ACCESS AND STATUS"
+  },
+  "ОБНОВЛЕНИЕ": {
+    "uz": "YANGILANISH",
+    "en": "UPDATED"
+  },
+  "Основание доступа ↗": {
+    "uz": "Kirish asosi ↗",
+    "en": "Access basis ↗"
+  },
+  "Подключён": {
+    "uz": "Ulangan",
+    "en": "Connected"
+  },
+  "Обновить": {
+    "uz": "Yangilash",
+    "en": "Refresh"
+  },
+  "Настроить": {
+    "uz": "Sozlash",
+    "en": "Configure"
+  },
+  "Загрузить файл": {
+    "uz": "Fayl yuklash",
+    "en": "Upload file"
+  },
+  "Сохранённые показатели": {
+    "uz": "Saqlangan ko‘rsatkichlar",
+    "en": "Saved indicators"
+  },
+  "Фильтр по показателю или региону": {
+    "uz": "Ko‘rsatkich yoki hudud bo‘yicha filtr",
+    "en": "Filter by indicator or region"
+  },
+  "Устарели": {
+    "uz": "Eskirgan",
+    "en": "Stale"
+  },
+  "Источник ↗": {
+    "uz": "Manba ↗",
+    "en": "Source ↗"
+  },
+  "Утверждён актуарием": {
+    "uz": "Aktuariy tasdiqlagan",
+    "en": "Approved by actuary"
+  },
+  "Экспертный, не утверждён": {
+    "uz": "Ekspert bahosi, tasdiqlanmagan",
+    "en": "Expert estimate, unapproved"
+  },
+  "Утвердить поправку": {
+    "uz": "Tuzatishni tasdiqlash",
+    "en": "Approve adjustment"
+  },
+  "Адрес открытого файла / таблицы": {
+    "uz": "Ochiq fayl / jadval manzili",
+    "en": "Public file / table address"
+  },
+  "Формат": {
+    "uz": "Format",
+    "en": "Format"
+  },
+  "Таблица на странице": {
+    "uz": "Sahifadagi jadval",
+    "en": "Page table"
+  },
+  "SIAT: годовая статистика": {
+    "uz": "SIAT: yillik statistika",
+    "en": "SIAT: annual statistics"
+  },
+  "Ссылка на разрешение / условия доступа": {
+    "uz": "Ruxsat / kirish shartlari havolasi",
+    "en": "Permission / access terms link"
+  },
+  "Интервал обновления, часов": {
+    "uz": "Yangilanish oralig‘i, soat",
+    "en": "Refresh interval, hours"
+  },
+  "Путь к списку в JSON (если вложен)": {
+    "uz": "JSON ro‘yxatiga yo‘l (ichki bo‘lsa)",
+    "en": "JSON list path (if nested)"
+  },
+  "Номер HTML-таблицы (с нуля)": {
+    "uz": "HTML jadvali raqami (noldan)",
+    "en": "HTML table index (from zero)"
+  },
+  "Основание автоматического доступа": {
+    "uz": "Avtomatik kirish asosi",
+    "en": "Basis for automated access"
+  },
+  "Соответствие столбцов": {
+    "uz": "Ustunlarni moslashtirish",
+    "en": "Column mapping"
+  },
+  "Укажите название столбца в файле или постоянное значение. SIAT сам определяет регион, период и единицы.": {
+    "uz": "Fayldagi ustun nomini yoki doimiy qiymatni kiriting. SIAT hudud, davr va birliklarni o‘zi aniqlaydi.",
+    "en": "Enter a file column name or a constant value. SIAT determines region, period and units automatically."
+  },
+  "Поле": {
+    "uz": "Maydon",
+    "en": "Field"
+  },
+  "Столбец файла": {
+    "uz": "Fayl ustuni",
+    "en": "File column"
+  },
+  "Постоянное значение": {
+    "uz": "Doimiy qiymat",
+    "en": "Constant value"
+  },
+  "Сохранить и включить": {
+    "uz": "Saqlash va yoqish",
+    "en": "Save and enable"
+  },
+  "Причина изменения состояния": {
+    "uz": "Holatni o‘zgartirish sababi",
+    "en": "Reason for status change"
+  },
+  "Отключить канал": {
+    "uz": "Kanalni o‘chirish",
+    "en": "Disable source"
+  },
+  "Включить после проверки": {
+    "uz": "Tekshirgach yoqish",
+    "en": "Enable after review"
+  },
+  "Загрузка показателей": {
+    "uz": "Ko‘rsatkichlarni yuklash",
+    "en": "Import indicators"
+  },
+  "Загрузите CSV или Excel. Сначала проверьте строки, затем подтвердите сохранение.": {
+    "uz": "CSV yoki Excel yuklang. Avval satrlarni tekshiring, keyin saqlashni tasdiqlang.",
+    "en": "Upload CSV or Excel. Review the rows, then confirm saving."
+  },
+  "Скачать шаблон CSV ↓": {
+    "uz": "CSV namunasini yuklab olish ↓",
+    "en": "Download CSV template ↓"
+  },
+  "Предпросмотр": {
+    "uz": "Oldindan ko‘rish",
+    "en": "Preview"
+  },
+  "Строка": {
+    "uz": "Satr",
+    "en": "Row"
+  },
+  "Показатель": {
+    "uz": "Ko‘rsatkich",
+    "en": "Indicator"
+  },
+  "Период": {
+    "uz": "Davr",
+    "en": "Period"
+  },
+  "Значение / ошибка": {
+    "uz": "Qiymat / xato",
+    "en": "Value / error"
+  },
+  "Подтвердить сохранение": {
+    "uz": "Saqlashni tasdiqlash",
+    "en": "Confirm saving"
+  },
+  "Состояние системы": {
+    "uz": "Tizim holati",
+    "en": "System status"
+  },
+  "Резервные копии": {
+    "uz": "Zaxira nusxalar",
+    "en": "Backups"
+  },
+  "Резервных копий пока нет": {
+    "uz": "Zaxira nusxalar hali yo‘q",
+    "en": "No backups yet"
+  },
+  "Ошибки источников и резервного копирования": {
+    "uz": "Manba va zaxiralash xatolari",
+    "en": "Source and backup errors"
+  },
+  "Ошибок нет": {
+    "uz": "Xatolar yo‘q",
+    "en": "No errors"
+  },
+  "Продукты и тарифы": {
+    "uz": "Mahsulotlar va tariflar",
+    "en": "Products and tariffs"
+  },
+  "Сотрудники": {
+    "uz": "Xodimlar",
+    "en": "Employees"
+  },
+  "Шаблоны классов": {
+    "uz": "Sinf shablonlari",
+    "en": "Class templates"
+  },
+  "Показатели": {
+    "uz": "Ko‘rsatkichlar",
+    "en": "Indicators"
+  },
+  "Журнал действий": {
+    "uz": "Amallar jurnali",
+    "en": "Audit log"
+  },
+  "Справочники и настройки расчётного ядра.": {
+    "uz": "Ma’lumotnomalar va hisoblash sozlamalari.",
+    "en": "Reference data and calculation settings."
+  },
+  "Версии тарифной политики": {
+    "uz": "Tarif siyosati versiyalari",
+    "en": "Tariff policy versions"
+  },
+  "＋ Продукт / новая версия": {
+    "uz": "＋ Mahsulot / yangi versiya",
+    "en": "＋ Product / new version"
+  },
+  "ПРОДУКТ": {
+    "uz": "MAHSULOT",
+    "en": "PRODUCT"
+  },
+  "КЛАСС": {
+    "uz": "SINF",
+    "en": "CLASS"
+  },
+  "СТАВКА / МИНИМУМ": {
+    "uz": "STAVKA / MINIMUM",
+    "en": "RATE / MINIMUM"
+  },
+  "ТИП": {
+    "uz": "TUR",
+    "en": "TYPE"
+  },
+  "ДЕЙСТВУЕТ С": {
+    "uz": "AMAL QILISH SANASI",
+    "en": "EFFECTIVE FROM"
+  },
+  "Новая версия ↗": {
+    "uz": "Yangi versiya ↗",
+    "en": "New version ↗"
+  },
+  "Импорт из Excel / CSV": {
+    "uz": "Excel / CSV importi",
+    "en": "Import Excel / CSV"
+  },
+  "Предпросмотр импорта": {
+    "uz": "Importni oldindan ko‘rish",
+    "en": "Preview import"
+  },
+  "Новая версия тарифа": {
+    "uz": "Tarifning yangi versiyasi",
+    "en": "New tariff version"
+  },
+  "Добавить продукт": {
+    "uz": "Mahsulot qo‘shish",
+    "en": "Add product"
+  },
+  "Код": {
+    "uz": "Kod",
+    "en": "Code"
+  },
+  "Название": {
+    "uz": "Nomi",
+    "en": "Name"
+  },
+  "Класс": {
+    "uz": "Sinf",
+    "en": "Class"
+  },
+  "Дата начала действия": {
+    "uz": "Amal qilish boshlanishi",
+    "en": "Effective date"
+  },
+  "Ставка, %": {
+    "uz": "Stavka, %",
+    "en": "Rate, %"
+  },
+  "Минимум, %": {
+    "uz": "Minimum, %",
+    "en": "Minimum, %"
+  },
+  "База программ": {
+    "uz": "Dastur bazasi",
+    "en": "Program basis"
+  },
+  "Нормативная база": {
+    "uz": "Normativ baza",
+    "en": "Statutory basis"
+  },
+  "Не применяется": {
+    "uz": "Qo‘llanilmaydi",
+    "en": "Not applicable"
+  },
+  "Ссылка на нормативный акт": {
+    "uz": "Normativ hujjat havolasi",
+    "en": "Statutory source link"
+  },
+  "Ставки хранятся в процентах: 0.5 означает 0,5%. Изменение создаёт новую версию.": {
+    "uz": "Stavkalar foizda saqlanadi: 0.5 — 0,5%. O‘zgartirish yangi versiya yaratadi.",
+    "en": "Rates are stored as percentages: 0.5 means 0.5%. Changes create a new version."
+  },
+  "Сохранить версию": {
+    "uz": "Versiyani saqlash",
+    "en": "Save version"
+  },
+  "Версия тарифа сохранена": {
+    "uz": "Tarif versiyasi saqlandi",
+    "en": "Tariff version saved"
+  },
+  "Строки импорта": {
+    "uz": "Import satrlari",
+    "en": "Import rows"
+  },
+  "Импорт сохранён": {
+    "uz": "Import saqlandi",
+    "en": "Import saved"
+  },
+  "Доступ сотрудников": {
+    "uz": "Xodimlar kirishi",
+    "en": "Employee access"
+  },
+  "＋ Добавить сотрудника": {
+    "uz": "＋ Xodim qo‘shish",
+    "en": "＋ Add employee"
+  },
+  "СОТРУДНИК": {
+    "uz": "XODIM",
+    "en": "EMPLOYEE"
+  },
+  "РОЛЬ": {
+    "uz": "ROL",
+    "en": "ROLE"
+  },
+  "ФИЛИАЛ": {
+    "uz": "FILIAL",
+    "en": "BRANCH"
+  },
+  "Изменить": {
+    "uz": "O‘zgartirish",
+    "en": "Edit"
+  },
+  "Новый сотрудник": {
+    "uz": "Yangi xodim",
+    "en": "New employee"
+  },
+  "Ф.И.О.": {
+    "uz": "F.I.Sh.",
+    "en": "Full name"
+  },
+  "Должность": {
+    "uz": "Lavozim",
+    "en": "Position"
+  },
+  "Департамент / отдел": {
+    "uz": "Departament / bo‘lim",
+    "en": "Department"
+  },
+  "Филиал": {
+    "uz": "Filial",
+    "en": "Branch"
+  },
+  "Временный пароль": {
+    "uz": "Vaqtinchalik parol",
+    "en": "Temporary password"
+  },
+  "Телефон (+998...)": {
+    "uz": "Telefon (+998...)",
+    "en": "Phone (+998...)"
+  },
+  "Роль": {
+    "uz": "Rol",
+    "en": "Role"
+  },
+  "Telegram ID (необязательно)": {
+    "uz": "Telegram ID (ixtiyoriy)",
+    "en": "Telegram ID (optional)"
+  },
+  "При первом входе сотрудник обязан сменить пароль. Только актуарий утверждает калибровку; только андеррайтер — акт.": {
+    "uz": "Birinchi kirishda xodim parolni almashtiradi. Kalibrlashni faqat aktuariy, dalolatnomani faqat anderrayter tasdiqlaydi.",
+    "en": "Employees must change their password on first sign-in. Only actuaries approve calibration; only underwriters approve reports."
+  },
+  "Создать сотрудника": {
+    "uz": "Xodim yaratish",
+    "en": "Create employee"
+  },
+  "Сотрудник создан": {
+    "uz": "Xodim yaratildi",
+    "en": "Employee created"
+  },
+  "Учётная запись активна": {
+    "uz": "Hisob faol",
+    "en": "Account active"
+  },
+  "Сохранить": {
+    "uz": "Saqlash",
+    "en": "Save"
+  },
+  "Страховые случаи по годам": {
+    "uz": "Yillar bo‘yicha sug‘urta hodisalari",
+    "en": "Claims by year"
+  },
+  "＋ Добавить данные": {
+    "uz": "＋ Ma’lumot qo‘shish",
+    "en": "＋ Add data"
+  },
+  "ПРОДУКТ / ГОД": {
+    "uz": "MAHSULOT / YIL",
+    "en": "PRODUCT / YEAR"
+  },
+  "СЛУЧАИ": {
+    "uz": "HODISALAR",
+    "en": "CLAIMS"
+  },
+  "ВЫПЛАТЫ": {
+    "uz": "TO‘LOVLAR",
+    "en": "PAYMENTS"
+  },
+  "ПРЕМИИ": {
+    "uz": "MUKOFOTLAR",
+    "en": "PREMIUMS"
+  },
+  "УБЫТОЧНОСТЬ": {
+    "uz": "ZARARLILIK",
+    "en": "LOSS RATIO"
+  },
+  "ЧАСТОТА": {
+    "uz": "CHASTOTA",
+    "en": "FREQUENCY"
+  },
+  "Импорт убытков": {
+    "uz": "Zararlar importi",
+    "en": "Import claims"
+  },
+  "Утверждение калибровки": {
+    "uz": "Kalibrlashni tasdiqlash",
+    "en": "Calibration approval"
+  },
+  "Целевая убыточность (0–1)": {
+    "uz": "Maqsadli zararlilik (0–1)",
+    "en": "Target loss ratio (0–1)"
+  },
+  "Обоснование утверждения": {
+    "uz": "Tasdiqlash asosi",
+    "en": "Approval rationale"
+  },
+  "Утвердить как актуарий": {
+    "uz": "Aktuariy sifatida tasdiqlash",
+    "en": "Approve as actuary"
+  },
+  "Завершённый год": {
+    "uz": "Tugagan yil",
+    "en": "Completed year"
+  },
+  "Количество случаев": {
+    "uz": "Hodisalar soni",
+    "en": "Number of claims"
+  },
+  "Сумма выплат, UZS": {
+    "uz": "To‘lovlar summasi, UZS",
+    "en": "Payments, UZS"
+  },
+  "Премии, UZS": {
+    "uz": "Mukofotlar, UZS",
+    "en": "Premiums, UZS"
+  },
+  "Количество договоров": {
+    "uz": "Shartnomalar soni",
+    "en": "Number of contracts"
+  },
+  "Шаблоны страховых классов": {
+    "uz": "Sug‘urta sinflari shablonlari",
+    "en": "Insurance class templates"
+  },
+  "＋ Новый шаблон": {
+    "uz": "＋ Yangi shablon",
+    "en": "＋ New template"
+  },
+  "Новая версия": {
+    "uz": "Yangi versiya",
+    "en": "New version"
+  },
+  "Утвердить": {
+    "uz": "Tasdiqlash",
+    "en": "Approve"
+  },
+  "Новый класс": {
+    "uz": "Yangi sinf",
+    "en": "New class"
+  },
+  "История версий": {
+    "uz": "Versiyalar tarixi",
+    "en": "Version history"
+  },
+  "Показать историю": {
+    "uz": "Tarixni ko‘rsatish",
+    "en": "Show history"
+  },
+  "Все версии": {
+    "uz": "Barcha versiyalar",
+    "en": "All versions"
+  },
+  "Загрузка показателя из проверенного источника": {
+    "uz": "Tekshirilgan manbadan ko‘rsatkich yuklash",
+    "en": "Add an indicator from a verified source"
+  },
+  "Система не обращается по введённой ссылке. Значение загружает сотрудник; ссылка и дата сохраняются в акте. Поправки без подписи актуария помечаются как экспертные.": {
+    "uz": "Tizim kiritilgan havolaga murojaat qilmaydi. Qiymatni xodim kiritadi; havola va sana dalolatnomada saqlanadi. Aktuariy tasdiqlamagan tuzatishlar ekspert bahosi deb belgilanadi.",
+    "en": "The system does not fetch this link. An employee enters the value; its link and date are saved in the report. Adjustments without actuarial approval are labelled expert estimates."
+  },
+  "Канал": {
+    "uz": "Kanal",
+    "en": "Source"
+  },
+  "Код показателя": {
+    "uz": "Ko‘rsatkich kodi",
+    "en": "Indicator code"
+  },
+  "Регион (all = вся страна)": {
+    "uz": "Hudud (all = butun mamlakat)",
+    "en": "Region (all = nationwide)"
+  },
+  "Класс (all = все)": {
+    "uz": "Sinf (all = barchasi)",
+    "en": "Class (all = all classes)"
+  },
+  "Тип объекта (all = все)": {
+    "uz": "Obyekt turi (all = barchasi)",
+    "en": "Object type (all = all types)"
+  },
+  "Значение": {
+    "uz": "Qiymat",
+    "en": "Value"
+  },
+  "Единица": {
+    "uz": "Birlik",
+    "en": "Unit"
+  },
+  "Ссылка на источник": {
+    "uz": "Manba havolasi",
+    "en": "Source link"
+  },
+  "Дата данных": {
+    "uz": "Ma’lumot sanasi",
+    "en": "Observation date"
+  },
+  "Срок актуальности, дней": {
+    "uz": "Dolzarblik muddati, kun",
+    "en": "Freshness limit, days"
+  },
+  "Поправка (0.1 = +10%)": {
+    "uz": "Tuzatish (0.1 = +10%)",
+    "en": "Adjustment (0.1 = +10%)"
+  },
+  "Сохранить показатель": {
+    "uz": "Ko‘rsatkichni saqlash",
+    "en": "Save indicator"
+  },
+  "Новая версия показателя сохранена": {
+    "uz": "Ko‘rsatkichning yangi versiyasi saqlandi",
+    "en": "Indicator version saved"
+  },
+  "Последние 200 событий. Правки сохраняют исходные и новые значения.": {
+    "uz": "Oxirgi 200 hodisa. Tuzatishlar asl va yangi qiymatlarni saqlaydi.",
+    "en": "Latest 200 events. Changes preserve original and new values."
+  },
+  "ВРЕМЯ": {
+    "uz": "VAQT",
+    "en": "TIME"
+  },
+  "ДЕЙСТВИЕ": {
+    "uz": "AMAL",
+    "en": "ACTION"
+  },
+  "СОТРУДНИК / ОБЪЕКТ": {
+    "uz": "XODIM / OBYEKT",
+    "en": "EMPLOYEE / OBJECT"
+  },
+  "ДЕТАЛИ": {
+    "uz": "TAFSILOTLAR",
+    "en": "DETAILS"
+  },
+  "Система": {
+    "uz": "Tizim",
+    "en": "System"
+  },
+  "Подробности и источники": {
+    "uz": "Tafsilotlar va manbalar",
+    "en": "Details and sources"
+  },
+  "Не удалось выполнить запрос": {
+    "uz": "So‘rov bajarilmadi",
+    "en": "Request failed"
+  },
+  "РАБОЧЕЕ ПРОСТРАНСТВО СТРАХОВЩИКА": {
+    "uz": "SUG‘URTALOVCHINING ISH MAYDONI",
+    "en": "INSURER WORKSPACE"
+  },
+  "Каждое решение": {
+    "uz": "Har bir qaror",
+    "en": "Every decision"
+  },
+  "начинается": {
+    "uz": "boshlanadi",
+    "en": "starts"
+  },
+  "с фактов": {
+    "uz": "faktlardan",
+    "en": "with facts"
+  },
+  "Документы, оценка и прозрачный расчёт.": {
+    "uz": "Hujjatlar, baholash va aniq hisob-kitob.",
+    "en": "Documents, valuation and transparent calculation."
+  },
+  "От первого осмотра — до готового акта.": {
+    "uz": "Birinchi ko‘rikdan tayyor dalolatnomagacha.",
+    "en": "From the first inspection to the completed report."
+  },
+  "01 / Загрузить": {
+    "uz": "01 / Yuklash",
+    "en": "01 / Upload"
+  },
+  "02 / Проверить": {
+    "uz": "02 / Tekshirish",
+    "en": "02 / Review"
+  },
+  "03 / Сформировать": {
+    "uz": "03 / Yaratish",
+    "en": "03 / Generate"
+  },
+  "Локальное рабочее пространство": {
+    "uz": "Mahalliy ish maydoni",
+    "en": "Local workspace"
+  },
+  "С возвращением": {
+    "uz": "Xush kelibsiz",
+    "en": "Welcome back"
+  },
+  "Войдите с учётной записью сотрудника.": {
+    "uz": "Xodim hisobi bilan kiring.",
+    "en": "Sign in with your employee account."
+  },
+  "Ваш логин": {
+    "uz": "Loginingiz",
+    "en": "Your username"
+  },
+  "Введите пароль": {
+    "uz": "Parolni kiriting",
+    "en": "Enter password"
+  },
+  "Войти в пространство": {
+    "uz": "Ish maydoniga kirish",
+    "en": "Enter workspace"
+  },
+  "ИИ отключён. Расчёты выполняются по правилам; фото и сканы проверяет сотрудник.": {
+    "uz": "SI o‘chirilgan. Hisob-kitoblar qoidalarga asoslanadi; foto va skanlarni xodim tekshiradi.",
+    "en": "AI is disabled. Calculations follow rules; an employee reviews photos and scans."
+  },
+  "Доступ выдаёт администратор компании.": {
+    "uz": "Kirishni kompaniya administratori beradi.",
+    "en": "Your company administrator grants access."
+  },
+  "СТРАХОВОЙ АНАЛИЗ": {
+    "uz": "SUG‘URTA TAHLILI",
+    "en": "INSURANCE ANALYSIS"
+  },
+  "Детерминированный расчёт": {
+    "uz": "Qoidalarga asoslangan hisob",
+    "en": "Rule-based calculation"
+  },
+  "ИИ не подключён · v0.2": {
+    "uz": "SI ulanmagan · v0.2",
+    "en": "AI not connected · v0.2"
+  },
+  "Язык интерфейса": {
+    "uz": "Interfeys tili",
+    "en": "Interface language"
+  },
+  "Закрыть": {
+    "uz": "Yopish",
+    "en": "Close"
+  },
+  "Учебная среда · Используйте только синтетические данные. Демонстрационные тарифы не утверждены страховщиком.": {
+    "uz": "O‘quv muhiti · Faqat sun’iy ma’lumotlardan foydalaning. Namuna tariflari sug‘urtalovchi tomonidan tasdiqlanmagan.",
+    "en": "Training environment · Use synthetic data only. Demo tariffs are not insurer-approved."
+  },
+  "Открытый файл": {
+    "uz": "Ochiq fayl",
+    "en": "Public file"
+  },
+  "Официальный API": {
+    "uz": "Rasmiy API",
+    "en": "Official API"
+  },
+  "Только загрузка сотрудником": {
+    "uz": "Faqat xodim yuklaydi",
+    "en": "Employee upload only"
+  },
+  "Нужна проверка доступа": {
+    "uz": "Kirishni tekshirish kerak",
+    "en": "Access review required"
+  },
+  "Нужен договор": {
+    "uz": "Shartnoma kerak",
+    "en": "Contract required"
+  },
+  "Данные обновлены": {
+    "uz": "Ma’lumotlar yangilandi",
+    "en": "Data refreshed"
+  },
+  "Используются сохранённые данные": {
+    "uz": "Saqlangan ma’lumotlar ishlatilmoqda",
+    "en": "Using cached data"
+  },
+  "Канал отключён": {
+    "uz": "Kanal o‘chirilgan",
+    "en": "Source disabled"
+  },
+  "Ставки программ": {
+    "uz": "Dastur stavkalari",
+    "en": "Program rates"
+  },
+  "Программа": {
+    "uz": "Dastur",
+    "en": "Program"
+  },
+  "＋ Добавить строку": {
+    "uz": "＋ Satr qo‘shish",
+    "en": "＋ Add row"
+  },
+  "Удалить строку": {
+    "uz": "Satrni o‘chirish",
+    "en": "Remove row"
+  },
+  "Названия строк должны быть уникальны": {
+    "uz": "Satr nomlari takrorlanmasin",
+    "en": "Row names must be unique"
+  },
+  "Новая версия требует нового утверждения актуарием.": {
+    "uz": "Yangi versiya aktuariy tomonidan qayta tasdiqlanishi kerak.",
+    "en": "A new version requires fresh actuarial approval."
+  },
+  "Порог умеренного риска": {
+    "uz": "O‘rtacha xatar chegarasi",
+    "en": "Moderate risk threshold"
+  },
+  "Порог высокого риска": {
+    "uz": "Yuqori xatar chegarasi",
+    "en": "High risk threshold"
+  },
+  "Множитель: Низкий": {
+    "uz": "Koeffitsiyent: Past",
+    "en": "Multiplier: Low"
+  },
+  "Множитель: Умеренный": {
+    "uz": "Koeffitsiyent: O‘rtacha",
+    "en": "Multiplier: Moderate"
+  },
+  "Множитель: Высокий": {
+    "uz": "Koeffitsiyent: Yuqori",
+    "en": "Multiplier: High"
+  },
+  "Множитель: Low": {
+    "uz": "Koeffitsiyent: Past",
+    "en": "Multiplier: Low"
+  },
+  "Множитель: Moderate": {
+    "uz": "Koeffitsiyent: O‘rtacha",
+    "en": "Multiplier: Moderate"
+  },
+  "Множитель: High": {
+    "uz": "Koeffitsiyent: Yuqori",
+    "en": "Multiplier: High"
+  },
+  "Граница поправки (0.2 = 20%)": {
+    "uz": "Tuzatish chegarasi (0.2 = 20%)",
+    "en": "Adjustment limit (0.2 = 20%)"
+  },
+  "Признаки и веса риска": {
+    "uz": "Xatar belgilari va vaznlari",
+    "en": "Risk features and weights"
+  },
+  "Признак": {
+    "uz": "Belgi",
+    "en": "Feature"
+  },
+  "Вес (0–100)": {
+    "uz": "Vazn (0–100)",
+    "en": "Weight (0–100)"
+  },
+  "Доли рисков, %": {
+    "uz": "Xatar ulushlari, %",
+    "en": "Risk shares, %"
+  },
+  "Риск": {
+    "uz": "Xatar",
+    "en": "Risk"
+  },
+  "Доля, %": {
+    "uz": "Ulush, %",
+    "en": "Share, %"
+  },
+  "Правила оценки стоимости": {
+    "uz": "Qiymatni baholash qoidalari",
+    "en": "Valuation rules"
+  },
+  "Допустимое отклонение (0.15 = 15%)": {
+    "uz": "Ruxsat etilgan farq (0.15 = 15%)",
+    "en": "Allowed deviation (0.15 = 15%)"
+  },
+  "Порог крупного объекта, UZS": {
+    "uz": "Yirik obyekt chegarasi, UZS",
+    "en": "Large-object threshold, UZS"
+  },
+  "Показатели с готовой поправкой (по одному на строке)": {
+    "uz": "Tayyor tuzatishli ko‘rsatkichlar (har satrda bittadan)",
+    "en": "Indicators with a supplied adjustment (one per line)"
+  },
+  "Поправки из статистики": {
+    "uz": "Statistikadan tuzatishlar",
+    "en": "Statistical adjustments"
+  },
+  "Поправка = (значение / базовое значение − 1) × чувствительность. Применяется только к выбранным видам объектов, в пределах границы.": {
+    "uz": "Tuzatish = (qiymat / asosiy qiymat − 1) × sezgirlik. Faqat tanlangan obyekt turlariga, belgilangan chegara ichida qo‘llanadi.",
+    "en": "Adjustment = (value / baseline − 1) × sensitivity. Applies only to selected object types, within the limit."
+  },
+  "＋ Правило показателя": {
+    "uz": "＋ Ko‘rsatkich qoidasi",
+    "en": "＋ Indicator rule"
+  },
+  "Оговорки": {
+    "uz": "Shartlar",
+    "en": "Clauses"
+  },
+  "Каждая оговорка — отдельная строка. Тексты утверждает страховщик.": {
+    "uz": "Har bir shart alohida satrda. Matnlarni sug‘urtalovchi tasdiqlaydi.",
+    "en": "One clause per line. The insurer approves the wording."
+  },
+  "Базовое значение": {
+    "uz": "Asosiy qiymat",
+    "en": "Baseline"
+  },
+  "Чувствительность (−1…1)": {
+    "uz": "Sezgirlik (−1…1)",
+    "en": "Sensitivity (−1…1)"
+  },
+  "Удалить правило": {
+    "uz": "Qoidani o‘chirish",
+    "en": "Remove rule"
+  },
+  "Проверка премии по действующей тарифной политике.": {
+    "uz": "Amaldagi tarif siyosati bo‘yicha mukofotni tekshirish.",
+    "en": "Check the premium against the current tariff policy."
+  },
+  "Параметры расчёта": {
+    "uz": "Hisoblash parametrlari",
+    "en": "Calculation parameters"
+  },
+  "Рассчитать премию →": {
+    "uz": "Mukofotni hisoblash →",
+    "en": "Calculate premium →"
+  },
+  "Срок имеет значение": {
+    "uz": "Muddat muhim",
+    "en": "The term matters"
+  },
+  "Годовая ставка: сумма × ставка × дни / 365.": {
+    "uz": "Yillik stavka: summa × stavka × kun / 365.",
+    "en": "Annual rate: sum × rate × days / 365."
+  },
+  "Фиксированная: сумма × ставка.": {
+    "uz": "Belgilangan: summa × stavka.",
+    "en": "Fixed: sum × rate."
+  },
+  "Для ОСГОР используйте продукт с типом «По нормативному акту». Тариф и источник задаёт администратор.": {
+    "uz": "OSGOR uchun «Normativ hujjat bo‘yicha» mahsulotni tanlang. Tarif va manbani administrator belgilaydi.",
+    "en": "For OSGOR, select a statutory product. The administrator supplies the tariff and source."
+  },
+  "РАСЧЁТНАЯ СТРАХОВАЯ ПРЕМИЯ": {
+    "uz": "HISOBLANGAN SUG‘URTA MUKOFOTI",
+    "en": "CALCULATED INSURANCE PREMIUM"
+  },
+  "Минимальная": {
+    "uz": "Eng kam",
+    "en": "Minimum"
+  },
+  "Рекомендуемая": {
+    "uz": "Tavsiya etilgan",
+    "en": "Recommended"
+  },
+  "Рыночная, годовая": {
+    "uz": "Bozor, yillik",
+    "en": "Market, annual"
+  },
+  "Отправить себе в Telegram ↗": {
+    "uz": "O‘zimga Telegramda yuborish ↗",
+    "en": "Send to myself in Telegram ↗"
+  },
+  "Решение андеррайтера": {
+    "uz": "Anderrayter qarori",
+    "en": "Underwriter decision"
+  },
+  "Решение ещё не принято.": {
+    "uz": "Hali qaror qabul qilinmagan.",
+    "en": "No decision recorded yet."
+  },
+  "Решение": {
+    "uz": "Qaror",
+    "en": "Decision"
+  },
+  "Отклонить": {
+    "uz": "Rad etish",
+    "en": "Reject"
+  },
+  "Комментарий": {
+    "uz": "Izoh",
+    "en": "Comment"
+  },
+  "Зафиксировать решение": {
+    "uz": "Qarorni qayd etish",
+    "en": "Record decision"
+  },
+  "PDF отправлен": {
+    "uz": "PDF yuborildi",
+    "en": "PDF sent"
+  },
+  "Решение сохранено": {
+    "uz": "Qaror saqlandi",
+    "en": "Decision saved"
+  },
+  "Сюрвейерский акт": {
+    "uz": "Syurveyer dalolatnomasi",
+    "en": "Survey report"
+  },
+  "1. Объект и документы": {
+    "uz": "1. Obyekt va hujjatlar",
+    "en": "1. Object and documents"
+  },
+  "2. Оценка стоимости": {
+    "uz": "2. Qiymatni baholash",
+    "en": "2. Property valuation"
+  },
+  "3. Тариф и страховая премия": {
+    "uz": "3. Tarif va sug‘urta mukofoti",
+    "en": "3. Rate and insurance premium"
+  },
+  "4. Аналитика риска": {
+    "uz": "4. Xatar tahlili",
+    "en": "4. Risk analysis"
+  },
+  "5. Заключение и оговорки": {
+    "uz": "5. Xulosa va shartlar",
+    "en": "5. Conclusion and clauses"
+  },
+  "Подлежит подтверждению андеррайтером · Не является кредитным скорингом": {
+    "uz": "Anderrayter tasdig‘i talab qilinadi · Kredit skoringi emas",
+    "en": "Subject to underwriter confirmation · Not a credit score"
+  },
+  "Нормы и материалы источников": {
+    "uz": "Normativ hujjatlar va manba materiallari",
+    "en": "Regulations and source material"
+  },
+  "＋ Добавить материал": {
+    "uz": "＋ Material qo‘shish",
+    "en": "＋ Add material"
+  },
+  "Материал источника": {
+    "uz": "Manba materiali",
+    "en": "Source material"
+  },
+  "Название материала": {
+    "uz": "Material nomi",
+    "en": "Material title"
+  },
+  "Дата публикации (если известна)": {
+    "uz": "Nashr sanasi (ma’lum bo‘lsa)",
+    "en": "Publication date (if known)"
+  },
+  "Вид материала": {
+    "uz": "Material turi",
+    "en": "Material type"
+  },
+  "Нормативный акт": {
+    "uz": "Normativ hujjat",
+    "en": "Regulation"
+  },
+  "Сейсмика": {
+    "uz": "Seysmika",
+    "en": "Seismic information"
+  },
+  "Погода": {
+    "uz": "Ob-havo",
+    "en": "Weather"
+  },
+  "Торги": {
+    "uz": "Savdolar",
+    "en": "Auctions"
+  },
+  "Цены": {
+    "uz": "Narxlar",
+    "en": "Prices"
+  },
+  "Реестр": {
+    "uz": "Reyestr",
+    "en": "Registry"
+  },
+  "Прочитать текст из файла": {
+    "uz": "Fayldan matnni o‘qish",
+    "en": "Read text from a file"
+  },
+  "Текст источника": {
+    "uz": "Manba matni",
+    "en": "Source text"
+  },
+  "Сохранение изменённого текста создаёт новую версию. Старые акты сохраняют прежнюю.": {
+    "uz": "O‘zgartirilgan matn yangi versiya yaratadi. Eski dalolatnomalar oldingi versiyani saqlaydi.",
+    "en": "Saving changed text creates a new version. Existing reports retain the previous version."
+  },
+  "Сохранить материал": {
+    "uz": "Materialni saqlash",
+    "en": "Save material"
+  },
+  "Фото и сканы требуют ручного ввода": {
+    "uz": "Foto va skanlarni qo‘lda kiritish kerak",
+    "en": "Photos and scans require manual entry"
+  },
+  "Документ / страница": {
+    "uz": "Hujjat / sahifa",
+    "en": "Document / page"
+  },
+  "Документ / страница (отслеживание изменений)": {
+    "uz": "Hujjat / sahifa (o‘zgarishlarni kuzatish)",
+    "en": "Document / page (change monitoring)"
+  },
+  "SIAT: статистика": {
+    "uz": "SIAT: statistika",
+    "en": "SIAT: statistics"
+  },
+  "NAPP: официальный страховой рынок": {
+    "uz": "NAPP: rasmiy sug‘urta bozori",
+    "en": "NAPP: official insurance market"
+  },
+  "Фото / скан": {
+    "uz": "Foto / skan",
+    "en": "Photo / scan"
+  },
+  "Неверный логин или пароль": {
+    "uz": "Login yoki parol noto‘g‘ri",
+    "en": "Incorrect username or password"
+  },
+  "Неверный текущий пароль": {
+    "uz": "Joriy parol noto‘g‘ri",
+    "en": "Incorrect current password"
+  },
+  "Новый пароль должен отличаться": {
+    "uz": "Yangi parol boshqacha bo‘lishi kerak",
+    "en": "The new password must be different"
+  },
+  "Проверьте данные и подтвердите ручную проверку": {
+    "uz": "Ma’lumotlarni tekshirib, qo‘lda tekshirishni tasdiqlang",
+    "en": "Review the data and confirm the manual review"
+  },
+  "Продукт не действует на выбранную дату": {
+    "uz": "Mahsulot tanlangan sanada amal qilmaydi",
+    "en": "The product is not effective on the selected date"
+  },
+  "Осмотр изменён в другой вкладке. Обновите страницу": {
+    "uz": "Ko‘rik boshqa oynada o‘zgartirilgan. Sahifani yangilang",
+    "en": "The inspection changed in another tab. Refresh the page"
+  },
+  "Этот файл уже загружен": {
+    "uz": "Bu fayl allaqachon yuklangan",
+    "en": "This file has already been uploaded"
+  },
+  "Файл пуст": {
+    "uz": "Fayl bo‘sh",
+    "en": "The file is empty"
+  },
+  "Ставка не может быть ниже минимальной": {
+    "uz": "Stavka eng kam stavkadan past bo‘la olmaydi",
+    "en": "The rate cannot be below the minimum"
+  },
+  "Укажите причину правок": {
+    "uz": "Tuzatish sababini kiriting",
+    "en": "Enter a reason for the corrections"
+  },
+  "Суммы должны быть положительными": {
+    "uz": "Summalar musbat bo‘lishi kerak",
+    "en": "Amounts must be positive"
+  },
+  "Доли рисков должны давать 100%": {
+    "uz": "Xatar ulushlari jami 100% bo‘lishi kerak",
+    "en": "Risk shares must total 100%"
+  },
+  "Порог высокого риска должен быть выше умеренного": {
+    "uz": "Yuqori xatar chegarasi o‘rtacha chegaradan katta bo‘lishi kerak",
+    "en": "The high-risk threshold must exceed the moderate threshold"
+  },
+  "Показатель не найден": {
+    "uz": "Ko‘rsatkich topilmadi",
+    "en": "Indicator not found"
+  },
+  "Источник не найден": {
+    "uz": "Manba topilmadi",
+    "en": "Source not found"
+  },
+  "Импорт уже сохранён или устарел": {
+    "uz": "Import saqlangan yoki muddati o‘tgan",
+    "en": "The import was already saved or has expired"
+  },
+  "Сначала исправьте ошибки файла": {
+    "uz": "Avval fayldagi xatolarni tuzating",
+    "en": "Fix the file errors first"
+  },
+  "metric": {
+    "uz": "Ko‘rsatkich kodi",
+    "en": "Indicator code"
+  },
+  "class_code": {
+    "uz": "Sinf",
+    "en": "Class"
+  },
+  "object_type": {
+    "uz": "Obyekt turi",
+    "en": "Object type"
+  },
+  "period": {
+    "uz": "Davr",
+    "en": "Period"
+  },
+  "value": {
+    "uz": "Qiymat",
+    "en": "Value"
+  },
+  "unit": {
+    "uz": "Birlik",
+    "en": "Unit"
+  },
+  "observation_date": {
+    "uz": "Kuzatuv sanasi",
+    "en": "Observation date"
+  },
+  "stale_days": {
+    "uz": "Dolzarblik, kun",
+    "en": "Freshness limit, days"
+  },
+  "annual_market_rate": {
+    "uz": "Bozor yillik stavkasi",
+    "en": "Annual market rate"
+  },
+  "region": {
+    "uz": "Hudud",
+    "en": "Region"
+  }
+}

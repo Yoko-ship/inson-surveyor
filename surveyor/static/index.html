@@ -10,6 +10,7 @@
     <title>Сюрвейер — рабочее пространство</title>
     <link rel="stylesheet" href="/static/styles.css" />
     <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+    <script src="/static/i18n.js" defer></script>
     <script src="/static/app.js" defer></script>
   </head>
   <body>
@@ -37,6 +38,13 @@
       <section class="login-form-wrap">
         <div class="login-card">
           <span class="pill">Локальное рабочее пространство</span>
+          <label
+            >Язык интерфейса<select id="login-locale">
+              <option value="ru">Русский</option>
+              <option value="uz">O‘zbekcha</option>
+              <option value="en">English</option>
+            </select></label
+          >
           <h2>С возвращением</h2>
           <p class="muted">Войдите с учётной записью сотрудника.</p>
           <form id="login-form">
@@ -77,7 +85,7 @@
         <nav id="navigation"></nav>
         <div class="sidebar-bottom">
           <span class="status-dot"></span> Детерминированный расчёт
-          <div class="muted small">ИИ не подключён · v0.1</div>
+          <div class="muted small">ИИ не подключён · v0.2</div>
         </div>
       </aside>
       <div class="main-wrap">

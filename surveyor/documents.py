@@ -173,13 +173,23 @@ def parse_document(data, filename, max_pages=50):
 
 
 def read_table(data, filename):
+    try:
+        return _read_table(data, filename)
+    except (zipfile.BadZipFile, StopIteration, UnicodeDecodeError, KeyError, IndexError):
+        raise ValueError("Файл повреждён или пуст. Используйте CSV в UTF-8 или XLSX с заголовками") from None
+
+
+def _read_table(data, filename):
     if filename.lower().endswith(".csv"):
         text = data.decode("utf-8-sig")
         try:
             dialect = csv.Sniffer().sniff(text[:4096], delimiters=",;\t")
         except csv.Error:
             dialect = csv.excel
-        rows = list(csv.DictReader(io.StringIO(text), dialect=dialect))
+        reader = csv.DictReader(io.StringIO(text), dialect=dialect)
+        if not reader.fieldnames or len(set(reader.fieldnames)) != len(reader.fieldnames):
+            raise ValueError("Заголовки столбцов должны быть уникальны и заполнены")
+        rows = list(reader)
     elif filename.lower().endswith(".xlsx"):
         check_archive(data)
         wb = load_workbook(io.BytesIO(data), read_only=True, data_only=True)

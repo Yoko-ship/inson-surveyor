@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     max_upload_bytes: int = 15 * 1024 * 1024
     max_document_pages: int = 50
     session_hours: int = 12
+    backup_dir: Path = Path("data/backups")
+    backup_enabled: bool = True
+    backup_retention_days: int = 14
 
     @model_validator(mode="after")
     def deployment_guard(self):

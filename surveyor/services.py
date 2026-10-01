@@ -105,7 +105,17 @@ def build_report(db, survey, user):
         for d in indicators
         if d["metric"].startswith("fx_") and not d["stale"]
     }
+    from surveyor.db import PublicReference
+    from surveyor.references import reference_view
+
+    references = []
+    for reference_id in inputs.get("reference_ids", []):
+        row = db.get(PublicReference, reference_id)
+        if not row:
+            raise HTTPException(422, "Источник не найден")
+        references.append(reference_view(row))
     snapshot = {
+        "references": references,
         "version": 1,
         "title": survey.title,
         "survey_revision": survey.revision,
@@ -115,13 +125,15 @@ def build_report(db, survey, user):
         "product": {**product.data, "version_id": product.id},
         "template": template,
         "calculation": calc,
-        "valuation": valuation(inputs, exchange=fx),
+        "valuation": valuation(inputs, exchange=fx, policy=template),
         "documents": documents,
         "conflicts": conflicts,
         "indicators": indicators,
         "losses": losses,
         "calibration": calibration,
-        "clauses": (template or {}).get("clauses", []),
+        "clauses": (template or {})
+        .get("clauses_translations", {})
+        .get(inputs.get("language", "ru"), (template or {}).get("clauses", [])),
         "disclaimers": [
             "Подлежит подтверждению андеррайтером",
             "Не является кредитным скорингом",

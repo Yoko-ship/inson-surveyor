@@ -44,7 +44,7 @@ from surveyor.db import (
     uid,
 )
 from surveyor.documents import parse_document, read_table
-from surveyor.reports import export_docx, export_pdf
+from surveyor.reports import export_docx, export_pdf, sections
 from surveyor.schemas import (
     EmployeeInput,
     IndicatorInput,
@@ -399,6 +399,7 @@ def report_detail(report_id: str, user=Depends(current_user), db=Depends(get_db)
     ).all()
     return {
         **output(report, "id", "snapshot", "created_at"),
+        "sections": [{"title": title, "lines": lines} for title, lines in sections(report)[1]],
         "decisions": [output(d, "id", "user_id", "data", "created_at") for d in decisions],
     }
 
@@ -602,7 +603,10 @@ def confirm_import(batch_id: str, user=Depends(admin), db=Depends(get_db)):
 
 @router.get("/sources")
 def sources(user=Depends(current_user), db=Depends(get_db)):
+    from surveyor.references import latest_references
+
     return {
+        "references": latest_references(db),
         "channels": [
             output(c, "code", "data", "enabled", "last_attempt", "last_success", "error")
             for c in db.scalars(select(Channel)).all()
@@ -633,7 +637,10 @@ def approve_indicator(indicator_id: str, user=Depends(actuary), db=Depends(get_d
     if not row:
         raise HTTPException(404, "Показатель не найден")
     # New version preserves the original publication and report snapshots.
-    new = Indicator(channel_code=row.channel_code, data={**row.data, "approved_by": user.id})
+    new = Indicator(
+        channel_code=row.channel_code,
+        data={**row.data, "approved_by": user.id, "approved_at": now().isoformat()},
+    )
     db.add(new)
     db.flush()
     audit(db, user, "indicator.approved", new.id, {"previous_id": row.id})

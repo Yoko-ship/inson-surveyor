@@ -25,14 +25,22 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
   sources:
     build: .
-    profiles: ["sources"]
     env_file: .env
     environment:
       DATABASE_URL: postgresql+psycopg://surveyor:${POSTGRES_PASSWORD}@db:5432/surveyor
-    command: ["python", "-m", "surveyor.cli", "worker"]
-    depends_on: [app]
+      STORAGE_DIR: /app/data/uploads
+    volumes: ["uploads:/app/data"]
+    command: ["python", "scripts/run_worker.py"]
+    depends_on:
+      app:
+        condition: service_healthy
     restart: unless-stopped
 volumes:
   postgres:

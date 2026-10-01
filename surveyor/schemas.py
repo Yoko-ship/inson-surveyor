@@ -67,6 +67,7 @@ class SurveyInput(Strict):
     tariff_date: date = Field(default_factory=date.today)
     object_type: Literal["vehicle", "equipment", "housing", "large", "other"] = "other"
     object_description: str = Field(default="", max_length=2000)
+    reference_ids: list[str] = Field(default_factory=list, max_length=30)
     features: list[str] = Field(default_factory=list, max_length=100)
     program: str | None = Field(default=None, max_length=100)
     declared_rate: Rate | None = None
@@ -94,6 +95,15 @@ class SurveyInput(Strict):
         return self
 
 
+class IndicatorRule(Strict):
+    baseline: Annotated[Decimal, Field(gt=0, le=Decimal("1e18"))]
+    sensitivity: Annotated[Decimal, Field(ge=Decimal("-1"), le=1)]
+    max_adjustment: Annotated[Decimal, Field(ge=0, le=Decimal("0.5"))] = Decimal("0.1")
+    object_types: list[Literal["vehicle", "equipment", "housing", "large", "other"]] = Field(
+        min_length=1, max_length=5
+    )
+
+
 class TemplateInput(Strict):
     class_code: str = Field(min_length=1, max_length=50)
     name: str = Field(min_length=1, max_length=200)
@@ -107,6 +117,12 @@ class TemplateInput(Strict):
     risk_shares: dict[str, Rate] = Field(default_factory=dict, max_length=30)
     indicator_metrics: list[str] = Field(default_factory=list, max_length=50)
     max_adjustment: Annotated[Decimal, Field(ge=0, le=Decimal("0.5"))] = Decimal("0.2")
+    valuation_outlier_low: Annotated[Decimal, Field(gt=0, le=1)] = Decimal("0.5")
+    valuation_outlier_high: Annotated[Decimal, Field(ge=1, le=10)] = Decimal("1.5")
+    valuation_tolerance: Annotated[Decimal, Field(ge=0, le=1)] = Decimal("0.15")
+    large_object_threshold: Money | None = None
+    clauses_translations: dict[Literal["uz", "en"], list[str]] = Field(default_factory=dict)
+    indicator_rules: dict[str, IndicatorRule] = Field(default_factory=dict, max_length=50)
 
     @model_validator(mode="after")
     def thresholds(self):
@@ -142,3 +158,26 @@ class IndicatorInput(Strict):
     stale_days: int = Field(default=365, ge=1, le=3650)
     rate_adjustment: Annotated[Decimal, Field(ge=Decimal("-0.5"), le=Decimal("0.5"))] = Decimal(0)
     annual_market_rate: Rate | None = None
+
+    @model_validator(mode="after")
+    def observation_not_future(self):
+        if self.observation_date > date.today():
+            raise ValueError("Дата наблюдения не может быть в будущем")
+        return self
+
+
+class ReferenceInput(Strict):
+    title: str = Field(min_length=1, max_length=300)
+    source_url: HttpUrl
+    text: str = Field(min_length=1, max_length=50000)
+    kind: Literal["law", "seismic", "weather", "auction", "price", "registry", "other"] = "other"
+    region: str = Field(default="all", max_length=100)
+    class_code: str = Field(default="all", max_length=50)
+    observation_date: date | None = None
+    stale_days: int = Field(default=365, ge=1, le=3650)
+
+    @model_validator(mode="after")
+    def valid_date(self):
+        if self.observation_date and self.observation_date > date.today():
+            raise ValueError("Дата публикации не может быть в будущем")
+        return self

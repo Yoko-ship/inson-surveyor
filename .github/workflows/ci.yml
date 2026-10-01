@@ -23,6 +23,7 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: node --check surveyor/static/app.js
+      - run: node --check surveyor/static/i18n.js
       - run: uv run pytest --cov=surveyor --cov-report=term-missing
       - run: uv run alembic upgrade head
       - run: uv run alembic check

@@ -26,7 +26,9 @@ Local SQLite data is in `data/surveyor.db`; documents are in `data/uploads/`. Re
 - **Administration:** employee creation, unique login/phone/Telegram ID, forced first-password change, role management, versioned products and class templates, two-step Excel/CSV imports, claims by product/year, audit history.
 - **Actuarial approval:** only the `actuary` role approves risk templates, public-data adjustments and loss-based calibration. Three complete calendar years and premiums are required. Editing claims invalidates the previous calibration automatically.
 - **Underwriting:** only the `underwriter` role records approval, rejection or requested changes. Reports retain their original inputs, tariff version, source data and calculations after later edits.
-- **Open data:** official CBU currency adapter; daily worker and on-demand collection; source registry and manual indicator entry for other channels; version history, stale dates, latest cached values, failure notices and automatic disablement on access refusal/schema drift.
+- **Open data:** live CBU, four SIAT feeds and NAPP insurance-class workbooks; daily worker and on-demand collection; configurable permitted JSON/CSV/Excel/HTML sources; file preview/confirmation; versioned laws/notices; source history, stale dates, cached values and disablement on access/schema failures.
+- **Document review:** correct each document or manually transcribe a scan with original values, reviewer and reason retained.
+- **Operations:** local worker, daily verified SQLite/document backups, restore-to-new-directory command, source alerts and worker status.
 - **Telegram:** verified Mini App authorization, account linking inside Telegram, authenticated webhook, private `/start` and `/id` handling, explicit delivery of report PDFs to the signed-in employee's linked chat.
 
 The calculator can use statutory products (including ОСГОР) once an administrator supplies the actual normative rate, formula basis and source. No statutory tariff is fabricated or seeded.
@@ -80,7 +82,7 @@ uv run python -m surveyor.cli collect  # collect if the daily interval has elaps
 uv run python -m surveyor.cli worker   # hourly check, maximum one scheduled collection per day
 ```
 
-The CBU adapter only calls its fixed official endpoint. User-supplied source URLs are stored as provenance and never fetched. Other sources remain manual, pending permission/format review, or contract-only as specified in the ТЗ. No anti-bot protections are bypassed.
+Ordinary provenance links are stored without fetching them. Only explicitly configured collector URLs on allowlisted official domains are fetched, after access checks. Restricted/unverified channels use file and reference imports. See [the source review and acceptance matrix](docs/requirements.md). No anti-bot protections are bypassed.
 
 ## Verification
 
@@ -105,8 +107,10 @@ Browser tests use a separate disposable `data/browser-test.db` and port 8011. Th
 
 For Compose, add a strong URL-safe `POSTGRES_PASSWORD` to `.env`, then run `docker compose up --build`. Back up both the PostgreSQL database and the uploads volume. Do not use ephemeral filesystem storage for real documents. Run a single app instance until shared storage and distributed rate limiting are configured.
 
+`sh scripts/run_local.sh` also starts the background worker. Administration → System status shows its heartbeat and backups. See [backup/restore commands](docs/operations.md).
+
 `DATA_MODE=synthetic` is the local default. Demonstration products are explicitly labelled and are not company-approved rates. The ТЗ requires Uzbekistan hosting for real data: the app refuses `DATA_MODE=real` unless `HOSTING_COUNTRY=UZ`. This setting records an operator assertion; it cannot independently verify physical server location.
 
 ## Scope and acceptance
 
-See [architecture](docs/architecture.md), [requirement coverage](docs/requirements.md) and [operations](docs/operations.md). Photos/scans require human entry while AI is disabled. Source content, clauses and some form labels remain in Russian; Uzbek/English navigation and report headings are available, but full legal translations need review. Real tariffs, normative formulas, actual company claims, production hosting and mobile Telegram acceptance require the insurer's inputs.
+See [architecture](docs/architecture.md), [requirement coverage](docs/requirements.md) and [operations](docs/operations.md). Photos/scans require human entry while AI is disabled. The interface and generated report sections support RU/UZ/EN; original source quotations and insurer-authored clauses remain verbatim, with per-language clause fields available. Actual tariffs, normative sources, company claims, approvals, restricted-provider access, production hosting and native Telegram acceptance remain external inputs/acceptance steps, not fabricated demo values.

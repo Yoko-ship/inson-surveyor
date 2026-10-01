@@ -1,13 +1,19 @@
 """Explicit, allowlisted public-data adapters. No arbitrary URL fetches."""
 
+import re
 from datetime import date, datetime
 from decimal import Decimal
+from xml.etree.ElementTree import ParseError
+from zipfile import BadZipFile
 
 import httpx
+from openpyxl.utils.exceptions import InvalidFileException
 from sqlalchemy import select
 
 from surveyor.db import Audit, Channel, Indicator, now
+from surveyor.regions import region_code
 from surveyor.schemas import IndicatorInput
+from surveyor.source_lock import host_lock
 
 CBU_URL = "https://cbu.uz/ru/arkhiv-kursov-valyut/json/"
 CHANNELS = [
@@ -40,12 +46,20 @@ CHANNELS = [
 
 def store_indicator(db, channel, item, actor=None):
     data = item.model_dump(mode="json") if isinstance(item, IndicatorInput) else item
-    rows = db.scalars(
-        select(Indicator).where(Indicator.channel_code == channel).order_by(Indicator.fetched_at.desc())
-    ).all()
     identity = ("metric", "region", "class_code", "object_type", "period")
-    previous = next((r for r in rows if all(r.data.get(k) == data.get(k) for k in identity)), None)
-    if previous and {k: v for k, v in previous.data.items() if k != "approved_by"} == data:
+    previous = db.scalar(
+        select(Indicator)
+        .where(
+            Indicator.channel_code == channel,
+            *(Indicator.data[k].as_string() == data.get(k) for k in identity),
+        )
+        .order_by(Indicator.fetched_at.desc())
+        .limit(1)
+    )
+    if (
+        previous
+        and {k: v for k, v in previous.data.items() if k not in {"approved_by", "approved_at"}} == data
+    ):
         return previous
     row = Indicator(channel_code=channel, data=data)
     db.add(row)
@@ -70,9 +84,14 @@ def collect_cbu(db, force=False):
     channel.last_attempt = now()
     db.commit()
     try:
-        with httpx.Client(
-            timeout=20, follow_redirects=False, headers={"User-Agent": "Surveyor/0.1 (public currency data)"}
-        ) as client:
+        with (
+            host_lock("cbu.uz"),
+            httpx.Client(
+                timeout=20,
+                follow_redirects=False,
+                headers={"User-Agent": "Surveyor/0.1 (public currency data)"},
+            ) as client,
+        ):
             response = client.get(CBU_URL)
         if response.status_code in {401, 403, 429}:
             channel.enabled = False
@@ -114,6 +133,8 @@ def collect_cbu(db, force=False):
 
 def latest_indicators(db, region=None, class_code=None):
     rows = db.scalars(select(Indicator).order_by(Indicator.fetched_at.desc())).all()
+    # New uploads of older periods must never displace newer observations.
+    rows.sort(key=lambda r: (r.data["observation_date"], r.fetched_at, r.id), reverse=True)
     seen, result = set(), []
     for row in rows:
         d = row.data
@@ -121,7 +142,7 @@ def latest_indicators(db, region=None, class_code=None):
         if key in seen:
             continue
         seen.add(key)
-        if region and d.get("region", "all") not in {"all", region}:
+        if region and region_code(d.get("region", "all")) not in {"all", region_code(region)}:
             continue
         if class_code and d.get("class_code", "all") not in {"all", class_code}:
             continue
@@ -136,3 +157,112 @@ def latest_indicators(db, region=None, class_code=None):
             }
         )
     return result
+
+
+def collect_channel(db, code, force=False):
+    """A failed permission/schema check opens the circuit; only an administrator can reset it."""
+    import hashlib
+
+    from surveyor.source_adapters import AccessRefused, FormatChanged, fetch_public, parse_public
+
+    if code == "cbu":
+        return collect_cbu(db, force=force)
+    channel = db.get(Channel, code)
+    if not channel or not channel.enabled or not channel.data.get("config"):
+        return {"status": "disabled", "channel": code}
+    config = channel.data["config"]
+    seconds = 1 if force else config.get("interval_hours", 24) * 3600
+    # Persist the attempt before I/O; atomic claim also prevents concurrent collectors.
+    from datetime import timedelta
+
+    from sqlalchemy import or_, update
+
+    attempt = now()
+    claim = db.execute(
+        update(Channel)
+        .where(
+            Channel.code == code,
+            Channel.enabled.is_(True),
+            or_(
+                Channel.last_attempt.is_(None),
+                Channel.last_attempt <= attempt - timedelta(seconds=max(60, seconds)),
+            ),
+        )
+        .values(last_attempt=attempt)
+    )
+    db.commit()
+    if claim.rowcount != 1:
+        return {"status": "cached", "channel": code}
+    try:
+        content = fetch_public(config, channel.data.get("host_channel", code))
+        if config["format"] == "document":
+            from surveyor.references import public_text, store_reference
+
+            row = store_reference(
+                db,
+                code,
+                {**config.get("reference", {}), "source_url": config["url"], "text": public_text(content)},
+            )
+            channel.last_success, channel.error = now(), None
+            db.commit()
+            return {"status": "collected", "channel": code, "reference_id": row.id, "count": 1}
+        if config["format"] == "napp":
+            from surveyor.napp import latest_download, parse_napp
+
+            dataset_url = latest_download(content)
+            workbook = fetch_public({**config, "url": dataset_url}, "napp")
+            items, schema = parse_napp(workbook, dataset_url)
+            channel.data = {**channel.data, "last_dataset_url": dataset_url}
+        else:
+            items, schema = parse_public(content, config)
+        if not items:
+            raise FormatChanged("Источник не содержит завершённых периодов")
+        previous_schema = channel.data.get("schema")
+        if previous_schema and previous_schema != schema:
+            # SIAT appends a new annual period; classifier columns must stay identical.
+            def stable(keys):
+                return [k for k in keys if not re.fullmatch(r"20\d{2}(?:-Q[1-4]|-M(?:0[1-9]|1[0-2]))?", k)]
+
+            if config["format"] != "siat" or stable(previous_schema) != stable(schema):
+                raise FormatChanged("Столбцы источника изменились; проверьте схему и настройте канал заново")
+        for item in items:
+            store_indicator(db, code, item)
+        channel.data = {
+            **channel.data,
+            "schema": schema,
+            "last_file_sha256": hashlib.sha256(content).hexdigest(),
+        }
+        channel.last_success, channel.error = now(), None
+        db.add(Audit(action="source.collected", entity_id=code, data={"count": len(items)}))
+        db.commit()
+        return {"status": "collected", "channel": code, "count": len(items)}
+    except httpx.HTTPError:
+        message = "Источник временно недоступен; сохранённые данные доступны с исходной датой"
+    except (
+        ValueError,
+        KeyError,
+        TypeError,
+        IndexError,
+        ArithmeticError,
+        BadZipFile,
+        ParseError,
+        InvalidFileException,
+    ) as exc:
+        channel.enabled = False
+        # Never echo external payloads/Pydantic inputs into logs or the admin screen.
+        message = (
+            str(exc)
+            if isinstance(exc, (AccessRefused, FormatChanged))
+            else "Формат данных изменился; канал отключён до проверки"
+        )
+    except OSError:
+        message = "Не удалось разрешить публичный адрес источника"
+    channel.error = message
+    db.add(Audit(action="source.error", entity_id=code, data={"message": message}))
+    db.commit()
+    return {"status": "error", "channel": code, "message": message}
+
+
+def collect_all(db):
+    codes = db.scalars(select(Channel.code).where(Channel.enabled.is_(True))).all()
+    return [collect_channel(db, code) for code in codes]

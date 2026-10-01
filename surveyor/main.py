@@ -13,6 +13,8 @@ from surveyor.api import router
 from surveyor.bootstrap import bootstrap
 from surveyor.config import settings
 from surveyor.db import engine
+from surveyor.document_api import router as document_router
+from surveyor.source_api import router as source_router
 from surveyor.telegram import router as telegram_router
 
 STATIC = Path(__file__).parent / "static"
@@ -34,6 +36,9 @@ app = FastAPI(
     redoc_url=None,
 )
 app.include_router(router)
+
+app.include_router(source_router)
+app.include_router(document_router)
 app.include_router(telegram_router)
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
