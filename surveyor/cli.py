@@ -3,7 +3,6 @@
 import argparse
 import asyncio
 
-from surveyor.config import settings
 from surveyor.db import SessionLocal
 from surveyor.sources import collect_cbu
 from surveyor.telegram import call_telegram, handle_update
@@ -30,23 +29,10 @@ async def poll():
 
 
 async def configure():
-    if not settings.public_url.startswith("https://") or not settings.telegram_webhook_secret:
-        raise SystemExit("HTTPS PUBLIC_URL and TELEGRAM_WEBHOOK_SECRET are required")
-    await call_telegram(
-        "setWebhook",
-        json={
-            "url": settings.public_url.rstrip("/") + "/telegram/webhook",
-            "secret_token": settings.telegram_webhook_secret,
-            "allowed_updates": ["message"],
-        },
-    )
-    await call_telegram(
-        "setChatMenuButton",
-        json={
-            "menu_button": {"type": "web_app", "text": "Сюрвейер", "web_app": {"url": settings.public_url}}
-        },
-    )
-    print("Telegram webhook and Mini App menu configured")
+    from surveyor.telegram_setup import configure_webhook
+
+    bot = await configure_webhook()
+    print(f"Telegram webhook and Mini App menu configured: @{bot['username']}")
 
 
 async def identity():
@@ -57,10 +43,24 @@ async def identity():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "command", choices=["poll", "telegram-check", "telegram-configure", "collect", "worker"]
+        "command",
+        choices=["poll", "telegram-check", "telegram-profile", "telegram-configure", "collect", "worker"],
+    )
+    parser.add_argument(
+        "--replace-webhook", action="store_true", help="Intentionally move the pinned bot to PUBLIC_URL"
     )
     args = parser.parse_args()
-    if args.command in {"poll", "telegram-check", "telegram-configure"}:
+    if args.command == "telegram-profile":
+        from surveyor.telegram_setup import configure_profile
+
+        bot = asyncio.run(configure_profile())
+        print(f"Bot profile and commands configured: @{bot['username']}")
+    elif args.command == "telegram-configure" and args.replace_webhook:
+        from surveyor.telegram_setup import configure_webhook
+
+        bot = asyncio.run(configure_webhook(replace_existing=True))
+        print(f"Telegram webhook and Mini App menu configured: @{bot['username']}")
+    elif args.command in {"poll", "telegram-check", "telegram-configure"}:
         asyncio.run(
             {"poll": poll, "telegram-check": identity, "telegram-configure": configure}[args.command]()
         )

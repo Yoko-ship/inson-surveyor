@@ -33,6 +33,8 @@ flowchart TD
 - `api.py`: input validation and application use cases. Pydantic input validation errors omit submitted values to avoid returning passwords.
 - `db.py`: tables; report snapshots, documents and audit history persist across restarts. Optimistic inspection revisions reject stale edits.
 - `telegram.py` and `cli.py`: webhook validation, update deduplication, private bot commands and explicit report delivery; optional polling and scheduled source worker.
+- `telegram_setup.py`: explicit, identity-checked bot provisioning, HTTPS health preflight, webhook-move guard and settings read-back. It is not called automatically by ordinary app startup.
+- `scripts/run_telegram_dev.py`: process orchestration for temporary Telegram HTTPS testing; separate from application logic. The regular local URL/configuration remains intact.
 
 ## Financial rules
 

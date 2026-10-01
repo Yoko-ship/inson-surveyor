@@ -10,9 +10,9 @@ Never commit `.env`, databases, uploaded client files or generated reports. Befo
 
 CI checks Python lint/format, JavaScript syntax, calculation/workflow tests, migrations against SQLite and PostgreSQL, dependency vulnerabilities and tracked secrets. CODEOWNERS assigns the repository owner; Dependabot monitors Python, GitHub Actions and Docker dependencies. No deployment secrets are needed for local work.
 
-Recommended repository settings: private visibility; squash merge; delete merged branches; disable wiki; Actions default token read-only; require CI on pull requests; prevent force pushes/deletion of main. Enforcement availability depends on the GitHub account plan for private repositories. The branch rules must not be described as enforced if the GitHub API refuses them.
+Configured repository: [Yoko-ship/inson-surveyor](https://github.com/Yoko-ship/inson-surveyor), **public at the owner's request**, default branch `main`, squash-only merges, automatic merged-branch deletion, wiki disabled, read-only Actions token and vulnerability alerts enabled. Tracked files and reachable Git history were scanned for credentials before publication.
 
-Configured repository: [Yoko-ship/inson-surveyor](https://github.com/Yoko-ship/inson-surveyor), private, default branch `main`, squash-only merges, automatic merged-branch deletion, wiki disabled, read-only Actions token and vulnerability alerts enabled. The request to protect `main` returned HTTP 403: GitHub requires Pro (or a public repository). Protection is therefore **not enforced**; private visibility was preserved.
+`main` requires pull requests with passing `checks`, `postgres`, and `browser` jobs and an up-to-date branch. Rules apply to administrators; force-pushes and deletion are disabled, and review conversations must be resolved. The single-maintainer setup requires zero additional approvals. GitHub secret scanning and secret push protection are enabled. Bot credentials stay in local `.env` or a future deployment's secret store, never in the public repository.
 
 ## Database changes
 
@@ -36,7 +36,9 @@ Administration/Open data shows source errors and last successful fetch. CBU acce
 
 ## Telegram
 
-This token already has an external webhook. Local startup never alters it. Once an HTTPS deployment is intentionally chosen, run the documented configure command. Compare `/health`, login, fresh Mini App signed authorization, report download and explicit send-to-self from a real phone. A working desktop browser does not establish mobile Telegram acceptance.
+The new bot is `@analyzing12_bot`. `scripts/run_telegram_dev.py` starts a temporary HTTPS tunnel and a secure second local listener. Ordinary local startup never changes a webhook. All provisioning checks `TELEGRAM_EXPECTED_BOT_ID`; moving an existing webhook requires the explicit configure flag. Graceful development shutdown only removes the webhook if it still points to that exact tunnel.
+
+After a computer crash or lost tunnel, inspect the bot using `getWebhookInfo` before intentionally replacing its stale development URL. For permanent hosting, use the documented configure command. Compare `/health`, login, fresh Mini App signed authorization, report download and explicit send-to-self from a real phone. Browser verification does not establish native mobile Telegram acceptance.
 
 ## Production gates
 
