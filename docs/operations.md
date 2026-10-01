@@ -12,6 +12,8 @@ CI checks Python lint/format, JavaScript syntax, calculation/workflow tests, mig
 
 Recommended repository settings: private visibility; squash merge; delete merged branches; disable wiki; Actions default token read-only; require CI on pull requests; prevent force pushes/deletion of main. Enforcement availability depends on the GitHub account plan for private repositories. The branch rules must not be described as enforced if the GitHub API refuses them.
 
+Configured repository: [Yoko-ship/inson-surveyor](https://github.com/Yoko-ship/inson-surveyor), private, default branch `main`, squash-only merges, automatic merged-branch deletion, wiki disabled, read-only Actions token and vulnerability alerts enabled. The request to protect `main` returned HTTP 403: GitHub requires Pro (or a public repository). Protection is therefore **not enforced**; private visibility was preserved.
+
 ## Database changes
 
 ```sh
