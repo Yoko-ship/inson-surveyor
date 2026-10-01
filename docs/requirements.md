@@ -1,38 +1,63 @@
-# ТЗ and SWOT coverage
+# ТЗ implementation and acceptance
 
-Source: the two user-supplied PDFs, dated 01.10.2026. Their descriptions of a previous system are requirements/evidence supplied by the user, not verification of an existing codebase. The workspace initially contained only those PDFs.
+Source: “ИИ-сюрвейер — ТЗ логика системы”, 01.10.2026, sections 1–7. The user's subsequent instructions exclude AI and defer permanent hosting. The SWOT is supporting context, not evidence that the previous bot's implementation was available.
 
-| Requirement | Implementation / acceptance boundary |
+## Implemented local workflows
+
+| ТЗ | Implemented behavior | Verification |
+|---|---|---|
+| 3.1 Photos → review → report | File upload and classification; four primary inputs; effective tariff selection; regional/class context; discrepancy checks; class clauses; five sections shared by screen, Word and PDF; explicit Telegram PDF delivery | API workflow and browser tests |
+| 3.2 Document processing | PDF/DOCX/XLSX/TXT/CSV rules; size/page/archive limits; missing/blank distinction; organization-only party extraction; photo/scan manual review; per-document corrections preserve original values, reviewer and reason; stale revision rejection | Parser and document-review tests |
+| 3.3 Rates | Annual/fixed/program/statutory basis; Decimal premium; minimum floor; fixed-rate annual equivalent; risk levels; bounded public-data rules by object type; market comparison only when an annual quote is actually supplied | Calculation fixtures, including the exact three-year examples |
+| 3.4 Valuation | Six-calendar-month comparable window; original-price median; configurable outlier bounds; mean/range; 15% default tolerance; purchase less depreciation; configurable large-object threshold requiring appraiser plus dated independent second method | Valuation and threshold tests |
+| 3.5 Collection | Daily scheduled/on-demand collectors; official host allowlist; robots checks; request serialization across app/worker; bounded downloads; format validation; disable on refusal/schema drift; cached observations; immutable versions; dates, provenance and stale labels; administrator error screen | Parser, refusal, schema, region and history tests plus live collection |
+| 3.6 Employees | Name, position, department, branch, login, password, phone and role; unique login/phone/Telegram identity; forced first-password change; role restrictions; account activation/deactivation; audit | Authentication and role tests |
+| 3.7 Products | Four rate types; program rate editor; statutory source/basis; effective versions; validated CSV/Excel preview and atomic confirmation; historical reports preserve old versions | Product/import/calculation tests |
+| 3.8 Claims | Product/year validation; preview/confirmation; yearly counts and payouts; loss ratio/frequency; three completed years in reports; actuarial calibration only; changed claims invalidate prior calibration | Claims/calibration tests |
+| 4–5 Public sources | CBU; four SIAT datasets; NAPP official workbook; configurable JSON/CSV/XLSX/HTML-table collectors; versioned public-document monitoring; manual file/reference fallback; explicit permission/contract statuses | See source review below |
+| 6 Failure behavior | Unknown stays unavailable; no statutory rate or annual market quote invented; prohibited sources stay disabled; last cached values retain observation dates; data changes preserve report snapshots | Failure/regression tests |
+| 7 Local acceptance | Migrations, role workflows, generated reports, imports, mobile viewport, RU/UZ/EN interface paths, backup integrity and restore checks | Pytest, Playwright and GitHub CI |
+
+## Live collectors
+
+- CBU official exchange rates, with nominal normalization.
+- SIAT 800: regional registered crimes (annual).
+- SIAT 1244: housing area (annual, applicable to housing).
+- SIAT 3251: published road-accident reporting periods (quarterly). Published cumulative periods are not summed together.
+- SIAT 4690: regional consumer price indices against the previous month.
+- NAPP: latest completed-quarter XLSX linked by the official publication index, sheet 1.4, 18 insurance classes, premiums/payments/liabilities in UZS and payout/premium ratios. Aggregate premiums divided by liabilities are **not** labelled an annual market tariff.
+
+Live verification on 01.10.2026 collected 4,390 SIAT observations and 142 NAPP indicators in addition to CBU exchange rates. These are public statistics, not fabricated company experience. Importing a historic period cannot replace a more recent observation. Re-fetching unchanged data preserves actuarial approval; changed data creates an unapproved version.
+
+## Source access review
+
+[Machine-readable review](source-access-review.json) records checked endpoints and responses. Website reachability alone is not treated as permission or a validated dataset.
+
+| Channel | Current path |
 |---|---|
-| 3.1 Upload → review → report | Browser workflow; own inspections; uploads; source review; required confirmation; frozen report; Word/PDF; explicit Telegram delivery |
-| 3.2 Text vs scan | Rules for PDF/DOCX/XLSX/TXT/CSV; image/scan validation and manual path. AI deliberately excluded by user instruction |
-| 3.2 Missing vs blank | Separate `unavailable`, `blank`, `needs_review`, `extracted` states; source excerpts retained |
-| 3.2 Cross-source reconciliation | Report lists differing extracted values and employee-entered differences |
-| 3.3 Annual/fixed | Exact ТЗ examples tested: 100m × 0.5% × 1095/365 = 1.5m; fixed = 500k |
-| 3.3 Rate types | Annual/fixed/program/normative, selected program rate and explicit formula basis; no guessed statutory data |
-| 3.3 Floor and comparison | Minimum floor, bounded adjustments, annualized market comparison and requested-premium discrepancy |
-| 3.4 Valuation | Comparable eligibility within six calendar months; original-price median; explicit outlier rule; mean/range; 15% threshold; depreciation; appraiser plus independent sourced/date-stamped check |
-| 3.5 Public data | CBU official API; daily worker/on demand; schema validation; refusal disables channel; cached values/dates; version history; stale indicators excluded from numerical rate changes |
-| 3.6 Employees | Required identity and contact fields; unique login/phone/Telegram ID; minimum password length; forced change; roles and audit |
-| 3.7 Products | Versioned effective dates; validated type/rate/minimum; XLSX/CSV row preview; atomic explicit confirmation; history preserved |
-| 3.8 Claims | Product/year validation, nonnegative values, import confirmation; yearly ratios; three-year report context; actuarial-only bounded calibration |
-| 4–5 Other external channels | All listed channels registered with explicit manual/review/contract status. Live adapters require verified permission and actual dataset schemas; none are fabricated |
-| 5 Source provenance | Links, observation period/date and retrieval time, history, staleness, unapproved adjustment labels |
-| SWOT: underwriter decisions | Append-only decisions, stale-report rejection, report remains subject to confirmation |
-| SWOT: no AI dependency | Entire report flow works without model access |
-| SWOT: secret handling | Ignored `.env`, restricted local permissions, no tokens in tracked source, secret scanner and CI |
-| SWOT: three languages | Navigation and report headings RU/UZ/EN; source excerpts/clauses preserved. Full translated forms and legal text remain an acceptance item |
-| SWOT: Uzbekistan hosting | Configuration guard for real-data mode; no hosting selected or cloud deployment performed per latest user instruction |
-| SWOT: mobile Telegram | Responsive browser tested at mobile viewport; native Telegram HTTPS acceptance awaits hosting. Existing bot webhook left intact |
+| CBU, SIAT, NAPP | Connected official downloads/APIs |
+| Avtoelon | Written permission required by its published agreement; no automatic collector enabled |
+| Meteo | API access application required; file/reference fallback until access is supplied |
+| Seismos | Current site maintenance page; no validated event dataset available; manual sourced observations supported |
+| UZEX | Quotation `/pages` paths fall under the published `/page` robots restriction; not scraped |
+| Lex, construction, licenses, courts | Robots endpoints redirect or return HTML; automated collection remains disabled until access is verified; versioned manual references supported |
+| E-auksion, egov, new-car prices, customs | Accessible sites; production dataset/format and applicable access terms still need verification. File import and configured permitted-feed adapters are implemented |
+| OLX, uybor, joymee | Employee-provided files/comparables; no scraper |
+| Credit bureau and government registries | Contract-dependent; employee-provided reference documents supported; credentials/datasets not supplied |
 
-## Explicit implementation choices requiring insurer review
+## Configuration rather than invented insurer policy
 
-- Demo risk weights and multipliers are visible, versioned and labelled as unapproved. Default class templates cover vehicle, property and fire. Other classes can be added without code.
-- Comparable outliers are prices outside 50–150% of the eligible-price median when at least three observations exist. This transparent initial rule is documented in reports and requires business calibration.
-- Calibration uses total payouts / total premiums over three complete years, target ratio supplied by the actuary and a ±20% cap. This is a proposed deterministic policy, not an invented company tariff.
-- Statutory product setup requires actual source URL, rate and annual/fixed basis. More complex ОСГОР formulas, if required by supplied normative materials, need an explicit validated rule rather than a generic guessed tariff.
-- Legacy binary `.doc` and `.xls` must be converted to `.docx` and `.xlsx`; malformed, encrypted and macro-bearing uploads are rejected.
+Administrators can set program rates, annual/fixed statutory basis with a normative source, class thresholds, risk weights, risk shares, regional indicator baselines/sensitivity, bounded adjustments, valuation rules and translated clauses through forms. New template versions require fresh actuarial approval. Demo values remain explicitly unapproved.
 
-## Acceptance inputs still needed
+The implemented calibration policy uses total payouts / total premiums for three completed years, an actuary-supplied target and a ±20% cap, further bounded by the class template. This policy and the default 50–150% median outlier rule are implementation choices requiring insurer approval before operational use.
 
-Approved company products/tariffs, class rules, normative ОСГОР basis, representative contracts and branch requests, company loss history, qualified actuarial/underwriting accounts, approved source permissions and dataset schemas, complete translations, Uzbekistan production host and backup policy. These are not replaced with invented production values.
+## Deliberately deferred or externally dependent acceptance
+
+- AI recognition and the AI specialist: excluded by the user's instruction. Scan/photo manual review works without a model.
+- Permanent Uzbekistan hosting and real-data operations: deferred by the user; temporary Telegram HTTPS testing runs on the Mac.
+- Approved company tariffs, normative references, claims history, staff accounts and business-rule approval: the entry/import/approval workflows are built; the insurer must supply and approve its actual values.
+- Restricted-provider credentials and permission: cannot be manufactured by implementation. The fallback/configuration workflows are built; those providers are not represented as live integrations.
+- Native Telegram on a real phone: webhook/menu/HTTPS authentication and browser workflows are verified; human phone acceptance remains separate.
+- Legal/editorial sign-off: interface and generated report labels support RU/UZ/EN. Original source quotations, organization names and insurer-authored clauses remain verbatim; translated clauses can be supplied per template.
+
+A passing test suite verifies implemented behavior. It does not substitute for provider permission, insurer approval or real-phone acceptance.

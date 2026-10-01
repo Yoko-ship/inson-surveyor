@@ -43,3 +43,29 @@ After a computer crash or lost tunnel, inspect the bot using `getWebhookInfo` be
 ## Production gates
 
 HTTPS cookies; Uzbekistan hosting for real data as required by the supplied ТЗ; actual approved tariffs; reviewed statutory formulas; calibrated risk settings; non-demo accounts; persistent database/uploads; tested backups; protected logs; live source permission review; complete translations; real Telegram phone test. `HOSTING_COUNTRY` is an assertion, not an independent residency detector.
+
+## Background work and restoration
+
+`sh scripts/run_local.sh` starts the app and a single local worker. `uv run python scripts/run_worker.py` starts the worker independently when the app was launched another way. Its file lock prevents a second worker for the same data directory. The worker collects due channels hourly, performs daily collection per channel, expires old sessions/login buckets, and creates a verified daily SQLite backup when enabled. Administration → System status shows the heartbeat, backups and source errors. Source failures are also shown on their channel rows.
+
+```sh
+uv run python scripts/backup.py create
+uv run python scripts/backup.py verify --backup data/backups/BACKUP_NAME
+uv run python scripts/backup.py restore --backup data/backups/BACKUP_NAME --destination data/restored-review
+```
+
+The restore destination must not exist. The restored database is `database.sqlite`; document paths point to its restored uploads directory. It does not overwrite the running app, and existing sessions are removed. Verify the restored app with a separate database URL/port before intentionally switching environments. Backups contain confidential application data and password hashes: keep them in protected local storage; `.env` is excluded and must be protected separately.
+
+Settings: `BACKUP_ENABLED=true`, `BACKUP_DIR=data/backups`, `BACKUP_RETENTION_DAYS=14`. This automated backup implementation is for the current SQLite local profile. PostgreSQL production backups still require the host's scheduled `pg_dump`/volume backup and restore acceptance described above.
+
+## Source administration
+
+Open data → Configure records an exact official HTTPS URL, permission evidence, refresh interval and column mappings. Formats: JSON, CSV, XLSX, HTML table, SIAT, NAPP or versioned text document. The JSON path and HTML table index are explicit mappings, not executable code. Redirected dataset endpoints are rejected for administrator review. A refused or schema-changed channel stays disabled until an administrator reviews it and explicitly re-enables/reconfigures it.
+
+Upload file offers CSV/Excel preview and confirmation for every registered channel, including channels without automated access. Public reference material can be entered or read from a text PDF/Word/Excel file; scanned files require manual text entry. Select those materials during inspection review to freeze them into the report. Source updates do not rewrite past acts.
+
+The current provider review is in `docs/source-access-review.json`. Permission for one provider/path does not authorize another. Do not turn on a restricted provider merely because its homepage opens.
+
+## Telegram development updates
+
+The temporary tunnel runner now watches the application Python directory and reloads the local Telegram listener when backend files change, preserving the current tunnel URL. Stopping the runner still removes only its own webhook. Static assets use no-cache responses. The regular local listener remains separate.

@@ -1,5 +1,4 @@
 import io
-import json
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -46,78 +45,107 @@ LABELS = {
         "Subject to underwriter confirmation · Not a credit score",
     ],
 }
-FIELD_LABELS = {
-    "insured_sum": "Страховая сумма / Insured sum",
-    "object_value": "Стоимость объекта / Object value",
-    "region": "Регион / Region",
-    "term_days": "Срок, дней / Term, days",
-    "object_description": "Объект / Object",
-    "minimum_rate": "Минимальная ставка, % / Minimum rate",
-    "recommended_rate": "Рекомендуемая ставка, % / Recommended rate",
-    "annualized_rate": "Годовой эквивалент, % / Annual equivalent",
-    "annual_market_rate": "Рыночная годовая ставка, % / Annual market rate",
-    "premium": "Премия, UZS / Premium",
-    "formula": "Формула / Formula",
-    "rate_type": "Тип ставки / Rate type",
-    "premium_discrepancy": "Отклонение премии документа, UZS / Premium difference",
-    "comparison": "Сверка тарифа / Comparison",
-    "risk_score": "Страховой балл / Insurance score",
-    "risk_level": "Уровень риска / Risk level",
-    "risk_multiplier": "Множитель риска / Risk multiplier",
-    "regional_adjustment": "Поправка региона / Regional adjustment",
-    "loss_adjustment": "Поправка убытков / Claims adjustment",
-    "estimate": "Оценка, UZS / Estimate",
-    "raw_median": "Медиана до правок, UZS / Original median",
-    "method": "Метод / Method",
-    "deviation_percent": "Отклонение, % / Deviation",
-    "status": "Статус / Status",
-}
-
-
-def display(value, missing):
-    if value is None or value == "":
-        return missing
-    if isinstance(value, (dict, list)):
-        return json.dumps(value, ensure_ascii=False, indent=2)
-    return str(value)
 
 
 def sections(report):
+    from surveyor.regions import REGIONS, region_code
+    from surveyor.report_text import label, warning
+
     s = report.snapshot
-    labels = LABELS[s["language"]]
+    lang = s["language"]
+    labels = LABELS[lang]
+
+    def tr(key):
+        return label(key, lang)
+
     missing = labels[6]
 
+    def value(v):
+        if v is None or v == "":
+            return missing
+        if isinstance(v, bool):
+            return {"ru": ("нет", "да"), "uz": ("yo‘q", "ha"), "en": ("no", "yes")}[lang][v]
+        return str(v)
+
     def pairs(data, keys):
-        return [f"{FIELD_LABELS.get(k, k)}: {display(data.get(k), missing)}" for k in keys]
+        return [
+            f"{tr(k)}: {tr(str(data[k])) if k in {'method', 'status', 'rate_type', 'risk_level', 'comparison'} and data.get(k) else value(data.get(k))}"
+            for k in keys
+        ]
+
+    def comparable_lines(rows):
+        lines = []
+        for c in rows:
+            lines.append(c["label"])
+            lines += pairs(c, ["price", "original_price", "price_uzs", "date", "source", "edit_reason"])
+            if c.get("reason"):
+                lines.append(tr("reason") + ": " + warning(c["reason"], lang))
+            if c.get("exchange_source"):
+                fx = c["exchange_source"]
+                lines.append(
+                    f"{c['currency']} → UZS: {fx['value']} · {fx['source_url']} · {fx['observation_date']}"
+                )
+        return lines or [tr("none")]
 
     object_lines = [
         s["title"],
         f"ID: {report.id}",
-        f"Дата / Date: {report.created_at.isoformat()}",
-        f"Автор / Author: {s['author']['name']}",
+        f"{tr('date')}: {report.created_at.isoformat()}",
+        f"{tr('author')}: {s['author']['name']}",
     ]
-    object_lines += pairs(
-        s["inputs"], ["insured_sum", "object_value", "region", "term_days", "object_description"]
+    inputs = dict(s["inputs"])
+    code = region_code(inputs["region"])
+    inputs["region"] = next(
+        (r[{"ru": 1, "uz": 2, "en": 3}[lang]] for r in REGIONS if r[0] == code), inputs["region"]
     )
-    object_lines.append("Источник полей / Field source: ручной ввод сотрудника / employee input")
+    object_lines += pairs(
+        inputs, ["insured_sum", "object_value", "region", "term_days", "object_description"]
+    )
+    object_lines.append(tr("manual_input"))
     for doc in s["documents"]:
-        object_lines += [
-            f"Документ / Document: {doc['filename']} · SHA256 {doc['sha256']}",
-            display(doc["extracted"], missing),
-        ]
-    object_lines += [
-        "Правки / Corrections: " + display(s["inputs"].get("overrides"), missing),
-        "Причина / Reason: " + display(s["inputs"].get("override_reason"), missing),
-        "Расхождения / Conflicts: " + display(s["conflicts"], missing),
-    ]
+        object_lines.append(f"{tr('document')}: {doc['filename']} · SHA256 {doc['sha256']}")
+        for k, item in doc["extracted"]["fields"].items():
+            object_lines.append(
+                f"{tr(k)}: {value(item.get('value'))} · {tr(item['status'])} · {item['source']}"
+            )
+            if item.get("excerpt"):
+                object_lines.append(item["excerpt"])
+            if item.get("original") is not None:
+                object_lines.append(
+                    f"{tr('corrections')}: {value(item['original'])} → {value(item.get('value'))}"
+                )
+    object_lines.append(tr("corrections"))
+    object_lines += [f"{tr(k)}: {v}" for k, v in inputs.get("overrides", {}).items()] or [tr("none")]
+    object_lines.append(tr("reason") + ": " + value(inputs.get("override_reason")))
+    object_lines.append(tr("conflicts"))
+    for conflict in s["conflicts"]:
+        object_lines.append(
+            f"{tr(conflict['field'])}: "
+            + " / ".join(f"{x['source']} = {x['value']}" for x in conflict["sources"])
+            + f"; {tr('manual_input')}: {value(conflict['entered'])}"
+        )
+    if not s["conflicts"]:
+        object_lines.append(tr("none"))
     v = s["valuation"]
-    value_lines = pairs(v, ["method", "estimate", "raw_median", "deviation_percent", "status"])
-    value_lines += [
-        display(v["comparables"], missing),
-        "Исключено / Excluded: " + display(v["rejected"], missing),
-        v["method_note"],
-    ]
-    for k in [
+    value_lines = pairs(
+        v,
+        [
+            "method",
+            "estimate",
+            "raw_median",
+            "deviation_percent",
+            "second_method_deviation_percent",
+            "status",
+        ],
+    )
+    value_lines += comparable_lines(v["comparables"]) + [tr("excluded")] + comparable_lines(v["rejected"])
+    policy = v.get("policy", {})
+    value_lines += [tr("policy")] + pairs(
+        policy, ["outlier_low", "outlier_high", "tolerance", "requires_appraiser", "approved_by"]
+    )
+    if not policy.get("approved_by"):
+        value_lines.append(tr("unapproved"))
+    for key in [
         "purchase_price",
         "depreciation_percent",
         "appraiser_value",
@@ -127,12 +155,12 @@ def sections(report):
         "second_method_source",
         "second_method_date",
     ]:
-        if s["inputs"].get(k):
-            value_lines.append(f"{k}: {s['inputs'][k]}")
+        if inputs.get(key) is not None:
+            value_lines += pairs(inputs, [key])
     c = s["calculation"]
     rate_lines = [
-        f"Продукт / Product: {s['product']['code']} — {s['product']['name']}",
-        f"Источник / Source: тарифная политика; версия {s['product']['version_id']}; действует с {s['product']['effective_from']}",
+        f"{tr('product')}: {s['product']['code']} — {s['product']['name']}",
+        f"{tr('policy_version')}: {s['product']['version_id']}; {tr('effective_from')}: {s['product']['effective_from']}",
     ]
     rate_lines += pairs(
         c,
@@ -148,32 +176,72 @@ def sections(report):
             "comparison",
         ],
     )
+    if s["product"].get("normative_source"):
+        rate_lines.append(s["product"]["normative_source"])
     if c.get("reason"):
-        rate_lines.append(c["reason"])
+        rate_lines.append(warning(c["reason"], lang))
     risk_lines = pairs(
         c, ["risk_score", "risk_level", "risk_multiplier", "regional_adjustment", "loss_adjustment"]
     )
-    risk_lines += c.get("warnings", [])
-    risk_lines += [
-        "Убытки за три полных года / Claims for three complete years: " + display(s["losses"], missing)
-    ]
-    if s.get("calibration"):
-        risk_lines.append(
-            "Утверждённая калибровка / Approved calibration: " + display(s["calibration"], missing)
+    risk_lines += [warning(w, lang) for w in c.get("warnings", [])]
+    risk_lines.append(tr("losses"))
+    for loss in s["losses"]:
+        risk_lines += pairs(
+            loss, ["year", "claims", "payments", "premiums", "contracts", "loss_ratio", "frequency"]
         )
+    if not s["losses"]:
+        risk_lines.append(missing)
+    if s.get("calibration"):
+        risk_lines.append(tr("calibration") + ": " + s["calibration"]["id"])
+        risk_lines += pairs(s["calibration"], ["loss_ratio", "approved_by"])
+        risk_lines.append(s["calibration"]["rationale"])
     if s.get("template"):
-        risk_lines.append("Шаблон / Template: " + display(s["template"], missing))
+        risk_lines.append(tr("template") + ": " + s["template"]["id"])
+        risk_lines.append(
+            tr("risk_shares")
+            + ": "
+            + "; ".join(f"{k}: {v}%" for k, v in s["template"].get("risk_shares", {}).items())
+        )
+    # Show relevant regional/class data and only the FX currencies actually used in valuation.
+    currencies = {x.get("currency", "UZS") for x in inputs.get("comparables", [])}
     for indicator in s["indicators"]:
+        if indicator["metric"].startswith("fx_") and indicator["metric"][3:] not in currencies:
+            continue
         risk_lines.append(
             f"{indicator['metric']}: {indicator['value']} {indicator['unit']} · {indicator['period']} · {indicator['source_url']} · {indicator['fetched_at']}"
-            + (" · УСТАРЕЛИ / STALE" if indicator["stale"] else "")
+            + (" · " + tr("stale") if indicator["stale"] else "")
         )
+    for reference in s.get("references", []):
+        risk_lines += [
+            reference["title"],
+            reference["source_url"],
+            value(reference.get("observation_date")),
+            reference["text"],
+            "SHA256 " + reference["sha256"],
+        ]
+        if reference["stale"]:
+            risk_lines.append(tr("stale"))
+    conclusion = [
+        tr(k)
+        for k in [
+            "underwriter",
+            "not_credit",
+            "no_ai",
+            "check_values",
+            "check_conflicts",
+            "check_value",
+            "check_rates",
+            "check_approval",
+        ]
+    ]
+    if s["clauses"]:
+        conclusion += [tr("original_language")] + s["clauses"]
     return labels, [
         (labels[1], object_lines),
         (labels[2], value_lines),
         (labels[3], rate_lines),
         (labels[4], risk_lines),
-        (labels[5], s["disclaimers"] + s["clauses"] + s["checklist"]),
+        (labels[5], conclusion),
     ]
 
 

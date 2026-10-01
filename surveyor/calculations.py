@@ -65,12 +65,45 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
     regional = D(0)
     market = None
     used = []
+    applied_metrics = set()
+    from surveyor.regions import region_code
+
+    # Prefer an object's regional series over a national series of the same metric.
+    indicators = sorted(
+        indicators,
+        key=lambda i: (
+            region_code(i.get("region", "all")) == region_code(inputs.get("region", "all"))
+            and i.get("region", "all") != "all",
+            i.get("object_type", "all") == inputs.get("object_type"),
+            i.get("observation_date", ""),
+        ),
+        reverse=True,
+    )
     for indicator in indicators:
         if indicator.get("stale"):
             continue
         metric = indicator["metric"]
         relevant = indicator.get("object_type", "all") in {"all", inputs.get("object_type")}
-        if relevant and metric in (template or {}).get("indicator_metrics", []):
+        rule = (template or {}).get("indicator_rules", {}).get(metric)
+        if (
+            relevant
+            and rule
+            and inputs.get("object_type") in rule["object_types"]
+            and metric not in applied_metrics
+        ):
+            delta = (D(str(indicator["value"])) / D(str(rule["baseline"])) - 1) * D(str(rule["sensitivity"]))
+            bound = D(str(rule["max_adjustment"]))
+            regional += max(-bound, min(bound, delta))
+            used.append(
+                {**indicator, "rule": rule, "computed_adjustment": number(max(-bound, min(bound, delta)))}
+            )
+            applied_metrics.add(metric)
+        elif (
+            relevant
+            and metric in (template or {}).get("indicator_metrics", [])
+            and metric not in applied_metrics
+        ):
+            applied_metrics.add(metric)
             regional += D(str(indicator.get("rate_adjustment", 0)))
             used.append(indicator)
             if D(str(indicator.get("rate_adjustment", 0))) and not indicator.get("approved_by"):
@@ -80,6 +113,8 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
             and indicator.get("annual_market_rate") is not None
             and indicator.get("class_code") == product["class_code"]
         ):
+            if market is not None:
+                continue
             market = D(str(indicator["annual_market_rate"]))
             used.append(indicator)
     regional = min(max_adj, max(-max_adj, regional))
@@ -139,9 +174,17 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
     }
 
 
-def valuation(inputs, today=None, exchange=None):
+def valuation(inputs, today=None, exchange=None, policy=None):
     today = today or date.today()
     exchange = exchange or {}
+    policy = policy or {}
+    low = D(str(policy.get("valuation_outlier_low", "0.5")))
+    high = D(str(policy.get("valuation_outlier_high", "1.5")))
+    tolerance = D(str(policy.get("valuation_tolerance", "0.15")))
+    large_limit = policy.get("large_object_threshold")
+    require_appraiser = inputs.get("object_type") == "large" or (
+        large_limit is not None and D(str(inputs["object_value"])) >= D(str(large_limit))
+    )
     eligible, rejected = [], []
     for c in inputs.get("comparables", []):
         age = (today - date.fromisoformat(str(c["date"]))).days
@@ -186,19 +229,17 @@ def valuation(inputs, today=None, exchange=None):
     center = median([D(c["price_uzs"]) for c in eligible]) if eligible else None
     kept = []
     for c in eligible:
-        if len(eligible) >= 3 and (
-            D(c["price_uzs"]) < center * D("0.5") or D(c["price_uzs"]) > center * D("1.5")
-        ):
-            rejected.append({**c, "reason": "выброс: вне 50–150% медианы"})
+        if len(eligible) >= 3 and (D(c["price_uzs"]) < center * low or D(c["price_uzs"]) > center * high):
+            rejected.append({**c, "reason": f"выброс: вне {low * 100}–{high * 100}% медианы"})
         else:
             kept.append(c)
     estimate, method = None, "unavailable"
-    if inputs.get("object_type") == "equipment" and inputs.get("purchase_price"):
+    if not require_appraiser and inputs.get("object_type") == "equipment" and inputs.get("purchase_price"):
         estimate = D(str(inputs["purchase_price"])) * (
             1 - D(str(inputs.get("depreciation_percent", 0))) / 100
         )
         method = "purchase_less_depreciation"
-    elif inputs.get("object_type") == "large":
+    elif require_appraiser:
         if all(
             inputs.get(k)
             for k in [
@@ -226,8 +267,8 @@ def valuation(inputs, today=None, exchange=None):
     )
     confirmed = (
         deviation is not None
-        and deviation <= D("0.15")
-        and (second_deviation is None or second_deviation <= D("0.15"))
+        and deviation <= tolerance
+        and (second_deviation is None or second_deviation <= tolerance)
     )
     return {
         "method": method,
@@ -242,7 +283,17 @@ def valuation(inputs, today=None, exchange=None):
         "status": "unavailable" if estimate is None else "confirmed" if confirmed else "clarify",
         "comparables": kept,
         "rejected": rejected,
-        "method_note": "Отбор 50–150% медианы — экспертное правило, не утверждено страховщиком",
+        "method_note": "Правило оценки утверждено актуарием"
+        if policy.get("approved_by")
+        else "Правило оценки — экспертное, не утверждено страховщиком",
+        "policy": {
+            "outlier_low": str(low),
+            "outlier_high": str(high),
+            "tolerance": str(tolerance),
+            "requires_appraiser": bool(require_appraiser),
+            "template_id": policy.get("id"),
+            "approved_by": policy.get("approved_by"),
+        },
     }
 
 

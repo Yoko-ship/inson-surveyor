@@ -4,7 +4,7 @@ import argparse
 import asyncio
 
 from surveyor.db import SessionLocal
-from surveyor.sources import collect_cbu
+from surveyor.sources import collect_all
 from surveyor.telegram import call_telegram, handle_update
 
 
@@ -66,13 +66,16 @@ def main():
         )
     elif args.command == "collect":
         with SessionLocal() as db:
-            print(collect_cbu(db))
+            print(collect_all(db))
     else:
 
         async def worker():
             while True:
                 with SessionLocal() as db:
-                    collect_cbu(db)
+                    collect_all(db)
+                    from surveyor.maintenance import maintain
+
+                    maintain(db)
                 await asyncio.sleep(3600)
 
         asyncio.run(worker())

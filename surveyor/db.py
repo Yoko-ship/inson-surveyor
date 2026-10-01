@@ -182,6 +182,16 @@ class TelegramUpdate(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=now)
 
 
+class PublicReference(Base):
+    __tablename__ = "public_references"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    channel_code: Mapped[str] = mapped_column(ForeignKey("channels.code"), index=True)
+    source_url: Mapped[str] = mapped_column(String(2000), index=True)
+    sha256: Mapped[str] = mapped_column(String(64))
+    data: Mapped[dict] = mapped_column(JSON)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=now)
+
+
 settings.storage_dir.mkdir(parents=True, exist_ok=True)
 engine = create_engine(
     settings.database_url,
