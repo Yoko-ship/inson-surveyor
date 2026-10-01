@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Literal
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,11 +12,13 @@ class Settings(BaseSettings):
     hosting_country: str = "local"
     database_url: str = "sqlite:///./data/surveyor.db"
     storage_dir: Path = Path("data/uploads")
-    public_url: str = "http://localhost:8000"
+    public_url: str = "http://localhost:8010"
     cookie_secure: bool = False
+    cookie_samesite: Literal["lax", "strict", "none"] = "lax"
     bootstrap_admin_login: str = "admin"
     bootstrap_admin_password: str = ""
     telegram_bot_token: str = ""
+    telegram_expected_bot_id: str = ""
     telegram_webhook_secret: str = ""
     pdf_font_path: str = ""
     max_upload_bytes: int = 15 * 1024 * 1024
@@ -24,6 +27,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def deployment_guard(self):
+        if self.cookie_samesite == "none" and not self.cookie_secure:
+            raise ValueError("SameSite=None requires COOKIE_SECURE=true")
         if self.data_mode not in {"synthetic", "real"}:
             raise ValueError("DATA_MODE must be synthetic or real")
         if self.data_mode == "real" and self.hosting_country.upper() != "UZ":

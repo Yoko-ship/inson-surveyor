@@ -1,5 +1,7 @@
 # Сюрвейер
 
+[Public repository](https://github.com/Yoko-ship/inson-surveyor) · [Telegram bot](https://t.me/analyzing12_bot)
+
 Local-first insurance surveying platform implementing the deterministic workflows in the supplied ТЗ (01.10.2026). A browser application, Telegram Mini App integration, admin workspace and calculation engine share one Python backend. **No AI provider, AI API calls or AI credentials are used.**
 
 ## Run locally
@@ -42,17 +44,32 @@ Administrator privileges do not silently grant actuarial or underwriting approva
 
 ## Telegram
 
-The supplied bot token was verified as `@inson_surveyor_bot`. It already has a webhook configured elsewhere. This project **does not replace it automatically**.
+The new bot is **[@analyzing12_bot](https://t.me/analyzing12_bot)**. Its token lives only in the ignored local `.env`. `TELEGRAM_EXPECTED_BOT_ID` pins the intended bot identity before profile or webhook changes. The previous bot's deployment is separate.
 
 ```sh
 uv run python -m surveyor.cli telegram-check
 ```
 
-The browser app works on localhost. A real Telegram Mini App needs an HTTPS address. After hosting is selected, set `PUBLIC_URL`, `COOKIE_SECURE=true`, `APP_ENV=production` and `TELEGRAM_WEBHOOK_SECRET`, then intentionally configure the bot:
+To run the Mini App **inside Telegram while developing locally**:
+
+```sh
+uv run python scripts/install_cloudflared.py
+uv run python scripts/run_telegram_dev.py
+```
+
+The installer verifies the official release checksum and stores the binary in ignored `.tools/`. The runner starts a second local listener on port 8012, shares the local database/uploads, opens a temporary HTTPS tunnel, configures the bot profile/commands/webhook/menu and verifies the settings. Open the bot, press **Start**, then **Открыть Сюрвейер**. Sign in using an employee account; link Telegram from **Мой профиль** to receive reports.
+
+The ordinary browser app at port 8010 remains available. The Telegram listener uses Secure, HttpOnly, SameSite=None cookies for embedding. Its HTTPS URL/settings are supplied only to the development processes, so `.env` retains the localhost URL. The tunnel works only while the runner and this computer stay online; stopping it clears its own webhook without dropping pending updates. Temporary tunnels are restricted to synthetic data.
+
+Runtime status and logs are in ignored `data/telegram-dev/`. No bot token is written to status output, logs, GitHub Actions or repository files. See [environment profiles](docs/environments.md).
+
+After permanent hosting is selected, set `PUBLIC_URL`, `COOKIE_SECURE=true`, `COOKIE_SAMESITE=none`, `APP_ENV=production`, `TELEGRAM_EXPECTED_BOT_ID` and `TELEGRAM_WEBHOOK_SECRET`, then configure the bot:
 
 ```sh
 uv run python -m surveyor.cli telegram-configure
 ```
+
+To intentionally move the pinned bot from an existing webhook, add `--replace-webhook`. The command verifies bot identity and public app health before changing the webhook, then reads back the webhook and menu. `telegram-profile` sets commands/name/description without changing a webhook.
 
 For a bot without an existing webhook, `uv run python -m surveyor.cli poll` supports local `/start` and `/id`. It refuses to start while a webhook exists. No messages are sent as part of setup or token verification.
 
@@ -74,6 +91,7 @@ uv run ruff format --check .
 uv run pytest
 uv run alembic check
 uv run pip-audit
+uv run python scripts/check_secrets.py --history
 npm ci
 npx playwright install chromium
 npm run test:e2e

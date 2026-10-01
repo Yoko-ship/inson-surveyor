@@ -43,7 +43,7 @@ def create_session(db, user, response):
         token,
         httponly=True,
         secure=settings.cookie_secure,
-        samesite="lax",
+        samesite=settings.cookie_samesite,
         max_age=settings.session_hours * 3600,
     )
     return session
