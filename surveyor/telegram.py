@@ -42,7 +42,14 @@ async def handle_update(update, db):
     user = db.scalar(select(User).where(User.telegram_id == chat_id, User.active.is_(True)))
     text = message.get("text", "")
     if text.startswith(("/start", "/help")):
-        reply = "Сюрвейер · осмотр, проверка документов, расчёт и акт.\nИИ отключён.\n"
+        reply = "Сюрвейер · осмотр, проверка документов, расчёт и акт.\n"
+        if (
+            settings.codex_telegram_enabled
+            and chat_id == settings.codex_telegram_owner_id
+            and user
+            and user.role == "admin"
+        ):
+            reply += "Для анализа документов через вашу подписку откройте раздел Codex в приложении.\n"
         reply += f"Ваш Telegram ID: {chat_id}. "
         reply += (
             "Откройте приложение для работы."
