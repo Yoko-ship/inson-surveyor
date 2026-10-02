@@ -85,7 +85,11 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
         reverse=True,
     )
     for indicator in indicators:
-        if indicator.get("stale"):
+        if (
+            indicator.get("stale")
+            or indicator.get("reference_only")
+            or indicator["metric"].startswith("napp_ref_")
+        ):
             continue
         metric = indicator["metric"]
         relevant = indicator.get("object_type", "all") in {"all", inputs.get("object_type")}
@@ -213,7 +217,11 @@ def valuation(inputs, today=None, exchange=None, policy=None):
 
         cutoff = date(year, month, min(today.day, calendar.monthrange(year, month)[1]))
         reason = None
-        if not c.get("same_item", True):
+        if c.get("evidence_kind") == "auction_start":
+            reason = "стартовая цена торгов не является ценой сделки"
+        elif c.get("evidence_kind") == "completed_sale" and not c.get("transaction_reference"):
+            reason = "нет подтверждения завершённой сделки"
+        elif not c.get("same_item", True):
             reason = "другое изделие"
         elif age < 0 or date.fromisoformat(str(c["date"])) < cutoff:
             reason = "дата вне последних 6 месяцев"

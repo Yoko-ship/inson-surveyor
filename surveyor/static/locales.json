@@ -1,6 +1,12 @@
 {
-  "Тариф, %": { "uz": "Tarif, %", "en": "Rate, %" },
-  "Премия": { "uz": "Sug‘urta mukofoti", "en": "Premium" },
+  "Тариф, %": {
+    "uz": "Tarif, %",
+    "en": "Rate, %"
+  },
+  "Премия": {
+    "uz": "Sug‘urta mukofoti",
+    "en": "Premium"
+  },
   "Codex · учебный пилот": {
     "uz": "Codex · o‘quv sinovi",
     "en": "Codex · sample pilot"
@@ -13,8 +19,14 @@
     "uz": "Tanlangan o‘quv namunasi OpenAI bulutiga yuboriladi va Codex limitingizdan foydalanadi. Faqat o‘rnatilgan uydirma hujjatlar mavjud.",
     "en": "The selected sample is sent to OpenAI’s cloud and uses your Codex allowance. Only the built-in fictional documents are available."
   },
-  "Учебный пример": { "uz": "O‘quv namunasi", "en": "Sample document" },
-  "Учебный документ": { "uz": "O‘quv hujjati", "en": "Sample document" },
+  "Учебный пример": {
+    "uz": "O‘quv namunasi",
+    "en": "Sample document"
+  },
+  "Учебный документ": {
+    "uz": "O‘quv hujjati",
+    "en": "Sample document"
+  },
   "Учебный договор · текст": {
     "uz": "O‘quv shartnomasi · matn",
     "en": "Sample contract · text"
@@ -43,9 +55,18 @@
     "uz": "O‘quv namunasining ma’lum qiymatlari bilan solishtirish. Natija ko‘rikka saqlanmadi.",
     "en": "Compared with the known sample values. The result has not been saved to an inspection."
   },
-  "Ответ Codex": { "uz": "Codex javobi", "en": "Codex response" },
-  "Ожидаемое значение": { "uz": "Kutilgan qiymat", "en": "Expected value" },
-  "Проверка": { "uz": "Tekshiruv", "en": "Check" },
+  "Ответ Codex": {
+    "uz": "Codex javobi",
+    "en": "Codex response"
+  },
+  "Ожидаемое значение": {
+    "uz": "Kutilgan qiymat",
+    "en": "Expected value"
+  },
+  "Проверка": {
+    "uz": "Tekshiruv",
+    "en": "Check"
+  },
   "Цитаты из документа": {
     "uz": "Hujjatdan iqtiboslar",
     "en": "Source excerpts"
@@ -2685,5 +2706,161 @@
   "База тарифа — сумма лимита; в поле страховой суммы должен быть указан лимит": {
     "uz": "Tarif asosi limit summasi; sug‘urta summasi maydonida limit ko‘rsatilishi kerak",
     "en": "The rate applies to the limit; enter the limit in the insured sum field"
+  },
+  "Факторы тарифа по классам": {
+    "uz": "Klasslar bo‘yicha tarif omillari",
+    "en": "Tariff factors by class"
+  },
+  "Не калибровано. Документ задаёт направление влияния, но не числовые коэффициенты. Справочник не меняет расчёт тарифа.": {
+    "uz": "Kalibrlanmagan. Hujjat ta’sir yo‘nalishini belgilaydi, sonli koeffitsiyentlarni emas. Ma’lumotnoma tarif hisobini o‘zgartirmaydi.",
+    "en": "Uncalibrated. The document specifies the direction of influence, but no numerical coefficients. This reference does not change pricing."
+  },
+  "Для обязательного страхования применяется нормативный тариф. Размеры поправок и метод калибровки утверждает актуарий.": {
+    "uz": "Majburiy sug‘urtada normativ tarif qo‘llanadi. Tuzatishlar va kalibrlash usulini aktuariy tasdiqlaydi.",
+    "en": "Compulsory insurance uses statutory rates. The actuary approves adjustments and the calibration method."
+  },
+  "Класс страхования": {
+    "uz": "Sug‘urta klassi",
+    "en": "Insurance class"
+  },
+  "Поиск фактора": {
+    "uz": "Omilni qidirish",
+    "en": "Search factors"
+  },
+  "Фактор / подгруппа": {
+    "uz": "Omil / kichik guruh",
+    "en": "Factor / subgroup"
+  },
+  "Повышает": {
+    "uz": "Oshiradi",
+    "en": "Increases"
+  },
+  "Понижает": {
+    "uz": "Pasaytiradi",
+    "en": "Decreases"
+  },
+  "Страница": {
+    "uz": "Sahifa",
+    "en": "Page"
+  },
+  "Полный текст предоставленного документа": {
+    "uz": "Taqdim etilgan hujjatning to‘liq matni",
+    "en": "Full text of the supplied document"
+  },
+  "Текст источника сохранён дословно; раздел о состоянии системы отражает мнение автора документа.": {
+    "uz": "Manba matni o‘z holicha saqlangan; tizim holati haqidagi bo‘lim hujjat muallifining fikrini aks ettiradi.",
+    "en": "The source text is preserved; its system status section reflects the document author’s assessment."
+  },
+  "Только справочно; тариф не меняет": {
+    "uz": "Faqat ma’lumot uchun; tarifga ta’sir qilmaydi",
+    "en": "Reference only; does not change pricing"
+  },
+  "Тип цены": {
+    "uz": "Narx turi",
+    "en": "Price evidence"
+  },
+  "Цена предложения": {
+    "uz": "Taklif narxi",
+    "en": "Asking price"
+  },
+  "Завершённая сделка": {
+    "uz": "Yakunlangan bitim",
+    "en": "Completed sale"
+  },
+  "Стартовая цена торгов": {
+    "uz": "Auksion boshlang‘ich narxi",
+    "en": "Auction starting price"
+  },
+  "Подтверждение сделки / протокол": {
+    "uz": "Bitim tasdig‘i / bayonnoma",
+    "en": "Transaction evidence / protocol"
+  },
+  "NAPP: справочные таблицы": {
+    "uz": "NAPP: ma’lumot jadvallari",
+    "en": "NAPP: reference tables"
+  },
+  "Зарегистрированные кражи": {
+    "uz": "Ro‘yxatga olingan o‘g‘riliklar",
+    "en": "Registered thefts"
+  },
+  "Грабежи и разбои": {
+    "uz": "Talonchilik va bosqinchilik",
+    "en": "Muggings and robberies"
+  },
+  "Смертность на 1000 населения": {
+    "uz": "1000 kishiga o‘limlar",
+    "en": "Deaths per 1000 population"
+  },
+  "Население на начало года, тыс. человек": {
+    "uz": "Yil boshidagi aholi, ming kishi",
+    "en": "Population at start of year, thousands"
+  },
+  "Премии компании": {
+    "uz": "Kompaniya mukofotlari",
+    "en": "Company premiums"
+  },
+  "Выплаты компании": {
+    "uz": "Kompaniya to‘lovlari",
+    "en": "Company payments"
+  },
+  "Претензии полученные": {
+    "uz": "Kelib tushgan da’volar",
+    "en": "Claims received"
+  },
+  "Претензии оплаченные": {
+    "uz": "To‘langan da’volar",
+    "en": "Claims paid"
+  },
+  "Претензии отклонённые": {
+    "uz": "Rad etilgan da’volar",
+    "en": "Claims refused"
+  },
+  "Претензии неурегулированные": {
+    "uz": "Ko‘rib chiqilmagan da’volar",
+    "en": "Unsettled claims"
+  },
+  "Премии по набору классов": {
+    "uz": "Klasslar to‘plami bo‘yicha mukofotlar",
+    "en": "Class bundle premiums"
+  },
+  "Выплаты по набору классов": {
+    "uz": "Klasslar to‘plami bo‘yicha to‘lovlar",
+    "en": "Class bundle payments"
+  },
+  "Обязательства по набору классов": {
+    "uz": "Klasslar to‘plami bo‘yicha majburiyatlar",
+    "en": "Class bundle liabilities"
+  },
+  "Региональные премии рынка": {
+    "uz": "Hududiy bozor mukofotlari",
+    "en": "Regional market premiums"
+  },
+  "Региональные выплаты рынка": {
+    "uz": "Hududiy bozor to‘lovlari",
+    "en": "Regional market payments"
+  },
+  "Доля INSON в премиях всего рынка": {
+    "uz": "INSONning umumiy bozor mukofotlaridagi ulushi",
+    "en": "INSON share of total market premiums"
+  },
+  "Доля INSON в выплатах всего рынка": {
+    "uz": "INSONning umumiy bozor to‘lovlaridagi ulushi",
+    "en": "INSON share of total market payments"
+  },
+  "Премии подразделений INSON": {
+    "uz": "INSON bo‘linmalari mukofotlari",
+    "en": "INSON subdivision premiums"
+  },
+  "Выплаты подразделений INSON": {
+    "uz": "INSON bo‘linmalari to‘lovlari",
+    "en": "INSON subdivision payments"
+  },
+  "INSON: выплаты / премии": {
+    "uz": "INSON: to‘lovlar / mukofotlar",
+    "en": "INSON: payments / premiums"
+  },
+  "INSON: отношение региона к компании": {
+    "uz": "INSON: hududning kompaniyaga nisbati",
+    "en": "INSON: regional ratio / company ratio"
   }
 }

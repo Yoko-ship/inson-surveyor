@@ -645,6 +645,8 @@ def approve_indicator(indicator_id: str, user=Depends(actuary), db=Depends(get_d
     row = db.get(Indicator, indicator_id)
     if not row:
         raise HTTPException(404, "Показатель не найден")
+    if row.data.get("reference_only") or row.data["metric"].startswith("napp_ref_"):
+        raise HTTPException(422, "Справочный показатель не может стать тарифной поправкой")
     # New version preserves the original publication and report snapshots.
     new = Indicator(
         channel_code=row.channel_code,

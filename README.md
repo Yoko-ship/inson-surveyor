@@ -28,6 +28,8 @@ Open **http://localhost:8010**. Login: `admin`. The generated initial password i
 
 The setup script preserves existing `.env` files and generates a random bootstrap password and webhook secret. Unix permissions are `0600`; on Windows, access follows the project folder's Windows permissions. Leave the Telegram fields empty for browser-only use. No default shared password is checked in.
 
+The repository includes a [portable public database](database/README.md) with 12,808 CBU/SIAT/NAPP observations. The local launcher imports missing observations automatically in synthetic mode and preserves existing records. Accounts and private working data are not published.
+
 Local SQLite data is in `data/surveyor.db`; documents are in `data/uploads/`. Restarting the app preserves both. Stop with Ctrl+C. Port 8010 avoids another application already using port 8000 on the development machine. Update both `PORT` and `PUBLIC_URL` if changing ports.
 
 PDF export automatically finds Arial in the Windows fonts directory. `PDF_FONT_PATH` can override it, for example `C:/Windows/Fonts/arial.ttf`. Linux needs DejaVu Sans (already included in the Docker image).
@@ -43,13 +45,17 @@ PDF export automatically finds Arial in the Windows fonts directory. `PDF_FONT_P
 - **Administration:** employee creation, unique login/phone/Telegram ID, forced first-password change, role management, versioned products and class templates, two-step Excel/CSV imports, claims by product/year, audit history.
 - **Actuarial approval:** only the `actuary` role approves risk templates, public-data adjustments and loss-based calibration. Three complete calendar years and premiums are required. Editing claims invalidates the previous calibration automatically.
 - **Underwriting:** only the `underwriter` role records approval, rejection or requested changes. Reports retain their original inputs, tariff version, source data and calculations after later edits.
-- **Open data:** live CBU, four SIAT feeds and NAPP insurance-class workbooks; daily worker and on-demand collection; configurable permitted JSON/CSV/Excel/HTML sources; file preview/confirmation; versioned laws/notices; source history, stale dates, cached values and disablement on access/schema failures.
+- **Open data:** live CBU, eight SIAT feeds and NAPP insurance-class/reference workbooks; daily worker and on-demand collection; configurable permitted JSON/CSV/Excel/HTML sources; file preview/confirmation; versioned laws/notices; source history, stale dates, cached values and disablement on access/schema failures.
 - **Document review:** correct each document or manually transcribe a scan with original values, reviewer and reason retained. Grouped millions are parsed without truncation; ambiguous separators, unsupported scales and ranges require review.
 - **Source mapping:** the class-template screen shows linked statistics, missing observations and loaded metrics without rules. The rule editor suggests available metric names; the insurer still sets and approves baselines/sensitivity.
 - **Operations:** local worker, daily verified SQLite/document backups, restore-to-new-directory command, source alerts and worker status. Source failures are isolated; maintenance runs independently, and transient collection errors retry in the next hourly cycle.
 - **Telegram:** verified Mini App authorization, account linking inside Telegram, authenticated webhook, private `/start` and `/id` handling, explicit delivery of report PDFs to the signed-in employee's linked chat.
 
 The calculator can use statutory products (including ОСГОР) once an administrator supplies the actual normative rate, formula basis and source. No statutory tariff is fabricated or seeded.
+
+## Additional source references
+
+**Тарифы и РНП** includes the supplied class-factor guide with search and class filters. Its coefficients are uncalibrated and do not alter pricing. **Sources** includes company/regional NAPP context with explicit accounting-geography limitations. OLX asking prices and confirmed E-auksion transactions can be entered as distinct valuation evidence; auction starting prices are excluded. See [resource integration and remaining inputs](docs/requirements.md#additional-resources-and-factor-reference--2-october-2026).
 
 ## Roles
 

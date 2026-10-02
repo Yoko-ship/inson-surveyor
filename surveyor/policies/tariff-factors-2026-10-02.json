@@ -1,0 +1,1876 @@
+{
+  "id": "tariff-factors-2026-10-02",
+  "title": "Факторы, повышающие и понижающие тариф, по классам и подгруппам",
+  "date": "2026-10-02",
+  "sha256": "11e0981bbf2f594157a97e8933cfed6ef46d31de079af58c97260de56ba43596",
+  "status": "reference_only",
+  "entries": [
+    {
+      "id": "factor_001",
+      "classes": [],
+      "section": "Общие факторы для всех классов",
+      "label": "История убытков клиента",
+      "raises": "Убытки за 3–5 лет, особенно частые мелкие; крупный убыток за последний год",
+      "lowers": "Безубыточная история 3 года и больше",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_002",
+      "classes": [],
+      "section": "Общие факторы для всех классов",
+      "label": "Документы",
+      "raises": "Нет документов на объект, расхождения между документами, осмотр не проводился",
+      "lowers": "Полный комплект, осмотр проведён, фото со всех ракурсов",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_003",
+      "classes": [],
+      "section": "Общие факторы для всех классов",
+      "label": "Страховая сумма к стоимости",
+      "raises": "Сумма выше стоимости; сумма ниже 70 % стоимости (спорная пропорция при выплате)",
+      "lowers": "Сумма равна стоимости по отчёту оценщика",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_004",
+      "classes": [],
+      "section": "Общие факторы для всех классов",
+      "label": "Срок",
+      "raises": "Многолетний договор без ежегодного пересмотра условий",
+      "lowers": "Год или ежегодный пересмотр",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_005",
+      "classes": [],
+      "section": "Общие факторы для всех классов",
+      "label": "Франшиза",
+      "raises": "Отказ от франшизы при частых мелких убытках",
+      "lowers": "Безусловная франшиза, соразмерная частоте убытков",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_006",
+      "classes": [],
+      "section": "Общие факторы для всех классов",
+      "label": "Клиент",
+      "raises": "Новый клиент без истории; частая смена страховщиков",
+      "lowers": "Клиент с портфелем в компании и хорошей историей",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_007",
+      "classes": [],
+      "section": "Общие факторы для всех классов",
+      "label": "Оплата",
+      "raises": "Рассрочка с просрочками в прошлом",
+      "lowers": "Единовременная оплата",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_008",
+      "classes": [],
+      "section": "Общие факторы для всех классов",
+      "label": "Накопление",
+      "raises": "Несколько объектов клиента в одном месте или на одном маршруте",
+      "lowers": "Объекты разнесены",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_009",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Легковые автомобили",
+      "raises": "Такси и аренда, спортивные и премиальные модели, частая смена водителей",
+      "lowers": "Личное использование, семейный автомобиль, один водитель",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_010",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Грузовые автомобили",
+      "raises": "Междугородние и международные перевозки, опасные грузы, самосвалы на карьерах",
+      "lowers": "Внутригородская развозка, собственный гараж",
+      "page": 1,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_011",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Автобусы и микроавтобусы",
+      "raises": "Маршрутные и туристические перевозки, ночные рейсы, горные дороги",
+      "lowers": "Служебный транспорт по постоянному маршруту",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_012",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Прицепы и полуприцепы",
+      "raises": "Цистерны, рефрижераторы, тяжеловозы",
+      "lowers": "Бортовые прицепы, стоянка на базе",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_013",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Спецтехника колёсная: краны, погрузчики, бетононасосы",
+      "raises": "Работа на стройке, у ЛЭП, на открытых площадках, передача в аренду",
+      "lowers": "Работа на огороженной территории предприятия, обученный машинист",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_014",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Спецтехника гусеничная: экскаваторы, бульдозеры",
+      "raises": "Карьеры, шахты, перевозка между объектами на трале",
+      "lowers": "Один объект, площадка под охраной",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_015",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Сельхозтехника: тракторы, комбайны",
+      "raises": "Сезонная работа в поле, хранение под открытым небом",
+      "lowers": "Хранение в закрытом ангаре, обслуживание в сезон",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_016",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Мотоциклы и мопеды",
+      "raises": "Высокая частота ДТП и краж, молодые водители",
+      "lowers": "Хранение в гараже, сезонное использование",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_017",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Бензин",
+      "raises": "Переоборудование двигателя, нештатные доработки",
+      "lowers": "Штатная заводская комплектация",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_018",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Дизель",
+      "raises": "Старые двигатели с утечками топлива, работа в холод без прогрева",
+      "lowers": "Современный двигатель, регламентное обслуживание",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_019",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Газ: пропан- бутан",
+      "raises": "Кустарная установка баллонов, баллоны без освидетельствования, установка в салоне",
+      "lowers": "Заводская установка, свидетельство о безопасности, баллон снаружи салона",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_020",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Газ: метан",
+      "raises": "Высокое давление в баллонах; старые баллоны; отсутствие регистрации переоборудования",
+      "lowers": "Сертифицированное оборудование, срок освидетельствования не истёк",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_021",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Гибрид",
+      "raises": "Дорогая батарея, сложный и дорогой ремонт, мало сервисов",
+      "lowers": "Гарантия производителя на батарею, обслуживание у дилера",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_022",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Электромобиль",
+      "raises": "Батарея — до половины стоимости машины, риск возгорания при повреждении, дорогие запчасти, зарядка в неприспособленных местах",
+      "lowers": "Заводская зарядная станция, крытая стоянка, гарантия на батарею, ограниченный пробег",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_023",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Водород и прочие редкие",
+      "raises": "Нет сервиса и запчастей в стране",
+      "lowers": "—",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_024",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Возраст и пробег",
+      "raises": "Старше 10 лет, пробег более 200 000 км, спецтехника свыше 12 000 моточасов",
+      "lowers": "До 3 лет, малый пробег",
+      "page": 2,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_025",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Стоимость",
+      "raises": "Премиальные марки с дорогим ремонтом; редкие марки без запчастей в стране",
+      "lowers": "Массовые модели с доступным ремонтом",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_026",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Хранение ночью",
+      "raises": "Улица, неохраняемый двор",
+      "lowers": "Гараж, охраняемая стоянка, видеонаблюдение",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_027",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Противоугонная защита",
+      "raises": "Нет; только штатная сигнализация",
+      "lowers": "Иммобилайзер, спутниковый поиск с блокировкой",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_028",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Водители",
+      "raises": "Стаж до 3 лет, возраст до 23 лет, много водителей, нарушения ПДД, лишение прав в прошлом",
+      "lowers": "Стаж более 5 лет, ограниченный список, без нарушений",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_029",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Регион и дороги",
+      "raises": "Горные дороги, зимние перевалы, интенсивное движение больших городов",
+      "lowers": "Равнинные маршруты, малая интенсивность",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_030",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Использование",
+      "raises": "Такси, аренда, доставка, обучение вождению, спорт",
+      "lowers": "Личное или служебное",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_031",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Угон",
+      "raises": "Марки, популярные у угонщиков; отсутствие маркировки деталей",
+      "lowers": "Маркировка, GPS-метки",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_032",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Стёкла и оптика",
+      "raises": "Дорогая оптика, панорамные стёкла",
+      "lowers": "Обычные",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_033",
+      "classes": [
+        3
+      ],
+      "section": "Класс 3. Наземный транспорт",
+      "label": "Повреждения на осмотре",
+      "raises": "Есть неустранённые повреждения",
+      "lowers": "Нет",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_034",
+      "classes": [
+        4
+      ],
+      "section": "Класс 4. Железнодорожный подвижной состав",
+      "label": "Локомотивы",
+      "raises": "Возраст более 25 лет, маневровая работа на станциях",
+      "lowers": "Новые, магистральные с плановым ТО",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_035",
+      "classes": [
+        4
+      ],
+      "section": "Класс 4. Железнодорожный подвижной состав",
+      "label": "Пассажирские вагоны",
+      "raises": "Международные маршруты, устаревшие тормозные системы",
+      "lowers": "Внутренние маршруты, недавний капремонт",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_036",
+      "classes": [
+        4
+      ],
+      "section": "Класс 4. Железнодорожный подвижной состав",
+      "label": "Грузовые вагоны и платформы",
+      "raises": "Перевозка угля и руды, частая погрузка кранами",
+      "lowers": "Контейнерные платформы",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_037",
+      "classes": [
+        4
+      ],
+      "section": "Класс 4. Железнодорожный подвижной состав",
+      "label": "Цистерны",
+      "raises": "Опасные грузы: нефть, газ, химия; просроченное освидетельствование котла",
+      "lowers": "Пищевые грузы, свежее освидетельствование",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_038",
+      "classes": [
+        5
+      ],
+      "section": "Класс 5. Авиация",
+      "label": "Пассажирские самолёты",
+      "raises": "Возраст борта, малый налёт экипажа, сложные аэродромы (горы, короткие полосы)",
+      "lowers": "Молодой парк, обслуживание у производителя",
+      "page": 3,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_039",
+      "classes": [
+        5
+      ],
+      "section": "Класс 5. Авиация",
+      "label": "Грузовые самолёты",
+      "raises": "Ночные рейсы, опасные грузы, нерегулярные аэродромы",
+      "lowers": "Регулярные маршруты",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_040",
+      "classes": [
+        5
+      ],
+      "section": "Класс 5. Авиация",
+      "label": "Вертолёты",
+      "raises": "Полёты на малых высотах, сельхозработы, санитарная авиация, горы",
+      "lowers": "Корпоративные перевозки, базирование в ангаре",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_041",
+      "classes": [
+        5
+      ],
+      "section": "Класс 5. Авиация",
+      "label": "Малая и частная авиация",
+      "raises": "Любительская эксплуатация, редкие полёты",
+      "lowers": "Профессиональный экипаж",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_042",
+      "classes": [
+        5
+      ],
+      "section": "Класс 5. Авиация",
+      "label": "Беспилотники",
+      "raises": "Полёты над людьми и объектами, ручное управление",
+      "lowers": "Автоматические маршруты, страхование ответственности оператора",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_043",
+      "classes": [
+        6
+      ],
+      "section": "Класс 6. Морское и речное",
+      "label": "Сухогрузы и танкеры",
+      "raises": "Возраст более 20 лет, отсутствие класса, опасные грузы",
+      "lowers": "Действующий класс, свежее освидетельствование",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_044",
+      "classes": [
+        6
+      ],
+      "section": "Класс 6. Морское и речное",
+      "label": "Пассажирские суда",
+      "raises": "Сезон штормов, большое число пассажиров",
+      "lowers": "Прибрежные маршруты в спокойный сезон",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_045",
+      "classes": [
+        6
+      ],
+      "section": "Класс 6. Морское и речное",
+      "label": "Речные и прогулочные суда, катера",
+      "raises": "Любительское управление, стоянка без охраны",
+      "lowers": "Профессиональный экипаж, охраняемая стоянка",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_046",
+      "classes": [
+        6
+      ],
+      "section": "Класс 6. Морское и речное",
+      "label": "Плавучие средства: баржи, понтоны",
+      "raises": "Буксировка в непогоду, отсутствие экипажа",
+      "lowers": "Стационарная работа",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_047",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Хрупкие: стекло, электроника, приборы",
+      "raises": "Нет заводской упаковки, перевалки",
+      "lowers": "Заводская упаковка, крепление",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_048",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Скоропортящиеся: продукты, медикаменты",
+      "raises": "Нет температурного контроля, длинный маршрут",
+      "lowers": "Рефрижератор с датчиками, короткое плечо",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_049",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Дорогие и ликвидные: техника, телефоны, табак, алкоголь",
+      "raises": "Привлекательность для краж, стоянки в пути",
+      "lowers": "Сопровождение, пломбы, слежение",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_050",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Насыпные и наливные: зерно, цемент, нефтепродукты",
+      "raises": "Подмочка, утечки, недостача",
+      "lowers": "Исправная тара, взвешивание",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_051",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Негабарит и тяжеловес: оборудование, техника",
+      "raises": "Сложная погрузка, крановые работы",
+      "lowers": "Специализированный перевозчик с опытом",
+      "page": 4,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_052",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Опасные грузы: химия, газ",
+      "raises": "Класс опасности, транзит через города",
+      "lowers": "Лицензированный перевозчик",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_053",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Автомобильный",
+      "raises": "Международный маршрут, горные перевалы, ночные стоянки без охраны",
+      "lowers": "Прямой маршрут, охраняемые стоянки",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_054",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Железнодорожный",
+      "raises": "Открытые платформы, много перевалок",
+      "lowers": "Контейнеры, прямой маршрут",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_055",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Авиационный",
+      "raises": "Перевалки в хабах",
+      "lowers": "Прямой рейс",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_056",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Морской",
+      "raises": "Палубный груз, сезон штормов",
+      "lowers": "Трюм, спокойный сезон",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_057",
+      "classes": [
+        7
+      ],
+      "section": "Класс 7. Грузы",
+      "label": "Смешанный",
+      "raises": "Каждая перевалка добавляет риск",
+      "lowers": "Один перевозчик за весь путь",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_058",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Жилые дома и квартиры",
+      "raises": "Частный дом с печным отоплением, старая проводка, дерево",
+      "lowers": "Квартира в кирпичном или панельном доме, центральное отопление",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_059",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Офисы",
+      "raises": "Серверные без пожаротушения, арендаторы с кухней",
+      "lowers": "Сигнализация, спринклеры, пожарные выходы",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_060",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Торговля: магазины, рынки",
+      "raises": "Горючий товар, плотная застройка рынков, временные павильоны",
+      "lowers": "Отдельно стоящий магазин с сигнализацией",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_061",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Склады",
+      "raises": "Товар на полу, высокая стеллажная загрузка, горючие упаковки, холодильники с аммиаком",
+      "lowers": "Негорючий товар, спринклеры, отсеки",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_062",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Производство",
+      "raises": "Горючие материалы, пищевое производство с печами, деревообработка, химия, покраска",
+      "lowers": "Негорючие процессы, автоматическое пожаротушение",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_063",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Гостиницы и общепит",
+      "raises": "Кухни, много людей, ночной режим",
+      "lowers": "Сигнализация, обученный персонал",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_064",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Сельхозобъекты: теплицы, фермы, хранилища",
+      "raises": "Сено и солома, пыль, слабая электрика",
+      "lowers": "Негорючие хранилища",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_065",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Объекты энергетики и АЗС",
+      "raises": "Топливо и газ, высокое напряжение",
+      "lowers": "Автоматика защиты, разрывы между резервуарами",
+      "page": 5,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_066",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Незавершённое строительство",
+      "raises": "Нет защиты, открытые конструкции",
+      "lowers": "Охрана стройплощадки",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_067",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Железобетон, кирпич, камень",
+      "raises": "—",
+      "lowers": "Негорючие стены и перекрытия",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_068",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Металлокаркас с сэндвич- панелями",
+      "raises": "Горючий утеплитель: пенополистирол",
+      "lowers": "Минеральная вата",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_069",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Дерево и смешанные конструкции",
+      "raises": "Горючие стены и перекрытия",
+      "lowers": "Огнезащитная обработка",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_070",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Глинобитные и саманные",
+      "raises": "Разрушение при землетрясении и ливнях",
+      "lowers": "—",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_071",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Лёгкие и временные: павильоны, навесы",
+      "raises": "Ветер, снег, пожар",
+      "lowers": "—",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_072",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Землетрясение",
+      "raises": "Сейсмозона 8–9 баллов, здание без сейсмостойкости, старые дома",
+      "lowers": "Зона 7 и ниже, сейсмостойкий проект, обследование",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_073",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Наводнение и сель",
+      "raises": "Пойма реки, низина, предгорье с сухими руслами, подвал без дренажа",
+      "lowers": "Возвышенность, дренаж, защита от селя",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_074",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Буря и ураган",
+      "raises": "Лёгкая кровля, открытые площадки, высокие сооружения",
+      "lowers": "Тяжёлая кровля, защищённое расположение",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_075",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Ливень и град",
+      "raises": "Плоская кровля с плохим водостоком, стеклянные крыши",
+      "lowers": "Скатная кровля, исправный водосток",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_076",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Просадка грунта и оползень",
+      "raises": "Склоны, насыпные грунты, подтопление",
+      "lowers": "Устойчивые грунты, изыскания",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_077",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Пожарная защита",
+      "raises": "Нет сигнализации и пожаротушения, нет гидрантов",
+      "lowers": "Сигнализация с выводом на пульт, спринклеры, гидранты",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_078",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Электрика",
+      "raises": "Старая проводка, перегрузка, нет защиты от перепадов",
+      "lowers": "Новая проводка, УЗО, стабилизаторы",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_079",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Отопление",
+      "raises": "Печи, самодельные обогреватели, газ без автоматики",
+      "lowers": "Центральное или автоматизированное",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_080",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Пожарные отсеки",
+      "raises": "Один большой отсек, высокая стоимость в одном отсеке",
+      "lowers": "Разделение отсеками",
+      "page": 6,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_081",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Соседи",
+      "raises": "Горючие соседние здания вплотную, АЗС рядом",
+      "lowers": "Разрывы, негорючее окружение",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_082",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Пожарная часть",
+      "raises": "Более 10 км, плохая дорога",
+      "lowers": "До 5 км",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_083",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Износ",
+      "raises": "Более 50 %, аварийное состояние",
+      "lowers": "Новое или после капремонта",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_084",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Этажность и высота",
+      "raises": "Высотные без автоматики, подвалы с товаром",
+      "lowers": "Малоэтажные с выходами",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_085",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Режим работы",
+      "raises": "Ночное производство, пустующее здание",
+      "lowers": "Дневной режим, постоянный контроль",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_086",
+      "classes": [
+        8
+      ],
+      "section": "Класс 8. Имущество от огня и стихийных бедствий",
+      "label": "Перерыв в производстве",
+      "raises": "Долгий срок восстановления, зависимость от одного здания",
+      "lowers": "Резервные площадки",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_087",
+      "classes": [
+        9
+      ],
+      "section": "Класс 9. Имущество от ущерба: кража, залив, бой стёкол, поломки",
+      "label": "Магазины и склады ликвидного товара: электроника, телефоны, алкоголь, табак, ювелирные изделия",
+      "raises": "Высокая привлекательность для кражи, первый этаж, витрины",
+      "lowers": "Решётки, сейфы, охрана, видеонаблюдение, инвентаризация",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_088",
+      "classes": [
+        9
+      ],
+      "section": "Класс 9. Имущество от ущерба: кража, залив, бой стёкол, поломки",
+      "label": "Офисы с техникой",
+      "raises": "Ноутбуки и серверы, свободный доступ",
+      "lowers": "Пропускной режим",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_089",
+      "classes": [
+        9
+      ],
+      "section": "Класс 9. Имущество от ущерба: кража, залив, бой стёкол, поломки",
+      "label": "Склады обычного товара",
+      "raises": "Нет охраны ночью",
+      "lowers": "Охрана и сигнализация",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_090",
+      "classes": [
+        9
+      ],
+      "section": "Класс 9. Имущество от ущерба: кража, залив, бой стёкол, поломки",
+      "label": "Оборудование",
+      "raises": "Износ, отсутствие обслуживания, перепады напряжения",
+      "lowers": "Регламентное ТО, стабилизаторы",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_091",
+      "classes": [
+        9
+      ],
+      "section": "Класс 9. Имущество от ущерба: кража, залив, бой стёкол, поломки",
+      "label": "Жильё",
+      "raises": "Первый и последний этаж, отсутствие соседей, старые трубы",
+      "lowers": "Консьерж, новые коммуникации",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_092",
+      "classes": [
+        9
+      ],
+      "section": "Класс 9. Имущество от ущерба: кража, залив, бой стёкол, поломки",
+      "label": "Стёкла и витрины",
+      "raises": "Большие витрины на оживлённой улице",
+      "lowers": "Защитная плёнка, ставни",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_093",
+      "classes": [
+        10
+      ],
+      "section": "Класс 10. Автогражданская ответственность",
+      "label": "Легковые",
+      "raises": "Такси, аренда, молодые водители, нарушения",
+      "lowers": "Личное использование, стаж",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_094",
+      "classes": [
+        10
+      ],
+      "section": "Класс 10. Автогражданская ответственность",
+      "label": "Грузовые и автобусы",
+      "raises": "Международные перевозки, пассажиры, опасные грузы",
+      "lowers": "Городские маршруты",
+      "page": 7,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_095",
+      "classes": [
+        10
+      ],
+      "section": "Класс 10. Автогражданская ответственность",
+      "label": "Спецтехника",
+      "raises": "Работа на дорогах общего пользования",
+      "lowers": "Работа на закрытой территории",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_096",
+      "classes": [
+        10
+      ],
+      "section": "Класс 10. Автогражданская ответственность",
+      "label": "Мотоциклы",
+      "raises": "Высокая частота ДТП",
+      "lowers": "Сезонность",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_097",
+      "classes": [
+        11,
+        12
+      ],
+      "section": "Классы 11 и 12. Ответственность в авиации и на море",
+      "label": "Пассажирские перевозки",
+      "raises": "Число пассажиров, международные конвенции с высокими лимитами",
+      "lowers": "Малая вместимость",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_098",
+      "classes": [
+        11,
+        12
+      ],
+      "section": "Классы 11 и 12. Ответственность в авиации и на море",
+      "label": "Грузовые перевозки",
+      "raises": "Опасные грузы, ценные грузы",
+      "lowers": "Обычные грузы",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_099",
+      "classes": [
+        11,
+        12
+      ],
+      "section": "Классы 11 и 12. Ответственность в авиации и на море",
+      "label": "Загрязнение (море)",
+      "raises": "Танкеры, старые суда, нет плана ликвидации разливов",
+      "lowers": "Сухогрузы, план и оборудование на борту",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_100",
+      "classes": [
+        11,
+        12
+      ],
+      "section": "Классы 11 и 12. Ответственность в авиации и на море",
+      "label": "Третьи лица на земле (авиация)",
+      "raises": "Полёты над городами",
+      "lowers": "Полёты над малонаселённой местностью",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_101",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Строительство и монтаж",
+      "raises": "Высотные работы, работа в жилой застройке, подрядчики без страховки",
+      "lowers": "Малоэтажные, опытный подрядчик, субподрядчики застрахованы",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_102",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Производство",
+      "raises": "Опасные вещества, выброс, шум",
+      "lowers": "Безопасные процессы",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_103",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Торговля и общепит",
+      "raises": "Большой поток посетителей, пищевые отравления",
+      "lowers": "Малый поток, контроль качества",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_104",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Медицина и фармация",
+      "raises": "Хирургия, стоматология, косметология",
+      "lowers": "Диагностика, консультации",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_105",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Профессиональная ответственность: аудиторы, оценщики, юристы, проектировщики",
+      "raises": "Крупные сделки, претензии в прошлом",
+      "lowers": "Малые объёмы, лицензии, опыт",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_106",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Ответственность работодателя",
+      "raises": "Опасные производства, травматизм",
+      "lowers": "Офис, аттестация рабочих мест",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_107",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Владельцы помещений и объектов",
+      "raises": "Ветхие здания, гололёд, отсутствие ограждений",
+      "lowers": "Содержание в порядке",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_108",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Перевозчики (ответственность за груз)",
+      "raises": "Ценные и опасные грузы",
+      "lowers": "Обычные",
+      "page": 8,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_109",
+      "classes": [
+        13
+      ],
+      "section": "Класс 13. Общая гражданская ответственность",
+      "label": "Опасные производственные объекты",
+      "raises": "Класс опасности, аварии в прошлом",
+      "lowers": "Экспертиза промышленной безопасности",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_110",
+      "classes": [
+        14
+      ],
+      "section": "Класс 14. Кредиты",
+      "label": "Автокредиты",
+      "raises": "Нет КАСКО на залог, большой срок, низкий первоначальный взнос",
+      "lowers": "КАСКО оформлено, взнос от 30 %",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_111",
+      "classes": [
+        14
+      ],
+      "section": "Класс 14. Кредиты",
+      "label": "Ипотека",
+      "raises": "Строящееся жильё, залог без оценки",
+      "lowers": "Готовое жильё, независимая оценка",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_112",
+      "classes": [
+        14
+      ],
+      "section": "Класс 14. Кредиты",
+      "label": "Потребительские кредиты",
+      "raises": "Нет обеспечения, низкий класс кредитного бюро",
+      "lowers": "Поручительство, хорошая история",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_113",
+      "classes": [
+        14
+      ],
+      "section": "Класс 14. Кредиты",
+      "label": "Кредиты бизнесу",
+      "raises": "Рискованная отрасль: торговля сезонным товаром, стройка, сельское хозяйство без страхования урожая",
+      "lowers": "Устойчивая отрасль, отчётность, обеспечение",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_114",
+      "classes": [
+        14
+      ],
+      "section": "Класс 14. Кредиты",
+      "label": "Микрозаймы",
+      "raises": "Большое число мелких заёмщиков без истории",
+      "lowers": "Короткий срок",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_115",
+      "classes": [
+        15
+      ],
+      "section": "Класс 15. Поручительство и гарантии",
+      "label": "Гарантии исполнения контракта",
+      "raises": "Большой контракт к обороту принципала, первый контракт такого размера",
+      "lowers": "Опыт исполнения, малая доля к обороту",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_116",
+      "classes": [
+        15
+      ],
+      "section": "Класс 15. Поручительство и гарантии",
+      "label": "Гарантии возврата аванса",
+      "raises": "Большой аванс, нет контроля расходования",
+      "lowers": "Поэтапное финансирование",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_117",
+      "classes": [
+        15
+      ],
+      "section": "Класс 15. Поручительство и гарантии",
+      "label": "Таможенные и налоговые гарантии",
+      "raises": "Отсутствие истории платежей",
+      "lowers": "Чистая история",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_118",
+      "classes": [
+        15
+      ],
+      "section": "Класс 15. Поручительство и гарантии",
+      "label": "Тендерные гарантии",
+      "raises": "Многократное участие без побед",
+      "lowers": "Опыт побед",
+      "page": 9,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_119",
+      "classes": [
+        16
+      ],
+      "section": "Класс 16. Прочие финансовые риски",
+      "label": "Перерыв в производстве",
+      "raises": "Одно здание или одна линия, долгий срок восстановления, редкое оборудование",
+      "lowers": "Резервные площадки, быстрая замена",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_120",
+      "classes": [
+        16
+      ],
+      "section": "Класс 16. Прочие финансовые риски",
+      "label": "Потеря прибыли",
+      "raises": "Зависимость от одного поставщика или клиента",
+      "lowers": "Разброс",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_121",
+      "classes": [
+        16
+      ],
+      "section": "Класс 16. Прочие финансовые риски",
+      "label": "Неисполнение контрагентом",
+      "raises": "Контрагент без истории, предоплата",
+      "lowers": "Проверенный контрагент",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_122",
+      "classes": [
+        16
+      ],
+      "section": "Класс 16. Прочие финансовые риски",
+      "label": "Потеря арендной платы",
+      "raises": "Один арендатор",
+      "lowers": "Много арендаторов",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_123",
+      "classes": [
+        16
+      ],
+      "section": "Класс 16. Прочие финансовые риски",
+      "label": "Урожай (16у)",
+      "raises": "Богарные земли без орошения, засушливый регион, одна культура",
+      "lowers": "Орошение, страхование по нескольким культурам, агротехника",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_124",
+      "classes": [
+        17
+      ],
+      "section": "Класс 17. Правовая защита",
+      "label": "Трудовые споры",
+      "raises": "Большой штат, текучесть",
+      "lowers": "Малый штат",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_125",
+      "classes": [
+        17
+      ],
+      "section": "Класс 17. Правовая защита",
+      "label": "Хозяйственные споры",
+      "raises": "Много контрактов, споры в прошлом",
+      "lowers": "Досудебное урегулирование",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_126",
+      "classes": [
+        17
+      ],
+      "section": "Класс 17. Правовая защита",
+      "label": "Налоговые споры",
+      "raises": "Сложные схемы, проверки в прошлом",
+      "lowers": "Чистая история",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_127",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Офисные работники",
+      "raises": "—",
+      "lowers": "Низкий травматизм",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_128",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Рабочие профессии: стройка, производство",
+      "raises": "Высотные работы, механизмы, химия",
+      "lowers": "Охрана труда, аттестация",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_129",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Водители и перевозчики",
+      "raises": "Дальние рейсы, ночь",
+      "lowers": "Город, день",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_130",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Спортсмены",
+      "raises": "Контактные и экстремальные виды, соревнования",
+      "lowers": "Тренировки, неконтактные виды",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_131",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Шахтёры, нефтяники, энергетики",
+      "raises": "Высокая опасность",
+      "lowers": "—",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_132",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Дети и студенты",
+      "raises": "Активность, спорт",
+      "lowers": "Покрытие только в учебное время",
+      "page": 10,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_133",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Возрастной состав группы",
+      "raises": "Старшие возраста",
+      "lowers": "Молодая группа",
+      "page": 11,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_134",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Покрытие",
+      "raises": "Круглосуточное",
+      "lowers": "Только рабочее время",
+      "page": 11,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_135",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Число людей в одном месте",
+      "raises": "Большое — катастрофический сценарий",
+      "lowers": "Распределённые",
+      "page": 11,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_136",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Программа (классы 2, 18)",
+      "raises": "Широкая программа, стоматология, роды, дорогие клиники",
+      "lowers": "Ограниченная программа, согласованные клиники",
+      "page": 11,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_137",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Частота обращений",
+      "raises": "Высокая в прошлом",
+      "lowers": "Низкая",
+      "page": 11,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_138",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Период ожидания и сооплата",
+      "raises": "Нет",
+      "lowers": "Есть",
+      "page": 11,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    },
+    {
+      "id": "factor_139",
+      "classes": [
+        1,
+        2,
+        18
+      ],
+      "section": "Классы 1, 2, 18. Несчастные случаи, болезни, медицинское страхование",
+      "label": "Территория",
+      "raises": "Весь мир",
+      "lowers": "Узбекистан",
+      "page": 11,
+      "coefficient": null,
+      "calibration_status": "uncalibrated"
+    }
+  ],
+  "pages": [
+    {
+      "page": 1,
+      "text": "Факторы, повышающие и понижающие тариф,\nпо классам и подгруппам\nВерсия от 02.10.2026. Документ для андеррайтеров и для настройки системы.\nКак читать. По каждому классу: подгруппы объектов, затем факторы. Знак «+» — тариф выше,\n«−» — ниже. Величина влияния здесь не указана: размер поправок утверждает актуарий\nстраховщика, система помечает их «не калибровано», пока нет статистики убытков компании.\nОбщие факторы для всех классов\nФактор\nПовышает (+)\nПонижает (−)\nИстория убытков\nклиента\nУбытки за 3–5 лет, особенно частые\nмелкие; крупный убыток за последний год\nБезубыточная история 3 года и\nбольше\nДокументы\nНет документов на объект, расхождения\nмежду документами, осмотр не проводился\nПолный комплект, осмотр\nпроведён, фото со всех ракурсов\nСтраховая сумма к\nстоимости\nСумма выше стоимости; сумма ниже 70 %\nстоимости (спорная пропорция при\nвыплате)\nСумма равна стоимости по отчёту\nоценщика\nСрок\nМноголетний договор без ежегодного\nпересмотра условий\nГод или ежегодный пересмотр\nФраншиза\nОтказ от франшизы при частых мелких\nубытках\nБезусловная франшиза,\nсоразмерная частоте убытков\nКлиент\nНовый клиент без истории; частая смена\nстраховщиков\nКлиент с портфелем в компании и\nхорошей историей\nОплата\nРассрочка с просрочками в прошлом\nЕдиновременная оплата\nНакопление\nНесколько объектов клиента в одном месте\nили на одном маршруте\nОбъекты разнесены\nКласс 3. Наземный транспорт\nПодгруппы по типу транспорта\nПодгруппа\nЧто повышает\nЧто понижает\nЛегковые автомобили\nТакси и аренда, спортивные и\nпремиальные модели, частая смена\nводителей\nЛичное использование,\nсемейный автомобиль, один\nводитель\nГрузовые автомобили\nМеждугородние и международные\nперевозки, опасные грузы,\nсамосвалы на карьерах\nВнутригородская развозка,\nсобственный гараж\n"
+    },
+    {
+      "page": 2,
+      "text": "Автобусы и микроавтобусы\nМаршрутные и туристические\nперевозки, ночные рейсы, горные\nдороги\nСлужебный транспорт по\nпостоянному маршруту\nПрицепы и полуприцепы\nЦистерны, рефрижераторы,\nтяжеловозы\nБортовые прицепы, стоянка на\nбазе\nСпецтехника колёсная:\nкраны, погрузчики,\nбетононасосы\nРабота на стройке, у ЛЭП, на\nоткрытых площадках, передача в\nаренду\nРабота на огороженной\nтерритории предприятия,\nобученный машинист\nСпецтехника гусеничная:\nэкскаваторы, бульдозеры\nКарьеры, шахты, перевозка между\nобъектами на трале\nОдин объект, площадка под\nохраной\nСельхозтехника: тракторы,\nкомбайны\nСезонная работа в поле, хранение\nпод открытым небом\nХранение в закрытом ангаре,\nобслуживание в сезон\nМотоциклы и мопеды\nВысокая частота ДТП и краж,\nмолодые водители\nХранение в гараже, сезонное\nиспользование\nПодгруппы по виду топлива и привода\nПодгруппа\nЧто повышает\nЧто понижает\nБензин\nПереоборудование двигателя, нештатные\nдоработки\nШтатная заводская комплектация\nДизель\nСтарые двигатели с утечками топлива,\nработа в холод без прогрева\nСовременный двигатель,\nрегламентное обслуживание\nГаз: пропан-\nбутан\nКустарная установка баллонов, баллоны без\nосвидетельствования, установка в салоне\nЗаводская установка,\nсвидетельство о безопасности,\nбаллон снаружи салона\nГаз: метан\nВысокое давление в баллонах; старые\nбаллоны; отсутствие регистрации\nпереоборудования\nСертифицированное\nоборудование, срок\nосвидетельствования не истёк\nГибрид\nДорогая батарея, сложный и дорогой\nремонт, мало сервисов\nГарантия производителя на\nбатарею, обслуживание у дилера\nЭлектромобиль\nБатарея — до половины стоимости машины,\nриск возгорания при повреждении, дорогие\nзапчасти, зарядка в неприспособленных\nместах\nЗаводская зарядная станция,\nкрытая стоянка, гарантия на\nбатарею, ограниченный пробег\nВодород и\nпрочие редкие\nНет сервиса и запчастей в стране\n—\nПрочие факторы класса 3\nФактор\nПовышает\nПонижает\nВозраст и пробег\nСтарше 10 лет, пробег более 200 000 км,\nспецтехника свыше 12 000 моточасов\nДо 3 лет, малый пробег\n"
+    },
+    {
+      "page": 3,
+      "text": "Стоимость\nПремиальные марки с дорогим ремонтом;\nредкие марки без запчастей в стране\nМассовые модели с доступным\nремонтом\nХранение ночью\nУлица, неохраняемый двор\nГараж, охраняемая стоянка,\nвидеонаблюдение\nПротивоугонная\nзащита\nНет; только штатная сигнализация\nИммобилайзер, спутниковый\nпоиск с блокировкой\nВодители\nСтаж до 3 лет, возраст до 23 лет, много\nводителей, нарушения ПДД, лишение прав в\nпрошлом\nСтаж более 5 лет, ограниченный\nсписок, без нарушений\nРегион и дороги\nГорные дороги, зимние перевалы,\nинтенсивное движение больших городов\nРавнинные маршруты, малая\nинтенсивность\nИспользование\nТакси, аренда, доставка, обучение\nвождению, спорт\nЛичное или служебное\nУгон\nМарки, популярные у угонщиков; отсутствие\nмаркировки деталей\nМаркировка, GPS-метки\nСтёкла и оптика\nДорогая оптика, панорамные стёкла\nОбычные\nПовреждения на\nосмотре\nЕсть неустранённые повреждения\nНет\nКласс 4. Железнодорожный подвижной состав\nПодгруппа\nПовышает\nПонижает\nЛокомотивы\nВозраст более 25 лет, маневровая работа на\nстанциях\nНовые, магистральные с\nплановым ТО\nПассажирские\nвагоны\nМеждународные маршруты, устаревшие\nтормозные системы\nВнутренние маршруты,\nнедавний капремонт\nГрузовые вагоны и\nплатформы\nПеревозка угля и руды, частая погрузка\nкранами\nКонтейнерные платформы\nЦистерны\nОпасные грузы: нефть, газ, химия;\nпросроченное освидетельствование котла\nПищевые грузы, свежее\nосвидетельствование\nОбщие для класса: состояние путей на маршруте, сроки плановых ремонтов, опасные грузы,\nперегруз.\nКласс 5. Авиация\nПодгруппа\nПовышает\nПонижает\nПассажирские\nсамолёты\nВозраст борта, малый налёт экипажа,\nсложные аэродромы (горы, короткие\nполосы)\nМолодой парк, обслуживание у\nпроизводителя\n"
+    },
+    {
+      "page": 4,
+      "text": "Грузовые\nсамолёты\nНочные рейсы, опасные грузы,\nнерегулярные аэродромы\nРегулярные маршруты\nВертолёты\nПолёты на малых высотах,\nсельхозработы, санитарная авиация,\nгоры\nКорпоративные перевозки,\nбазирование в ангаре\nМалая и частная\nавиация\nЛюбительская эксплуатация, редкие\nполёты\nПрофессиональный экипаж\nБеспилотники\nПолёты над людьми и объектами,\nручное управление\nАвтоматические маршруты,\nстрахование ответственности\nоператора\nОбщие: сертификат лётной годности, налёт часов, квалификация экипажа, тип аэродромов,\nорнитологическая обстановка, ангарное хранение.\nКласс 6. Морское и речное\nПодгруппа\nПовышает\nПонижает\nСухогрузы и танкеры\nВозраст более 20 лет, отсутствие\nкласса, опасные грузы\nДействующий класс, свежее\nосвидетельствование\nПассажирские суда\nСезон штормов, большое число\nпассажиров\nПрибрежные маршруты в\nспокойный сезон\nРечные и прогулочные\nсуда, катера\nЛюбительское управление, стоянка\nбез охраны\nПрофессиональный экипаж,\nохраняемая стоянка\nПлавучие средства:\nбаржи, понтоны\nБуксировка в непогоду, отсутствие\nэкипажа\nСтационарная работа\nОбщие: район и сезон плавания, класс судна, экипаж, навигационное оборудование.\nКласс 7. Грузы\nПодгруппа груза\nПовышает\nПонижает\nХрупкие: стекло, электроника,\nприборы\nНет заводской упаковки,\nперевалки\nЗаводская упаковка,\nкрепление\nСкоропортящиеся: продукты,\nмедикаменты\nНет температурного контроля,\nдлинный маршрут\nРефрижератор с датчиками,\nкороткое плечо\nДорогие и ликвидные: техника,\nтелефоны, табак, алкоголь\nПривлекательность для краж,\nстоянки в пути\nСопровождение, пломбы,\nслежение\nНасыпные и наливные: зерно,\nцемент, нефтепродукты\nПодмочка, утечки, недостача\nИсправная тара, взвешивание\nНегабарит и тяжеловес:\nоборудование, техника\nСложная погрузка, крановые\nработы\nСпециализированный\nперевозчик с опытом\n"
+    },
+    {
+      "page": 5,
+      "text": "Опасные грузы: химия, газ\nКласс опасности, транзит через\nгорода\nЛицензированный перевозчик\nПодгруппы по виду транспорта\nТранспорт\nПовышает\nПонижает\nАвтомобильный\nМеждународный маршрут, горные перевалы,\nночные стоянки без охраны\nПрямой маршрут,\nохраняемые стоянки\nЖелезнодорожный\nОткрытые платформы, много перевалок\nКонтейнеры, прямой\nмаршрут\nАвиационный\nПеревалки в хабах\nПрямой рейс\nМорской\nПалубный груз, сезон штормов\nТрюм, спокойный сезон\nСмешанный\nКаждая перевалка добавляет риск\nОдин перевозчик за весь\nпуть\nКласс 8. Имущество от огня и стихийных бедствий\nПодгруппы по типу объекта\nПодгруппа\nПовышает\nПонижает\nЖилые дома и квартиры\nЧастный дом с печным отоплением,\nстарая проводка, дерево\nКвартира в кирпичном или\nпанельном доме, центральное\nотопление\nОфисы\nСерверные без пожаротушения,\nарендаторы с кухней\nСигнализация, спринклеры,\nпожарные выходы\nТорговля: магазины,\nрынки\nГорючий товар, плотная застройка\nрынков, временные павильоны\nОтдельно стоящий магазин с\nсигнализацией\nСклады\nТовар на полу, высокая стеллажная\nзагрузка, горючие упаковки,\nхолодильники с аммиаком\nНегорючий товар, спринклеры,\nотсеки\nПроизводство\nГорючие материалы, пищевое\nпроизводство с печами,\nдеревообработка, химия, покраска\nНегорючие процессы,\nавтоматическое\nпожаротушение\nГостиницы и общепит\nКухни, много людей, ночной режим\nСигнализация, обученный\nперсонал\nСельхозобъекты:\nтеплицы, фермы,\nхранилища\nСено и солома, пыль, слабая электрика\nНегорючие хранилища\nОбъекты энергетики и\nАЗС\nТопливо и газ, высокое напряжение\nАвтоматика защиты, разрывы\nмежду резервуарами\n"
+    },
+    {
+      "page": 6,
+      "text": "Незавершённое\nстроительство\nНет защиты, открытые конструкции\nОхрана стройплощадки\nПодгруппы по конструкции\nКонструкция\nПовышает\nПонижает\nЖелезобетон, кирпич, камень\n—\nНегорючие стены и\nперекрытия\nМеталлокаркас с сэндвич-\nпанелями\nГорючий утеплитель:\nпенополистирол\nМинеральная вата\nДерево и смешанные конструкции\nГорючие стены и перекрытия\nОгнезащитная обработка\nГлинобитные и саманные\nРазрушение при землетрясении и\nливнях\n—\nЛёгкие и временные: павильоны,\nнавесы\nВетер, снег, пожар\n—\nПодгруппы по риску стихии\nРиск\nПовышает\nПонижает\nЗемлетрясение\nСейсмозона 8–9 баллов, здание без\nсейсмостойкости, старые дома\nЗона 7 и ниже, сейсмостойкий\nпроект, обследование\nНаводнение и сель\nПойма реки, низина, предгорье с сухими\nруслами, подвал без дренажа\nВозвышенность, дренаж, защита\nот селя\nБуря и ураган\nЛёгкая кровля, открытые площадки,\nвысокие сооружения\nТяжёлая кровля, защищённое\nрасположение\nЛивень и град\nПлоская кровля с плохим водостоком,\nстеклянные крыши\nСкатная кровля, исправный\nводосток\nПросадка грунта и\nоползень\nСклоны, насыпные грунты, подтопление\nУстойчивые грунты, изыскания\nПрочие факторы класса 8\nФактор\nПовышает\nПонижает\nПожарная защита\nНет сигнализации и пожаротушения,\nнет гидрантов\nСигнализация с выводом на пульт,\nспринклеры, гидранты\nЭлектрика\nСтарая проводка, перегрузка, нет\nзащиты от перепадов\nНовая проводка, УЗО, стабилизаторы\nОтопление\nПечи, самодельные обогреватели, газ\nбез автоматики\nЦентральное или автоматизированное\nПожарные отсеки\nОдин большой отсек, высокая\nстоимость в одном отсеке\nРазделение отсеками\n"
+    },
+    {
+      "page": 7,
+      "text": "Соседи\nГорючие соседние здания вплотную,\nАЗС рядом\nРазрывы, негорючее окружение\nПожарная часть\nБолее 10 км, плохая дорога\nДо 5 км\nИзнос\nБолее 50 %, аварийное состояние\nНовое или после капремонта\nЭтажность и\nвысота\nВысотные без автоматики, подвалы с\nтоваром\nМалоэтажные с выходами\nРежим работы\nНочное производство, пустующее\nздание\nДневной режим, постоянный контроль\nПерерыв в\nпроизводстве\nДолгий срок восстановления,\nзависимость от одного здания\nРезервные площадки\nКласс 9. Имущество от ущерба: кража, залив, бой стёкол,\nполомки\nПодгруппа\nПовышает\nПонижает\nМагазины и склады ликвидного\nтовара: электроника, телефоны,\nалкоголь, табак, ювелирные изделия\nВысокая привлекательность\nдля кражи, первый этаж,\nвитрины\nРешётки, сейфы, охрана,\nвидеонаблюдение,\nинвентаризация\nОфисы с техникой\nНоутбуки и серверы,\nсвободный доступ\nПропускной режим\nСклады обычного товара\nНет охраны ночью\nОхрана и сигнализация\nОборудование\nИзнос, отсутствие\nобслуживания, перепады\nнапряжения\nРегламентное ТО,\nстабилизаторы\nЖильё\nПервый и последний этаж,\nотсутствие соседей, старые\nтрубы\nКонсьерж, новые\nкоммуникации\nСтёкла и витрины\nБольшие витрины на\nоживлённой улице\nЗащитная плёнка, ставни\nПрочие факторы: охрана и сигнализация, решётки, видеонаблюдение, состояние труб и\nкровли, район, ночной режим.\nКласс 10. Автогражданская ответственность\nПодгруппа\nПовышает\nПонижает\nЛегковые\nТакси, аренда, молодые водители, нарушения\nЛичное использование, стаж\nГрузовые и\nавтобусы\nМеждународные перевозки, пассажиры,\nопасные грузы\nГородские маршруты\n"
+    },
+    {
+      "page": 8,
+      "text": "Спецтехника\nРабота на дорогах общего пользования\nРабота на закрытой\nтерритории\nМотоциклы\nВысокая частота ДТП\nСезонность\nПрочие: мощность, территория использования, число водителей и стаж, история нарушений,\nлимит ответственности. Обязательный вид считается по нормативному тарифу — факторы\nвлияют только на добровольное расширение.\nКлассы 11 и 12. Ответственность в авиации и на море\nПодгруппа\nПовышает\nПонижает\nПассажирские\nперевозки\nЧисло пассажиров, международные\nконвенции с высокими лимитами\nМалая вместимость\nГрузовые перевозки\nОпасные грузы, ценные грузы\nОбычные грузы\nЗагрязнение (море)\nТанкеры, старые суда, нет плана\nликвидации разливов\nСухогрузы, план и\nоборудование на борту\nТретьи лица на земле\n(авиация)\nПолёты над городами\nПолёты над малонаселённой\nместностью\nКласс 13. Общая гражданская ответственность\nПодгруппа деятельности\nПовышает\nПонижает\nСтроительство и монтаж\nВысотные работы, работа в\nжилой застройке, подрядчики\nбез страховки\nМалоэтажные, опытный\nподрядчик, субподрядчики\nзастрахованы\nПроизводство\nОпасные вещества, выброс,\nшум\nБезопасные процессы\nТорговля и общепит\nБольшой поток посетителей,\nпищевые отравления\nМалый поток, контроль\nкачества\nМедицина и фармация\nХирургия, стоматология,\nкосметология\nДиагностика, консультации\nПрофессиональная ответственность:\nаудиторы, оценщики, юристы,\nпроектировщики\nКрупные сделки, претензии в\nпрошлом\nМалые объёмы, лицензии,\nопыт\nОтветственность работодателя\nОпасные производства,\nтравматизм\nОфис, аттестация рабочих\nмест\nВладельцы помещений и объектов\nВетхие здания, гололёд,\nотсутствие ограждений\nСодержание в порядке\nПеревозчики (ответственность за\nгруз)\nЦенные и опасные грузы\nОбычные\n"
+    },
+    {
+      "page": 9,
+      "text": "Опасные производственные объекты\nКласс опасности, аварии в\nпрошлом\nЭкспертиза промышленной\nбезопасности\nПрочие: лимит на случай и за год, число работников и посетителей, претензии за 3 года,\nтерритория, охрана труда.\nКласс 14. Кредиты\nПодгруппа\nПовышает\nПонижает\nАвтокредиты\nНет КАСКО на залог, большой срок, низкий\nпервоначальный взнос\nКАСКО оформлено, взнос\nот 30 %\nИпотека\nСтроящееся жильё, залог без оценки\nГотовое жильё,\nнезависимая оценка\nПотребительские\nкредиты\nНет обеспечения, низкий класс кредитного бюро\nПоручительство, хорошая\nистория\nКредиты бизнесу\nРискованная отрасль: торговля сезонным\nтоваром, стройка, сельское хозяйство без\nстрахования урожая\nУстойчивая отрасль,\nотчётность, обеспечение\nМикрозаймы\nБольшое число мелких заёмщиков без истории\nКороткий срок\nПрочие: доля необеспеченной части, срок, кредитная история и класс бюро, просрочки,\nнакопление по одному банку и отрасли, назначение кредита. Страхователь и плательщик —\nбанк.\nКласс 15. Поручительство и гарантии\nПодгруппа\nПовышает\nПонижает\nГарантии исполнения\nконтракта\nБольшой контракт к обороту принципала,\nпервый контракт такого размера\nОпыт исполнения, малая\nдоля к обороту\nГарантии возврата\nаванса\nБольшой аванс, нет контроля расходования\nПоэтапное финансирование\nТаможенные и\nналоговые гарантии\nОтсутствие истории платежей\nЧистая история\nТендерные гарантии\nМногократное участие без побед\nОпыт побед\nПрочие: финансовая устойчивость принципала, встречное обеспечение, срок, отчётность.\nКласс 16. Прочие финансовые риски\nПодгруппа\nПовышает\nПонижает\n"
+    },
+    {
+      "page": 10,
+      "text": "Перерыв в\nпроизводстве\nОдно здание или одна линия, долгий срок\nвосстановления, редкое оборудование\nРезервные площадки, быстрая\nзамена\nПотеря прибыли\nЗависимость от одного поставщика или\nклиента\nРазброс\nНеисполнение\nконтрагентом\nКонтрагент без истории, предоплата\nПроверенный контрагент\nПотеря арендной\nплаты\nОдин арендатор\nМного арендаторов\nУрожай (16у)\nБогарные земли без орошения,\nзасушливый регион, одна культура\nОрошение, страхование по\nнескольким культурам,\nагротехника\nКласс 17. Правовая защита\nПодгруппа\nПовышает\nПонижает\nТрудовые споры\nБольшой штат, текучесть\nМалый штат\nХозяйственные споры\nМного контрактов, споры в прошлом\nДосудебное урегулирование\nНалоговые споры\nСложные схемы, проверки в прошлом\nЧистая история\nКлассы 1, 2, 18. Несчастные случаи, болезни, медицинское\nстрахование\nПодгруппы по профессии и занятиям\nПодгруппа\nПовышает\nПонижает\nОфисные работники\n—\nНизкий травматизм\nРабочие профессии: стройка,\nпроизводство\nВысотные работы, механизмы, химия\nОхрана труда, аттестация\nВодители и перевозчики\nДальние рейсы, ночь\nГород, день\nСпортсмены\nКонтактные и экстремальные виды,\nсоревнования\nТренировки, неконтактные\nвиды\nШахтёры, нефтяники, энергетики\nВысокая опасность\n—\nДети и студенты\nАктивность, спорт\nПокрытие только в\nучебное время\nПрочие факторы\nФактор\nПовышает\nПонижает\n"
+    },
+    {
+      "page": 11,
+      "text": "Возрастной состав\nгруппы\nСтаршие возраста\nМолодая группа\nПокрытие\nКруглосуточное\nТолько рабочее время\nЧисло людей в\nодном месте\nБольшое — катастрофический сценарий\nРаспределённые\nПрограмма (классы\n2, 18)\nШирокая программа, стоматология,\nроды, дорогие клиники\nОграниченная программа,\nсогласованные клиники\nЧастота обращений\nВысокая в прошлом\nНизкая\nПериод ожидания и\nсооплата\nНет\nЕсть\nТерритория\nВесь мир\nУзбекистан\nКак это должно работать в системе\n1. Для каждого класса в шаблоне заводится список подгрупп и факторов из этого документа.\n2. У каждого фактора — коэффициент: больше 1 повышает, меньше 1 понижает. Пока\nкоэффициенты экспертные, они помечены «не калибровано».\n3. Ставка акта = ставка продукта × произведение коэффициентов по заполненным факторам,\nне ниже минимальной ставки.\n4. Незаполненный фактор не меняет ставку, но акт перечисляет его в «уточнить».\n5. Актуарий страховщика утверждает коэффициенты в админке; после загрузки убытков за 3–\n5 лет система пересчитывает их по статистике.\nЧто есть в системе сейчас\nКлассы\nЧто учитывается в коэффициентах\nЧего нет\n3\nВозраст, стаж, регион, хранение и охрана,\nпротивоугонная система, условия работы\nспецтехники\nВид топлива и привода,\nиспользование (такси, аренда),\nподгруппы по типу\n8 и 9\nКонструкция, деятельность, защита,\nсейсмозона, износ, отсеки, пожарная часть,\nэтажность, охрана\nПодгруппы по типу объекта и риску\nстихии в явном виде\nОстальные\nФакторы перечислены в шаблонах без\nкоэффициентов\nКоэффициенты\nВ ставку акта сейчас входят только четыре признака через уровень риска; остальные факторы\nвлияют на справочную техническую ставку. Перевод ставки акта на полный набор факторов —\nотдельная доработка.\n"
+    }
+  ]
+}

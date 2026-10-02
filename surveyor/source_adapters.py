@@ -37,7 +37,7 @@ HOSTS = {
     "licenses": {"license.gov.uz"},
     "court": {"public.sud.uz"},
 }
-FORMATS = {"json", "csv", "xlsx", "html_table", "siat", "document", "napp"}
+FORMATS = {"json", "csv", "xlsx", "html_table", "siat", "document", "napp", "napp_reference"}
 
 
 class SourceConfig(Strict):
@@ -66,7 +66,7 @@ class SourceConfig(Strict):
             ReferenceInput.model_validate(
                 {**self.reference, "source_url": str(self.url), "text": "preflight"}
             )
-        elif self.format not in {"siat", "napp"}:
+        elif self.format not in {"siat", "napp", "napp_reference"}:
             needed = {"metric", "period", "value", "unit", "observation_date"}
             if needed - (set(self.columns) | set(self.constants)):
                 raise ValueError("Укажите соответствие полей: metric, period, value, unit, observation_date")
@@ -193,6 +193,15 @@ def parse_siat(payload, config):
     unit = metadata.get("Unit of measurement")
     if not rows or not unit:
         raise FormatChanged("SIAT: отсутствуют данные или единица")
+    metric = config.get("constants", {}).get("metric")
+    expected = {
+        "registered_thefts": ("Number of registered thefts (total)", "units"),
+        "registered_robberies": ("Number of registered muggings and robberies (total)", "units"),
+        "mortality_per_mille": ("Mortality rate", "Per mill"),
+        "population_thousands": ("Permanent population-Total", "thousand people"),
+    }.get(metric)
+    if expected and (metadata.get("Indicator name"), unit) != expected:
+        raise FormatChanged("SIAT: изменился смысл или единицы показателя")
     result = []
     for row in rows:
         if set(row) != set(rows[0]):
@@ -208,6 +217,8 @@ def parse_siat(payload, config):
             year = int(period[:4])
             month = int(period[-1]) * 3 if "-Q" in period else int(period[-2:]) if "-M" in period else 12
             end = date(year, month, calendar.monthrange(year, month)[1])
+            if config.get("constants", {}).get("metric") == "population_thousands":
+                end = date(year, 1, 1)
             if end > date.today():
                 continue
             result.append(
@@ -264,6 +275,10 @@ def parse_public(data, config):
 
 
 SIAT_DATASETS = [
+    ("stat_theft", 888, "registered_thefts", "Зарегистрированные кражи", "all"),
+    ("stat_robbery", 880, "registered_robberies", "Зарегистрированные грабежи и разбои", "all"),
+    ("stat_mortality", 229, "mortality_per_mille", "Смертность: на 1000 населения", "all"),
+    ("stat_population", 246, "population_thousands", "Население на начало года: тысяч человек", "all"),
     ("stat_crime", 800, "registered_crimes", "Зарегистрированные преступления", "all"),
     ("stat_housing", 1244, "housing_area", "Площадь жилищного фонда", "housing"),
     ("stat_accidents", 3251, "road_accidents", "ДТП: опубликованные квартальные периоды", "vehicle"),
@@ -286,17 +301,17 @@ def seed_public_channels(db):
                     "access": "official_file",
                     "note": title,
                     "host_channel": "stat",
-                    "reviewed_on": "2026-10-01",
+                    "reviewed_on": "2026-10-02",
                     "review_status": "connect",
                     "config": SourceConfig(
                         url=f"https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_{dataset}.json",
                         format="siat",
                         permission_url=f"https://siat.stat.uz/data/{dataset}/?lang=ru",
-                        permission_note="Official downloadable JSON, CC BY 4.0 attribution, robots.txt permits access (2026-10-01).",
+                        permission_note="Official downloadable JSON, CC BY 4.0 attribution, robots.txt permits access (2026-10-02).",
                         constants={
                             "metric": metric,
                             "object_type": object_type,
-                            "stale_days": 550 if dataset in {800, 1244} else 200 if dataset == 3251 else 90,
+                            "stale_days": 200 if dataset == 3251 else 90 if dataset == 4690 else 550,
                         },
                     ).model_dump(mode="json"),
                 },
@@ -362,13 +377,13 @@ def seed_access_review(db):
         ),
         "stat": (
             "official_file",
-            "Подключены четыре канала SIAT: преступность, ДТП, жильё, цены",
+            "Подключены каналы SIAT: преступность, кражи, грабежи, смертность, население, ДТП, жильё, цены",
             "https://siat.stat.uz/data/?lang=ru",
         ),
     }
     for code, (access, note, evidence) in reviews.items():
         row = db.get(Channel, code)
-        if row and not row.data.get("config") and row.data.get("reviewed_on") != "2026-10-01":
+        if row and not row.data.get("config") and row.data.get("reviewed_on", "") < "2026-10-01":
             row.data = {
                 **row.data,
                 "access": access,
@@ -376,3 +391,55 @@ def seed_access_review(db):
                 "review_evidence": evidence,
                 "reviewed_on": "2026-10-01",
             }
+
+
+def seed_reference_channels(db):
+    from surveyor.db import Channel
+    from surveyor.napp import NAPP_INDEX
+
+    if not db.get(Channel, "napp_reference"):
+        db.add(
+            Channel(
+                code="napp_reference",
+                enabled=True,
+                data={
+                    "domain": "napp.uz",
+                    "host_channel": "napp",
+                    "access": "official_file",
+                    "note": "Справочно: компании, INSON, претензии, подразделения, регионы и наборы классов. Регион учёта может отличаться от региона объекта.",
+                    "reviewed_on": "2026-10-02",
+                    "review_status": "connect",
+                    "config": SourceConfig(
+                        url=NAPP_INDEX,
+                        format="napp_reference",
+                        permission_url=NAPP_INDEX,
+                        permission_note="Official NAPP workbook and robots reviewed 2026-10-02; reference tables only.",
+                    ).model_dump(mode="json"),
+                },
+            )
+        )
+    if not db.get(Channel, "stat_disasters"):
+        db.add(
+            Channel(
+                code="stat_disasters",
+                enabled=False,
+                data={
+                    "domain": "stat.uz",
+                    "access": "manual_only",
+                    "host_channel": "stat",
+                    "note": "Стихийные бедствия: материалы ЦУР найдены, региональный ряд событий и потерь не подтверждён. Пока только датированный файл или ссылка.",
+                    "reviewed_on": "2026-10-02",
+                    "review_status": "dataset_required",
+                    "review_evidence": "https://nsdg.stat.uz/ru/goal/16",
+                },
+            )
+        )
+    notes = {
+        "auction": "E-auksion: только подтверждённые завершённые сделки с протоколом. Стартовые цены исключаются. Автодоступ — после проверки разрешения и формата.",
+        "listings": "OLX: цены предложений по спецтехнике, транспорту и имуществу; не цены сделок. Ручной ввод ссылки/файла, даты, валюты и сопоставимости; автосбор не включён.",
+        "stat": "SIAT: преступность, кражи, грабежи и разбои, смертность, население, ДТП, жильё, цены. Стихийные бедствия ожидают проверенного набора.",
+    }
+    for code, note in notes.items():
+        row = db.get(Channel, code)
+        if row and not row.data.get("config") and row.data.get("reviewed_on") != "2026-10-02":
+            row.data = {**row.data, "note": note, "reviewed_on": "2026-10-02"}

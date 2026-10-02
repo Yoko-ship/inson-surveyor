@@ -80,6 +80,8 @@ class Comparable(Strict):
     date: date
     source: str = Field(min_length=1, max_length=500)
     currency: str = Field(default="UZS", pattern=r"^[A-Z]{3}$")
+    evidence_kind: Literal["asking_price", "completed_sale", "auction_start"] = "asking_price"
+    transaction_reference: str = Field(default="", max_length=500)
     same_item: bool = True
     edit_reason: str = Field(default="", max_length=500)
 
@@ -211,6 +213,9 @@ class LossInput(Strict):
 
 
 class IndicatorInput(Strict):
+    subject: str = Field(default="market", min_length=1, max_length=200)
+    reference_only: bool = False
+    note: str = Field(default="", max_length=2000)
     metric: str = Field(min_length=1, max_length=100)
     region: str = Field(default="all", max_length=100)
     class_code: str = Field(default="all", max_length=50)
@@ -226,6 +231,10 @@ class IndicatorInput(Strict):
 
     @model_validator(mode="after")
     def observation_not_future(self):
+        if self.metric.startswith("napp_ref_"):
+            self.reference_only = True
+        if self.reference_only and (self.rate_adjustment or self.annual_market_rate is not None):
+            raise ValueError("Справочные данные не являются тарифной поправкой или котировкой")
         if self.observation_date > date.today():
             raise ValueError("Дата наблюдения не может быть в будущем")
         return self

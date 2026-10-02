@@ -2,6 +2,93 @@
 
 # key: Russian, Uzbek, English
 TEXT = {
+    "registered_thefts": ("Зарегистрированные кражи", "Ro‘yxatga olingan o‘g‘riliklar", "Registered thefts"),
+    "registered_robberies": ("Грабежи и разбои", "Talonchilik va bosqinchilik", "Muggings and robberies"),
+    "mortality_per_mille": (
+        "Смертность на 1000 населения",
+        "1000 kishiga o‘limlar",
+        "Deaths per 1000 population",
+    ),
+    "population_thousands": (
+        "Население на начало года, тыс. человек",
+        "Yil boshidagi aholi, ming kishi",
+        "Population at start of year, thousands",
+    ),
+    "napp_ref_company_premiums": ("Премии компании", "Kompaniya mukofotlari", "Company premiums"),
+    "napp_ref_company_payments": ("Выплаты компании", "Kompaniya to‘lovlari", "Company payments"),
+    "napp_ref_claims_received": ("Претензии полученные", "Kelib tushgan da’volar", "Claims received"),
+    "napp_ref_claims_paid": ("Претензии оплаченные", "To‘langan da’volar", "Claims paid"),
+    "napp_ref_claims_refused": ("Претензии отклонённые", "Rad etilgan da’volar", "Claims refused"),
+    "napp_ref_claims_unsettled": (
+        "Претензии неурегулированные",
+        "Ko‘rib chiqilmagan da’volar",
+        "Unsettled claims",
+    ),
+    "napp_ref_bundle_premiums": (
+        "Премии по набору классов",
+        "Klasslar to‘plami bo‘yicha mukofotlar",
+        "Class bundle premiums",
+    ),
+    "napp_ref_bundle_payments": (
+        "Выплаты по набору классов",
+        "Klasslar to‘plami bo‘yicha to‘lovlar",
+        "Class bundle payments",
+    ),
+    "napp_ref_bundle_liabilities": (
+        "Обязательства по набору классов",
+        "Klasslar to‘plami bo‘yicha majburiyatlar",
+        "Class bundle liabilities",
+    ),
+    "napp_ref_regional_premiums": (
+        "Региональные премии рынка",
+        "Hududiy bozor mukofotlari",
+        "Regional market premiums",
+    ),
+    "napp_ref_regional_payments": (
+        "Региональные выплаты рынка",
+        "Hududiy bozor to‘lovlari",
+        "Regional market payments",
+    ),
+    "napp_ref_inson_premiums_market_share": (
+        "Доля INSON в премиях всего рынка",
+        "INSONning umumiy bozor mukofotlaridagi ulushi",
+        "INSON share of total market premiums",
+    ),
+    "napp_ref_inson_payments_market_share": (
+        "Доля INSON в выплатах всего рынка",
+        "INSONning umumiy bozor to‘lovlaridagi ulushi",
+        "INSON share of total market payments",
+    ),
+    "napp_ref_inson_subdivision_premiums": (
+        "Премии подразделений INSON",
+        "INSON bo‘linmalari mukofotlari",
+        "INSON subdivision premiums",
+    ),
+    "napp_ref_inson_subdivision_payments": (
+        "Выплаты подразделений INSON",
+        "INSON bo‘linmalari to‘lovlari",
+        "INSON subdivision payments",
+    ),
+    "napp_ref_inson_payment_premium_ratio": (
+        "INSON: выплаты / премии",
+        "INSON: to‘lovlar / mukofotlar",
+        "INSON: payments / premiums",
+    ),
+    "napp_ref_inson_region_to_company_ratio": (
+        "INSON: отношение региона к компании",
+        "INSON: hududning kompaniyaga nisbati",
+        "INSON: regional ratio / company ratio",
+    ),
+    "evidence_kind": ("Тип цены", "Narx turi", "Price evidence"),
+    "transaction_reference": ("Подтверждение сделки", "Bitim tasdig‘i", "Transaction evidence"),
+    "asking_price": ("Цена предложения", "Taklif narxi", "Asking price"),
+    "completed_sale": ("Завершённая сделка", "Yakunlangan bitim", "Completed sale"),
+    "auction_start": ("Стартовая цена торгов", "Auksion boshlang‘ich narxi", "Auction starting price"),
+    "reference_only": (
+        "Только справочно; тариф не меняет",
+        "Faqat ma’lumot uchun; tarifga ta’sir qilmaydi",
+        "Reference only; does not change pricing",
+    ),
     "tariff_source": (
         "Источник тарифной политики, страница",
         "Tarif siyosati manbasi, sahifa",

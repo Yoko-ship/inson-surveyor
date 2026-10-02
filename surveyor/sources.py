@@ -8,7 +8,7 @@ from zipfile import BadZipFile
 
 import httpx
 from openpyxl.utils.exceptions import InvalidFileException
-from sqlalchemy import or_, select, update
+from sqlalchemy import func, or_, select, update
 
 from surveyor.db import Audit, Channel, Indicator, now
 from surveyor.regions import region_code
@@ -58,15 +58,17 @@ def store_indicator(db, channel, item, actor=None):
         select(Indicator)
         .where(
             Indicator.channel_code == channel,
+            func.coalesce(Indicator.data["subject"].as_string(), "market") == data.get("subject", "market"),
             *(Indicator.data[k].as_string() == data.get(k) for k in identity),
         )
         .order_by(Indicator.fetched_at.desc())
         .limit(1)
     )
-    if (
-        previous
-        and {k: v for k, v in previous.data.items() if k not in {"approved_by", "approved_at"}} == data
-    ):
+    if previous and {
+        k: v
+        for k, v in {"subject": "market", "reference_only": False, "note": "", **previous.data}.items()
+        if k not in {"approved_by", "approved_at"}
+    } == {"subject": "market", "reference_only": False, "note": "", **data}:
         return previous
     row = Indicator(channel_code=channel, data=data)
     db.add(row)
@@ -173,7 +175,14 @@ def latest_indicators(db, region=None, class_code=None):
     seen, result = set(), []
     for row in rows:
         d = row.data
-        key = (row.channel_code, d["metric"], d.get("region"), d.get("class_code"), d.get("object_type"))
+        key = (
+            row.channel_code,
+            d.get("subject", "market"),
+            d["metric"],
+            d.get("region"),
+            d.get("class_code"),
+            d.get("object_type"),
+        )
         if key in seen:
             continue
         seen.add(key)
@@ -221,12 +230,17 @@ def collect_channel(db, code, force=False):
             channel.last_success, channel.error = now(), None
             db.commit()
             return {"status": "collected", "channel": code, "reference_id": row.id, "count": 1}
-        if config["format"] == "napp":
+        if config["format"] in {"napp", "napp_reference"}:
             from surveyor.napp import latest_download, parse_napp
 
             dataset_url = latest_download(content)
             workbook = fetch_public({**config, "url": dataset_url}, "napp")
-            items, schema = parse_napp(workbook, dataset_url)
+            if config["format"] == "napp_reference":
+                from surveyor.napp_reference import parse_napp_reference
+
+                items, schema = parse_napp_reference(workbook, dataset_url)
+            else:
+                items, schema = parse_napp(workbook, dataset_url)
             channel.data = {**channel.data, "last_dataset_url": dataset_url}
         else:
             items, schema = parse_public(content, config)

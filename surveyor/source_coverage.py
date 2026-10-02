@@ -18,6 +18,7 @@ def source_coverage(db):
                 "class_code": key[1],
                 "object_type": key[2],
                 "unit": key[3],
+                "reference_only": bool(item.get("reference_only") or item["metric"].startswith("napp_ref_")),
                 "fresh": 0,
                 "stale": 0,
             },
@@ -33,7 +34,8 @@ def source_coverage(db):
             for i in observations
             if not i["stale"]
             and i.get("class_code", "all") in {"all", row.class_code}
-            and not i["metric"].startswith("fx_")
+            and not i["metric"].startswith(("fx_", "napp_ref_"))
+            and not i.get("reference_only")
         ]
         available = {i["metric"] for i in relevant if i.get("annual_market_rate") is None}
         configured = set(row.data.get("indicator_metrics", [])) | set(row.data.get("indicator_rules", {}))

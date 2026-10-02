@@ -89,4 +89,7 @@ def bootstrap():
         seed_public_channels(db)
         seed_napp(db)
         seed_access_review(db)
+        from surveyor.source_adapters import seed_reference_channels
+
+        seed_reference_channels(db)
         db.commit()

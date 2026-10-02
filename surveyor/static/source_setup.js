@@ -64,3 +64,31 @@ function bindMarketQuote() {
     await adminIndicators();
   });
 }
+
+function sourceMetricName(metric) {
+  const labels = {
+    registered_thefts: "Зарегистрированные кражи",
+    registered_robberies: "Грабежи и разбои",
+    mortality_per_mille: "Смертность на 1000 населения",
+    population_thousands: "Население на начало года, тыс. человек",
+    napp_ref_company_premiums: "Премии компании",
+    napp_ref_company_payments: "Выплаты компании",
+    napp_ref_claims_received: "Претензии полученные",
+    napp_ref_claims_paid: "Претензии оплаченные",
+    napp_ref_claims_refused: "Претензии отклонённые",
+    napp_ref_claims_unsettled: "Претензии неурегулированные",
+    napp_ref_bundle_premiums: "Премии по набору классов",
+    napp_ref_bundle_payments: "Выплаты по набору классов",
+    napp_ref_bundle_liabilities: "Обязательства по набору классов",
+    napp_ref_regional_premiums: "Региональные премии рынка",
+    napp_ref_regional_payments: "Региональные выплаты рынка",
+    napp_ref_inson_premiums_market_share: "Доля INSON в премиях всего рынка",
+    napp_ref_inson_payments_market_share: "Доля INSON в выплатах всего рынка",
+    napp_ref_inson_subdivision_premiums: "Премии подразделений INSON",
+    napp_ref_inson_subdivision_payments: "Выплаты подразделений INSON",
+    napp_ref_inson_payment_premium_ratio: "INSON: выплаты / премии",
+    napp_ref_inson_region_to_company_ratio:
+      "INSON: отношение региона к компании",
+  };
+  return window.SurveyorI18n.text(labels[metric] || metric);
+}

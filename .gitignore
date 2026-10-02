@@ -10,6 +10,9 @@ __pycache__/
 htmlcov/
 data/
 *.db
+*.sqlite
+*.sqlite3
+!database/public-data.sqlite
 .DS_Store
 *.pdf
 !tests/fixtures/*.pdf

@@ -149,7 +149,7 @@ def build_report(db, survey, user):
         "valuation": valuation(inputs, exchange=fx, policy=template),
         "documents": documents,
         "conflicts": conflicts,
-        "indicators": indicators,
+        "indicators": [i for i in indicators if i.get("subject", "market") in {"market", '"INSON" AJ'}],
         "losses": losses,
         "calibration": calibration,
         "clauses": (template or {})

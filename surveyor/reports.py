@@ -70,7 +70,7 @@ def sections(report):
 
     def pairs(data, keys):
         return [
-            f"{tr(k)}: {tr(str(data[k])) if k in {'method', 'status', 'rate_type', 'basis', 'risk_level', 'comparison'} and data.get(k) else value(data.get(k))}"
+            f"{tr(k)}: {tr(str(data[k])) if k in {'method', 'status', 'rate_type', 'basis', 'risk_level', 'comparison', 'evidence_kind'} and data.get(k) else value(data.get(k))}"
             for k in keys
         ]
 
@@ -78,7 +78,19 @@ def sections(report):
         lines = []
         for c in rows:
             lines.append(c["label"])
-            lines += pairs(c, ["price", "original_price", "price_uzs", "date", "source", "edit_reason"])
+            lines += pairs(
+                c,
+                [
+                    "price",
+                    "original_price",
+                    "price_uzs",
+                    "date",
+                    "source",
+                    "evidence_kind",
+                    "transaction_reference",
+                    "edit_reason",
+                ],
+            )
             if c.get("reason"):
                 lines.append(tr("reason") + ": " + warning(c["reason"], lang))
             if c.get("exchange_source"):
@@ -254,8 +266,22 @@ def sections(report):
     for indicator in s["indicators"]:
         if indicator["metric"].startswith("fx_") and indicator["metric"][3:] not in currencies:
             continue
+        if indicator.get("reference_only"):
+            indicator_region = region_code(indicator.get("region", "all"))
+            indicator_region = next(
+                (r[{"ru": 1, "uz": 2, "en": 3}[lang]] for r in REGIONS if r[0] == indicator_region),
+                indicator_region,
+            )
+            risk_lines.append(
+                f"{tr('region')}: {indicator_region} · {tr('class_code')}: {indicator.get('class_code', 'all')}"
+            )
+            risk_lines.append(tr("reference_only"))
+        if indicator.get("subject", "market") != "market":
+            risk_lines.append(indicator["subject"])
+        if indicator.get("note"):
+            risk_lines.append(indicator["note"])
         risk_lines.append(
-            f"{indicator['metric']}: {indicator['value']} {indicator['unit']} · {indicator['period']} · {indicator['source_url']} · {indicator['fetched_at']}"
+            f"{tr(indicator['metric'])}: {indicator['value']} {indicator['unit']} · {indicator['period']} · {indicator['source_url']} · {indicator['fetched_at']}"
             + (" · " + tr("stale") if indicator["stale"] else "")
         )
         if indicator.get("quote"):

@@ -50,3 +50,11 @@ def policy_check(body: TariffCheck, user=Depends(current_user)):
 @router.post("/rnp/classify")
 def rnp_classification(body: RnpInput, user=Depends(current_user)):
     return classify_rnp(body.model_dump())
+
+
+@router.get("/factors")
+def factor_catalog(user=Depends(current_user)):
+    import json
+    from pathlib import Path
+
+    return json.loads((Path(__file__).parent / "policies" / "tariff-factors-2026-10-02.json").read_text())

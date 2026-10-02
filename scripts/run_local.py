@@ -31,6 +31,14 @@ def main():
 
     # Finish first-time seeding before starting either process.
     bootstrap()
+    if settings.data_mode == "synthetic":
+        from surveyor.db import SessionLocal
+        from surveyor.public_database import import_snapshot
+
+        with SessionLocal() as db:
+            result = import_snapshot(db)
+            db.commit()
+        print(f"Public database: {result['imported']} observations imported; local records preserved.")
     log_path = settings.storage_dir.parent / "worker.log"
     with log_path.open("a", encoding="utf-8") as log:
         worker = subprocess.Popen(

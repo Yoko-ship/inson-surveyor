@@ -491,7 +491,7 @@ function renderReview() {
             .map(([k, v]) => `${esc(named(k))} = ${esc(v)}`)
             .join(" · ")}</p>`
         : ""
-    }<label>Причина исправлений распознанных значений<textarea name="override_reason" placeholder="Если исправили значение документа — объясните почему">${esc(d.override_reason || "")}</textarea></label></section><section class="panel"><h3>Оценка стоимости</h3><p class="form-hint">Сопоставимые предложения: то же изделие, цена и дата обязательны, не старше 6 месяцев. Медиана до ручных правок сохраняется рядом с оценкой.</p><div id="comparables"></div><button type="button" class="secondary" id="add-comparable">＋ Сопоставимое предложение</button><details><summary>Оборудование: цена покупки и износ</summary><div class="form-grid">${field("purchase_price", "Цена покупки, UZS", d.purchase_price || "", "number", 'min="0" step="0.01"')}${field("purchase_source", "Источник цены покупки", d.purchase_source || "")}${field("purchase_date", "Дата источника цены покупки", d.purchase_date || "", "date", `max="${today()}"`)}${field("depreciation_percent", "Износ, %", d.depreciation_percent || 0, "number", 'min="0" max="100" step="0.01"')}</div></details><details><summary>Крупный объект: отчёт оценщика + второй метод</summary><div class="form-grid">${field("appraiser_value", "Оценка, UZS", d.appraiser_value || "", "number", 'min="0"')}${field("appraiser_source", "Источник оценки", d.appraiser_source || "")}${field("appraiser_date", "Дата оценки", d.appraiser_date || "", "date")}${field("second_method_value", "Второй метод, UZS", d.second_method_value || "", "number", 'min="0"')}${field("second_method_source", "Источник второго метода", d.second_method_source || "")}${field("second_method_date", "Дата второго метода", d.second_method_date || "", "date")}</div></details></section>${borrowerFields(d.borrower, s.documents)}</div><aside><section class="panel"><span class="section-title">ПЕРЕД ФОРМИРОВАНИЕМ</span><h3>Проверьте исходные данные</h3><p class="muted small">Расчёт использует версию тарифа на выбранную дату. Все введённые сотрудником значения отмечаются в акте.</p>${select(
+    }<label>Причина исправлений распознанных значений<textarea name="override_reason" placeholder="Если исправили значение документа — объясните почему">${esc(d.override_reason || "")}</textarea></label></section><section class="panel"><h3>Оценка стоимости</h3><p class="form-hint">Сопоставимые предложения: то же изделие, цена и дата обязательны, не старше 6 месяцев. Медиана до ручных правок сохраняется рядом с оценкой. OLX — цены предложений. E-auksion — завершённые сделки с протоколом; стартовые цены исключаются.</p><div id="comparables"></div><button type="button" class="secondary" id="add-comparable">＋ Сопоставимое предложение</button><details><summary>Оборудование: цена покупки и износ</summary><div class="form-grid">${field("purchase_price", "Цена покупки, UZS", d.purchase_price || "", "number", 'min="0" step="0.01"')}${field("purchase_source", "Источник цены покупки", d.purchase_source || "")}${field("purchase_date", "Дата источника цены покупки", d.purchase_date || "", "date", `max="${today()}"`)}${field("depreciation_percent", "Износ, %", d.depreciation_percent || 0, "number", 'min="0" max="100" step="0.01"')}</div></details><details><summary>Крупный объект: отчёт оценщика + второй метод</summary><div class="form-grid">${field("appraiser_value", "Оценка, UZS", d.appraiser_value || "", "number", 'min="0"')}${field("appraiser_source", "Источник оценки", d.appraiser_source || "")}${field("appraiser_date", "Дата оценки", d.appraiser_date || "", "date")}${field("second_method_value", "Второй метод, UZS", d.second_method_value || "", "number", 'min="0"')}${field("second_method_source", "Источник второго метода", d.second_method_source || "")}${field("second_method_date", "Дата второго метода", d.second_method_date || "", "date")}</div></details></section>${borrowerFields(d.borrower, s.documents)}</div><aside><section class="panel"><span class="section-title">ПЕРЕД ФОРМИРОВАНИЕМ</span><h3>Проверьте исходные данные</h3><p class="muted small">Расчёт использует версию тарифа на выбранную дату. Все введённые сотрудником значения отмечаются в акте.</p>${select(
       "language",
       "Язык акта",
       [
@@ -616,14 +616,24 @@ function addComparable(c = {}) {
     ["source", "Ссылка / файл источника", "text"],
     ["currency", "Валюта", "text"],
     ["edit_reason", "Причина правки", "text"],
+    ["transaction_reference", "Подтверждение сделки / протокол", "text"],
   ]
     .map(
       ([key, label, type]) =>
         `<label>${label}<input data-key="${key}" type="${type}" value="${esc(c[key] || (key === "currency" ? "UZS" : ""))}" ${["label", "price", "date", "source", "currency"].includes(key) ? "required" : ""} ${type === "number" ? 'min="0.01" step="0.01"' : ""}></label>`,
     )
+    .join("")}<label>Тип цены<select data-key="evidence_kind">${[
+    ["asking_price", "Цена предложения"],
+    ["completed_sale", "Завершённая сделка"],
+    ["auction_start", "Стартовая цена торгов"],
+  ]
+    .map(
+      ([key, label]) =>
+        `<option value="${key}" ${key === (c.evidence_kind || "asking_price") ? "selected" : ""}>${label}</option>`,
+    )
     .join(
       "",
-    )}</div><label class="check"><input data-key="same_item" type="checkbox" ${c.same_item !== false ? "checked" : ""}>То же изделие / сопоставимый объект</label><button class="text-button danger-button" type="button">Удалить предложение</button>`;
+    )}</select></label></div><label class="check"><input data-key="same_item" type="checkbox" ${c.same_item !== false ? "checked" : ""}>То же изделие / сопоставимый объект</label><button class="text-button danger-button" type="button">Удалить предложение</button>`;
   $("button", el).onclick = () => el.remove();
   $("#comparables").append(el);
 }
@@ -750,13 +760,24 @@ async function sourcesPage() {
   const render = () => {
     const q = $("#source-filter").value.toLowerCase();
     const rows = data.indicators.filter((i) =>
-      [i.metric, i.region, i.channel].join(" ").toLowerCase().includes(q),
+      [
+        i.metric,
+        sourceMetricName(i.metric),
+        i.region,
+        regionName(i.region),
+        i.channel,
+        i.subject,
+        i.class_code,
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(q),
     );
     $("#indicator-list").innerHTML =
       rows
         .map(
           (i) =>
-            `<div class="file-card"><strong>${esc(i.metric)} · ${money(i.value)} ${esc(i.unit)}</strong> ${i.stale ? '<span class="badge amber">Устарели</span>' : ""}<p class="small muted">${esc(regionName(i.region))} · ${esc(i.period)} · <a href="${esc(i.source_url)}" target="_blank" rel="noopener noreferrer">Источник ↗</a> · ${dateText(i.observation_date)}</p><p class="small">${i.approved_by ? "Утверждён актуарием" : "Экспертный, не утверждён"}</p>${state.user.role === "actuary" && !i.approved_by ? `<button class="secondary" data-approve-indicator="${i.id}">Утвердить поправку</button>` : ""}</div>`,
+            `<div class="file-card"><strong>${esc(i.subject === "market" ? "" : i.subject || "")} ${esc(sourceMetricName(i.metric))} · ${money(i.value)} ${esc(i.unit)}</strong> ${i.stale ? '<span class="badge amber">Устарели</span>' : ""}<p class="small muted">${esc(regionName(i.region))} · ${esc(i.class_code)} · ${esc(i.period)} · <a href="${esc(i.source_url)}" target="_blank" rel="noopener noreferrer">Источник ↗</a> · ${dateText(i.observation_date)}</p><p class="small">${i.reference_only ? "Только справочно; тариф не меняет" : i.approved_by ? "Утверждён актуарием" : "Экспертный, не утверждён"}</p>${i.note ? `<p class="form-hint" data-no-translate>${esc(i.note)}</p>` : ""}${state.user.role === "actuary" && !i.approved_by && !i.reference_only ? `<button class="secondary" data-approve-indicator="${i.id}">Утвердить поправку</button>` : ""}</div>`,
         )
         .join("") || "<p>Данные недоступны</p>";
     action("[data-approve-indicator]", async (el) => {
@@ -808,6 +829,7 @@ function sourceSettings(channel) {
               ["siat", "SIAT: статистика"],
               ["document", "Документ / страница (отслеживание изменений)"],
               ["napp", "NAPP: официальный страховой рынок"],
+              ["napp_reference", "NAPP: справочные таблицы"],
             ],
             c.format || "csv",
           )}${field("permission_url", "Ссылка на разрешение / условия доступа", c.permission_url || "", "url", "required")}${field("interval_hours", "Интервал обновления, часов", c.interval_hours || 24, "number", 'min="24" max="720" required')}${field("json_path", "Путь к списку в JSON (если вложен)", c.json_path || "")}${field("table_index", "Номер HTML-таблицы (с нуля)", c.table_index || 0, "number", 'min="0" max="30"')}</div><label>Основание автоматического доступа<textarea name="permission_note" required minlength="15">${esc(c.permission_note || "")}</textarea></label><h3>Документ / страница</h3><div class="form-grid">${field("reference_title", "Название материала", c.reference?.title || "")}${field("reference_date", "Дата публикации (если известна)", c.reference?.observation_date || "", "date")}</div><h3>Соответствие столбцов</h3><p class="form-hint">Укажите название столбца в файле или постоянное значение. SIAT сам определяет регион, период и единицы.</p><div class="table-wrap"><table><thead><tr><th>Поле</th><th>Столбец файла</th><th>Постоянное значение</th></tr></thead><tbody>${fields.map((k) => `<tr><td>${esc(named(k))}</td><td><input name="column_${k}" value="${esc(columns[k] || "")}"></td><td><input name="constant_${k}" value="${esc(constants[k] ?? "")}"></td></tr>`).join("")}</tbody></table></div><button type="submit" class="primary">Сохранить и включить</button></form>`
@@ -1156,7 +1178,7 @@ async function editTemplate(r) {
   delete d.id;
   delete d.approved_by;
   modal(
-    `<h2>Версия шаблона</h2><p>Новая версия требует нового утверждения актуарием.</p><form id="template-form"><div class="form-grid">${field("class_code", "Класс", d.class_code || "", "text", "required")}${field("name", "Название", d.name || "", "text", "required")}${field("moderate_threshold", "Порог умеренного риска", d.moderate_threshold || 20, "number", 'required min="1" max="100"')}${field("high_threshold", "Порог высокого риска", d.high_threshold || 50, "number", 'required min="1" max="100"')}${["low", "moderate", "high"].map((k) => field(`multiplier_${k}`, `Множитель: ${named(k)}`, d.multipliers?.[k] || 1, "number", 'required min="0.5" max="3" step="0.01"')).join("")}${field("max_adjustment", "Граница поправки (0.2 = 20%)", d.max_adjustment || "0.2", "number", 'required min="0" max="0.5" step="0.01"')}</div><h3>Признаки и веса риска</h3>${dictionaryEditor("feature-weights", d.feature_weights, "Признак", "Вес (0–100)")}<h3>Доли рисков, %</h3>${dictionaryEditor("risk-shares", d.risk_shares, "Риск", "Доля, %")}<h3>Правила оценки стоимости</h3><div class="form-grid">${field("valuation_outlier_low", "Нижняя граница медианы", d.valuation_outlier_low ?? "0.5", "number", 'required min="0.01" max="1" step="0.01"')}${field("valuation_outlier_high", "Верхняя граница медианы", d.valuation_outlier_high ?? "1.5", "number", 'required min="1" max="10" step="0.01"')}${field("valuation_tolerance", "Допустимое отклонение (0.15 = 15%)", d.valuation_tolerance ?? "0.15", "number", 'required min="0" max="1" step="0.01"')}${field("large_object_threshold", "Порог крупного объекта, UZS", d.large_object_threshold || "", "number", 'min="0.01" step="0.01"')}</div><label>Показатели с готовой поправкой (по одному на строке)<textarea name="indicator_metrics">${esc((d.indicator_metrics || []).join("\n"))}</textarea></label><h3>Поправки из статистики</h3><p class="form-hint">Поправка = (значение / базовое значение − 1) × чувствительность. Применяется только к выбранным видам объектов, в пределах границы.</p><datalist id="available-metrics">${[...new Set(catalogue.metrics.filter((m) => m.fresh > 0).map((m) => m.metric))].map((metric) => `<option value="${esc(metric)}"></option>`).join("")}</datalist><div id="indicator-rules"></div><button type="button" id="add-indicator-rule" class="secondary">＋ Правило показателя</button><h3>Оговорки</h3>${["ru", "uz", "en"].map((lang) => `<label>${lang.toUpperCase()}<textarea name="clauses_${lang}" rows="4">${esc((lang === "ru" ? d.clauses || [] : d.clauses_translations?.[lang] || []).join("\n"))}</textarea></label>`).join("")}<p class="form-hint">Каждая оговорка — отдельная строка. Тексты утверждает страховщик.</p><button type="submit" class="primary">Сохранить версию</button></form>`,
+    `<h2>Версия шаблона</h2><p>Новая версия требует нового утверждения актуарием.</p><form id="template-form"><div class="form-grid">${field("class_code", "Класс", d.class_code || "", "text", "required")}${field("name", "Название", d.name || "", "text", "required")}${field("moderate_threshold", "Порог умеренного риска", d.moderate_threshold || 20, "number", 'required min="1" max="100"')}${field("high_threshold", "Порог высокого риска", d.high_threshold || 50, "number", 'required min="1" max="100"')}${["low", "moderate", "high"].map((k) => field(`multiplier_${k}`, `Множитель: ${named(k)}`, d.multipliers?.[k] || 1, "number", 'required min="0.5" max="3" step="0.01"')).join("")}${field("max_adjustment", "Граница поправки (0.2 = 20%)", d.max_adjustment || "0.2", "number", 'required min="0" max="0.5" step="0.01"')}</div><h3>Признаки и веса риска</h3>${dictionaryEditor("feature-weights", d.feature_weights, "Признак", "Вес (0–100)")}<h3>Доли рисков, %</h3>${dictionaryEditor("risk-shares", d.risk_shares, "Риск", "Доля, %")}<h3>Правила оценки стоимости</h3><div class="form-grid">${field("valuation_outlier_low", "Нижняя граница медианы", d.valuation_outlier_low ?? "0.5", "number", 'required min="0.01" max="1" step="0.01"')}${field("valuation_outlier_high", "Верхняя граница медианы", d.valuation_outlier_high ?? "1.5", "number", 'required min="1" max="10" step="0.01"')}${field("valuation_tolerance", "Допустимое отклонение (0.15 = 15%)", d.valuation_tolerance ?? "0.15", "number", 'required min="0" max="1" step="0.01"')}${field("large_object_threshold", "Порог крупного объекта, UZS", d.large_object_threshold || "", "number", 'min="0.01" step="0.01"')}</div><label>Показатели с готовой поправкой (по одному на строке)<textarea name="indicator_metrics">${esc((d.indicator_metrics || []).join("\n"))}</textarea></label><h3>Поправки из статистики</h3><p class="form-hint">Поправка = (значение / базовое значение − 1) × чувствительность. Применяется только к выбранным видам объектов, в пределах границы.</p><datalist id="available-metrics">${[...new Set(catalogue.metrics.filter((m) => m.fresh > 0 && !m.reference_only).map((m) => m.metric))].map((metric) => `<option value="${esc(metric)}"></option>`).join("")}</datalist><div id="indicator-rules"></div><button type="button" id="add-indicator-rule" class="secondary">＋ Правило показателя</button><h3>Оговорки</h3>${["ru", "uz", "en"].map((lang) => `<label>${lang.toUpperCase()}<textarea name="clauses_${lang}" rows="4">${esc((lang === "ru" ? d.clauses || [] : d.clauses_translations?.[lang] || []).join("\n"))}</textarea></label>`).join("")}<p class="form-hint">Каждая оговорка — отдельная строка. Тексты утверждает страховщик.</p><button type="submit" class="primary">Сохранить версию</button></form>`,
   );
   bindDictionaries();
   const addRule = (metric = "", rule = {}) => {

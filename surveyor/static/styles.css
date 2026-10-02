@@ -991,3 +991,8 @@ dialog::backdrop {
   padding-block-end: 0.75rem;
   border-bottom: 1px solid #e5ebe8;
 }
+
+#factor-guide {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

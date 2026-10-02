@@ -4,6 +4,15 @@ module.exports = async function verifyPolicy(page) {
   await page.locator("#locale").selectOption("ru");
   await page.locator("[data-nav=policy]").click();
   await expect(page.locator("#catalog-count")).toHaveText("179 / 179");
+  await expect(page.locator("#factor-count")).toHaveText("139 / 139");
+  await page.locator("[name=factor_class]").selectOption("3");
+  await page.locator("[name=factor_search]").fill("Электромобиль");
+  await expect(page.locator("#factor-rows tr")).toHaveCount(1);
+  await expect(page.locator("#factor-rows")).toContainText("Батарея");
+  await page.locator("[name=factor_class]").selectOption("8");
+  await expect(page.locator("#factor-rows tr")).toHaveCount(0);
+  await page.locator("[name=factor_search]").fill("Наводнение");
+  await expect(page.locator("#factor-rows tr")).toHaveCount(1);
   await page.locator("[name=policy_search]").fill("0309");
   await expect(page.locator("#catalog-rows tr")).toHaveCount(1);
   await page.locator('[data-policy="0309"]').click();
