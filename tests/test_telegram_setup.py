@@ -9,6 +9,27 @@ from surveyor.config import Settings, settings
 from surveyor.telegram_setup import configure_profile, configure_webhook
 
 
+def test_owner_menu_refreshes_and_cleanup_restores_default(monkeypatch):
+    from surveyor import telegram_setup
+
+    calls = []
+    monkeypatch.setattr(settings, "codex_telegram_enabled", True)
+    monkeypatch.setattr(settings, "codex_telegram_owner_id", "123456789")
+
+    async def fake(method, **kwargs):
+        calls.append((method, kwargs["data"]))
+        return True
+
+    monkeypatch.setattr(telegram_setup, "call_telegram", fake)
+    menu = {"type": "web_app", "text": "Open", "web_app": {"url": "https://new.example"}}
+    asyncio.run(telegram_setup.set_menu(menu))
+    assert "chat_id" not in calls[0][1]
+    assert calls[1][1]["chat_id"] == "123456789"
+    assert json.loads(calls[1][1]["menu_button"]) == menu
+    asyncio.run(telegram_setup.set_menu({"type": "commands"}))
+    assert json.loads(calls[-1][1]["menu_button"]) == {"type": "default"}
+
+
 def setup_api(monkeypatch, *, bot_id=123456, previous="", healthy=True):
     calls = []
     target = "https://surveyor.example"

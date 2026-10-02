@@ -27,7 +27,7 @@
   {
     "channel": "napp",
     "url": "https://napp.uz/",
-    "reviewed_on": "2026-10-01",
+    "reviewed_on": "2026-10-02",
     "automatic_enabled_by_review": true,
     "robots_status": 200,
     "robots_redirect": null,
@@ -36,7 +36,7 @@
     "page_redirect": "https://napp.uz/uz",
     "decision": "connect_official_downloads",
     "permission": "https://napp.uz/en/pages/statistics-and-analysis-for-im",
-    "note": "Official XLSX section 1.4 validated for 18 classes; no annual tariff inferred from aggregate premiums."
+    "note": "Class collector retained. Added separate reference-only workbook channel for companies, claims, subdivisions, regions and class bundles. See resource-review-2026-10-02.json."
   },
   {
     "channel": "lex",
@@ -90,14 +90,15 @@
   {
     "channel": "auction",
     "url": "https://e-auksion.uz/",
-    "reviewed_on": "2026-10-01",
+    "reviewed_on": "2026-10-02",
     "automatic_enabled_by_review": false,
     "robots_status": 200,
     "robots_redirect": null,
     "robots_excerpt": "User-agent: *\nHost: https://e-auksion.uz\nSitemap: https://e-auksion.uz/sitemap_index.xml\n",
     "page_status": 200,
     "page_redirect": null,
-    "decision": "manual_until_dataset_and_terms_verified"
+    "decision": "manual_until_dataset_and_terms_verified",
+    "note": "Robots and homepage return 200. No completed-deal feed or automated extraction permission verified; manual protocols only."
   },
   {
     "channel": "exchange",
@@ -165,5 +166,14 @@
     "robots_redirect": null,
     "robots_excerpt": null,
     "decision": "manual_until_robots_verified"
+  },
+  {
+    "channel": "listings",
+    "url": "https://www.olx.uz/",
+    "reviewed_on": "2026-10-02",
+    "automatic_enabled_by_review": false,
+    "robots_status": 403,
+    "decision": "manual_only_direct_access_refused",
+    "note": "Employee enters asking prices, source/date/currency and comparability. No listing scraper enabled."
   }
 ]

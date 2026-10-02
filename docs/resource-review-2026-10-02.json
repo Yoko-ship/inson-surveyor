@@ -1,0 +1,124 @@
+{
+  "reviewed_on": "2026-10-02",
+  "factor_document": {
+    "name": "ИИ_сюрвейер_—_Факторы_тарифа_по_классам.pdf",
+    "sha256": "11e0981bbf2f594157a97e8933cfed6ef46d31de079af58c97260de56ba43596",
+    "pages": 11,
+    "table_rows": 139,
+    "status": "reference_only_uncalibrated",
+    "pricing_change": "No numerical coefficients supplied; full-factor pricing is a separate change, not enabled by importing this reference."
+  },
+  "siat": [
+    {
+      "dataset": 888,
+      "metric": "registered_thefts",
+      "title": "Число зарегистрированных краж (всего)",
+      "unit_ru": "единиц",
+      "page": "https://siat.stat.uz/data/888/?lang=ru",
+      "download": "https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_888.json",
+      "sha256": "debdaea64f322a732081552f08195dd1cb77e6511d3beb717e00e9ff4b0cf24c",
+      "collected_observations": 240,
+      "scope": "published_territorial_rows",
+      "date_basis": "December 31 of completed year"
+    },
+    {
+      "dataset": 880,
+      "metric": "registered_robberies",
+      "title": "Число зарегистрированных грабежей и разбоев (всего)",
+      "unit_ru": "единиц",
+      "page": "https://siat.stat.uz/data/880/?lang=ru",
+      "download": "https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_880.json",
+      "sha256": "2c630b977a1ce4d48aaec4161b323c3012463bd247e8c777e24b8664a08cc132",
+      "collected_observations": 16,
+      "scope": "national_only",
+      "date_basis": "December 31 of completed year"
+    },
+    {
+      "dataset": 229,
+      "metric": "mortality_per_mille",
+      "title": "Коэффициент смертности (всего)",
+      "unit_ru": "Промилле",
+      "page": "https://siat.stat.uz/data/229/?lang=ru",
+      "download": "https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_229.json",
+      "sha256": "2662aa9e7d8bb895ea9e1ef747e705ab56be66f403dc5e3c888cfbe162039203",
+      "collected_observations": 3536,
+      "scope": "published_territorial_rows",
+      "date_basis": "December 31 of completed year"
+    },
+    {
+      "dataset": 246,
+      "metric": "population_thousands",
+      "title": "Численность постоянного населения (всего)",
+      "unit_ru": "тысяч человек",
+      "page": "https://siat.stat.uz/data/246/?lang=ru",
+      "download": "https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_246.json",
+      "sha256": "3bfae3d234f79c15071952d4d1adb87b9fea9bcb9f65f7fd753fdfd2f926b7f9",
+      "collected_observations": 3757,
+      "scope": "published_territorial_rows",
+      "date_basis": "January 1 of labelled year"
+    }
+  ],
+  "napp": {
+    "index": "https://napp.uz/en/pages/statistics-and-analysis-for-im",
+    "download": "https://napp.uz/storage/files/shares/opendata/2026/2Q/Страх отчет(II чорак 2026 йил ) uz.xlsx",
+    "sha256": "e9b52fb9cacddc967df2fd41778ea02dbf008cd57053e43ae3243a8f8c2a0568",
+    "period": "2026-01-01/2026-06-30",
+    "comparison_period": "2025-01-01/2025-06-30",
+    "reference_observations": 653,
+    "sheets": [
+      "1.4",
+      "2.1",
+      "2.5",
+      "2.10",
+      "2.12",
+      "2.13",
+      "3.1",
+      "3.2",
+      "3.5"
+    ],
+    "limitations": [
+      "Class and regional tables are separate dimensions; no class-by-region cross-tab is inferred.",
+      "Combined class rows remain bundles and are never allocated to component classes.",
+      "INSON market shares use the total market including life insurance as denominator.",
+      "Subdivision geography reflects accounting offices, not necessarily insured-object location.",
+      "Payments divided by written premiums are a period accounting ratio, not actuarial loss cost or an annual market tariff.",
+      "Company-wide claims do not populate product-level calibration.",
+      "Blank cells stay unavailable; zero premiums produce no ratio."
+    ]
+  },
+  "disasters": {
+    "reference_url": "https://nsdg.stat.uz/ru/goal/16",
+    "status": "manual_reference_only",
+    "reason": "SDG summary evidence found; no current regional machine-readable event/loss dataset verified."
+  },
+  "access": [
+    {
+      "url": "https://e-auksion.uz/robots.txt",
+      "status": 200,
+      "location": null,
+      "excerpt": "User-agent: *\nHost: https://e-auksion.uz\nSitemap: https://e-auksion.uz/sitemap_index.xml\n"
+    },
+    {
+      "url": "https://e-auksion.uz/",
+      "status": 200,
+      "location": null,
+      "excerpt": null
+    },
+    {
+      "url": "https://www.olx.uz/robots.txt",
+      "status": 403,
+      "location": null,
+      "excerpt": "403 from CloudFront; request blocked. No retry or bypass."
+    },
+    {
+      "url": "https://help.olx.uz/olxuzhelp/s/article/правила-сервиса-olxuz-V14",
+      "status": 200,
+      "location": null,
+      "excerpt": null
+    }
+  ],
+  "access_decisions": {
+    "olx": "Manual asking-price comparables only. Direct robots request refused; terms page could not be read reliably.",
+    "e_auksion": "Robots allows homepage access, but no permitted completed-transaction feed or terms verified. Manual completed-sale evidence with protocol; starting prices excluded."
+  }
+}

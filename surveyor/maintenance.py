@@ -4,6 +4,7 @@ import hashlib
 import json
 import shutil
 import sqlite3
+from contextlib import closing
 from datetime import timedelta
 from pathlib import Path
 
@@ -36,12 +37,19 @@ def create_backup(database_url=None, backup_dir=None):
     try:
         (dest / "uploads").mkdir(mode=0o700)
         with (
-            sqlite3.connect(f"file:{source}?mode=ro", uri=True) as conn,
-            sqlite3.connect(dest / "database.sqlite") as copy,
+            closing(sqlite3.connect(f"file:{source}?mode=ro", uri=True)) as conn,
+            closing(sqlite3.connect(dest / "database.sqlite")) as copy,
         ):
             conn.backup(copy)
             documents = copy.execute("SELECT id, path, sha256 FROM documents").fetchall()
         files = {"database.sqlite": checksum(dest / "database.sqlite")}
+        from surveyor import ai_config
+
+        (dest / "ai").mkdir(mode=0o700)
+        (dest / "ai/config.json").write_text(ai_config.load().model_dump_json(indent=2), encoding="utf-8")
+        shutil.copyfile(ai_config.BASELINE_PATH, dest / "ai/guardrails.txt")
+        for name in ("ai/config.json", "ai/guardrails.txt"):
+            files[name] = checksum(dest / name)
         document_map = {}
         for doc_id, path, expected in documents:
             path = Path(path)
@@ -61,7 +69,8 @@ def create_backup(database_url=None, backup_dir=None):
                     "documents": document_map,
                 },
                 indent=2,
-            )
+            ),
+            encoding="utf-8",
         )
         for p in dest.rglob("*"):
             if p.is_file():
@@ -75,7 +84,7 @@ def create_backup(database_url=None, backup_dir=None):
 
 def verify_backup(directory):
     directory = Path(directory).resolve()
-    manifest = json.loads((directory / "manifest.json").read_text())
+    manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
     if manifest.get("version") != 1:
         raise ValueError("Unsupported backup version")
     for name, expected in manifest["files"].items():
@@ -84,7 +93,7 @@ def verify_backup(directory):
             raise ValueError("Unsafe backup path")
         if checksum(path) != expected:
             raise ValueError("Backup checksum mismatch")
-    with sqlite3.connect(f"file:{directory / 'database.sqlite'}?mode=ro", uri=True) as conn:
+    with closing(sqlite3.connect(f"file:{directory / 'database.sqlite'}?mode=ro", uri=True)) as conn:
         if conn.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
             raise ValueError("Database integrity check failed")
         for doc_id, expected in conn.execute("SELECT id, sha256 FROM documents"):
@@ -108,9 +117,10 @@ def restore_backup(directory, destination):
     (dest / "uploads").mkdir(mode=0o700)
     try:
         for name in manifest["files"]:
+            (dest / name).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             shutil.copyfile(directory / name, dest / name)
             (dest / name).chmod(0o600)
-        with sqlite3.connect(dest / "database.sqlite") as conn:
+        with closing(sqlite3.connect(dest / "database.sqlite")) as conn:
             for doc_id, name in manifest["documents"].items():
                 conn.execute("UPDATE documents SET path=? WHERE id=?", (str(dest / name), doc_id))
             # Existing session cookies must not authenticate against a restored environment.

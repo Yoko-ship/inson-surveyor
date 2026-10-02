@@ -25,7 +25,7 @@ flowchart TD
 ## Boundaries
 
 - `calculations.py`: formulas, minimum rates, annual equivalents, risk adjustments, valuation and loss ratios. No network calls.
-- `documents.py`: size/format/page checks, office-archive limits, text extraction and source-linked field parsing. AI is absent; images/scanned PDFs are labelled manual.
+- `documents.py`: size/format/page checks, office-archive limits, text extraction and source-linked field parsing. Images/scanned PDFs initially require review; the optional server-side recognizer can propose values.
 - `services.py`: tariff and template selection, scope/ownership, source context, report snapshots and cross-document conflicts.
 - `reports.py`: five-section Word/PDF renderers driven only by the saved snapshot. No recalculation at export time.
 - `auth.py`: Argon2 passwords, hashed opaque sessions, CSRF tokens, role checks and Telegram HMAC validation with a five-minute freshness limit.
@@ -54,9 +54,13 @@ The local profile uses one process and SQLite. Production should use PostgreSQL,
 
 Maximum file size: 15 MB; maximum PDF pages: 50; maximum photos: 25 MP; maximum documents per inspection: 20; office archives are limited by expanded size. PDF parsing is in-process and should be isolated in resource-limited workers if exposed to untrusted public uploads. Employee authentication is mandatory; this is not a public upload service.
 
-## Future AI boundary
+## AI review boundary
 
-A future recognizer can implement the same extraction result shape (`kind`, `mode`, `fields`, per-field source/excerpt/status). It must not set rates, invent missing fields or rewrite report numbers. Human review and provenance remain mandatory. No provider dependency or placeholder credential is needed now.
+`inspection_ai.py` stores validated proposals in private `ImportBatch` records (`kind=ai_document`), separate from `Document.extracted`. Inference uses the existing provider adapter and requires a linked Telegram user allowed by the code-owned scope, current inspection/configuration revisions and processing consent. No database transaction stays open during inference. A compare-and-swap on the inspection revision rejects changes during processing.
+
+Review validates values through the same helper as manual document review, atomically consumes the proposal and increments the inspection revision. It invalidates final inspection confirmation and appends source quotations, original suggestions, decisions, reviewer/time and configuration provenance to document evidence. Consumed, stale, foreign and mismatched-file proposals cannot be applied. Ordinary import endpoints reject AI batches. No schema migration is needed.
+
+Only reviewed document fields enter the inspection form; copying over existing inputs is explicit. Report snapshots and all export formats retain the reviewed evidence. Unreviewed proposals and freeform AI summaries do not enter reports or financial calculations. Model names record the configured value, or `provider_default` when the CLI selects it; this does not claim an independently verified resolved model ID.
 
 ## Reference contracts
 
@@ -77,3 +81,7 @@ A future recognizer can implement the same extraction result shape (`kind`, `mod
 - `maintenance.py` uses SQLite's consistent backup API, copies referenced immutable document files, verifies hashes/database integrity and restores only into a new directory. Restores invalidate old login sessions. The local worker schedules verified daily backups and prunes only valid backups beyond retention.
 
 Class templates now include object-scoped statistical adjustment rules and valuation policy. The calculation is `(observation / baseline - 1) × sensitivity`, bounded by the rule and template limits. Regional series take priority over the same national metric. No automatic statistical association is presented as an insurer-approved model.
+
+## Durable inspection assistance
+
+`assistant_api.py` provides guided answers, queued user-isolated analysis and reviewed findings. `inspection_assistant.py` builds the grounded context and validates citations through the shared provider boundary. `ai_jobs.py` claims durable database jobs with expiring leases and publishes results atomically; `scripts/run_ai_worker.py` runs independently of the browser. `Survey.assistance` stores human answers and reviewed evidence separately from financial inputs. Both evidence and deterministic context fingerprints invalidate obsolete explanations. Migration `483bbb0a63a7` introduces these private records. See [assistant workflow](inspection-assistant.md) and [deployment](../deploy/README.md).

@@ -10,6 +10,8 @@ from openpyxl import load_workbook
 from PIL import Image
 from pypdf import PdfReader
 
+from surveyor.document_values import derive_document_term, document_number
+
 FIELDS = {
     "insured_sum": [
         r"страхов(?:ая|ую)\s+сумм[ауы]",
@@ -92,7 +94,7 @@ def parse_document(data, filename, max_pages=50):
             "mode": "manual",
             "pages": pages,
             "fields": {},
-            "notice": "ИИ отключён. Фото/скан сохранён: изучите файл и заполните данные вручную.",
+            "notice": "Фото/скан сохранён: изучите файл и проверьте значения по оригиналу.",
         }
     lower = text.lower()
     kind = (
@@ -111,10 +113,7 @@ def parse_document(data, filename, max_pages=50):
             fields[field] = {"value": None, "status": "unavailable", "source": filename}
             continue
         raw = match.group(1).strip()
-        value_match = re.match(r"([0-9][0-9 \u00a0\u202f]*(?:[.,][0-9]+)?)", raw)
-        value = (
-            re.sub(r"[ \u00a0\u202f]", "", value_match.group(1)).replace(",", ".") if value_match else None
-        )
+        value = document_number(raw, field)
         fields[field] = {
             "value": value,
             "status": "extracted"
@@ -163,6 +162,7 @@ def parse_document(data, filename, max_pages=50):
         }
         if match and (not field.endswith("organization") or value):
             fields[field]["excerpt"] = match.group(0)[:250]
+    derive_document_term(fields, filename)
     return {
         "kind": kind,
         "mode": "rules",

@@ -9,17 +9,28 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
+from surveyor import ai_config
 from surveyor.api import router
+from surveyor.assistant_api import router as assistant_router
 from surveyor.bootstrap import bootstrap
 from surveyor.config import settings
 from surveyor.db import engine
 from surveyor.document_api import router as document_router
+from surveyor.factor_api import router as factor_router
+from surveyor.inspection_ai import router as inspection_ai_router
+from surveyor.pilot_api import enabled as pilot_enabled
+from surveyor.pilot_api import router as pilot_router
+from surveyor.pilot_api import telegram_enabled
+from surveyor.policy_api import router as policy_router
+from surveyor.report_downloads import DownloadLogFilter
+from surveyor.report_downloads import router as download_router
 from surveyor.source_api import router as source_router
 from surveyor.telegram import router as telegram_router
 
 STATIC = Path(__file__).parent / "static"
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("uvicorn.access").addFilter(DownloadLogFilter())
 
 
 @asynccontextmanager
@@ -36,9 +47,15 @@ app = FastAPI(
     redoc_url=None,
 )
 app.include_router(router)
+app.include_router(factor_router)
+app.include_router(assistant_router)
+app.include_router(download_router)
 
 app.include_router(source_router)
 app.include_router(document_router)
+app.include_router(policy_router)
+app.include_router(pilot_router)
+app.include_router(inspection_ai_router)
 app.include_router(telegram_router)
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
@@ -57,7 +74,9 @@ async def security(request: Request, call_next):
         return JSONResponse({"detail": "Слишком большой запрос"}, status_code=413)
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Referrer-Policy"] = "same-origin"
+    response.headers["Referrer-Policy"] = (
+        "no-referrer" if request.url.path.startswith("/api/report-downloads/") else "same-origin"
+    )
     response.headers["Cache-Control"] = (
         "no-store" if request.url.path.startswith(("/api", "/telegram")) else "no-cache"
     )
@@ -92,7 +111,16 @@ async def validation_error(request, exc):
 def health():
     with engine.connect() as conn:
         conn.execute(text("SELECT 1"))
-    return {"status": "ok", "ai_enabled": False, "data_mode": settings.data_mode}
+    try:
+        ai_active = ai_config.load().enabled
+    except ValueError:
+        ai_active = False
+    return {
+        "status": "ok",
+        "ai_enabled": bool(telegram_enabled() and ai_active),
+        "data_mode": settings.data_mode,
+        "codex_local_pilot": bool(pilot_enabled()),
+    }
 
 
 @app.get("/")

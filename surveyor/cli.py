@@ -70,12 +70,10 @@ def main():
     else:
 
         async def worker():
-            while True:
-                with SessionLocal() as db:
-                    collect_all(db)
-                    from surveyor.maintenance import maintain
+            from surveyor.worker import run_cycle
 
-                    maintain(db)
+            while True:
+                run_cycle()
                 await asyncio.sleep(3600)
 
         asyncio.run(worker())

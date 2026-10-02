@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     backup_dir: Path = Path("data/backups")
     backup_enabled: bool = True
     backup_retention_days: int = 14
+    codex_local_pilot: bool = False
+    codex_cli_path: str = ""
+    codex_telegram_enabled: bool = False
+    codex_telegram_owner_id: str = ""
+    ollama_base_url: str = "http://127.0.0.1:11434"
 
     @model_validator(mode="after")
     def deployment_guard(self):

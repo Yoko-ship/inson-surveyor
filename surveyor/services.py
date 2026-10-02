@@ -6,6 +6,8 @@ from sqlalchemy import select
 
 from surveyor.calculations import calculate, loss_summary, valuation
 from surveyor.db import Calibration, ClassTemplate, Document, Loss, Product, Report, Survey, audit
+from surveyor.document_values import derive_document_term
+from surveyor.reserves import classify_rnp
 from surveyor.sources import latest_indicators
 
 
@@ -37,8 +39,20 @@ def context_for(db, inputs):
         .order_by(ClassTemplate.created_at.desc())
     )
     template_data = (
-        {**template.data, "id": template.id, "approved_by": template.approved_by} if template else None
+        {
+            **template.data,
+            "id": template.id,
+            "approved_by": template.approved_by,
+            "approved_at": template.approved_at.isoformat() if template.approved_at else None,
+        }
+        if template
+        else None
     )
+    from surveyor.factor_pricing import calibration_stale, validate_answers
+
+    if template_data:
+        template_data["factor_calibration_stale"] = calibration_stale(db, template_data)
+    validate_answers(inputs, template_data)
     indicators = latest_indicators(db, inputs["region"], product.data["class_code"])
     calibration = db.scalar(
         select(Calibration)
@@ -66,10 +80,19 @@ def context_for(db, inputs):
     return product, template_data, indicators, losses, calibration_data, calc
 
 
+def validate_borrower_document(db, survey_id, inputs):
+    borrower = inputs.get("borrower")
+    if borrower:
+        doc = db.get(Document, borrower["document_id"])
+        if not doc or doc.survey_id != survey_id:
+            raise HTTPException(422, "Выберите отчёт кредитного бюро, загруженный в этот осмотр")
+
+
 def build_report(db, survey, user):
     inputs = survey.inputs
     if not inputs or not inputs.get("manual_review_confirmed"):
         raise HTTPException(422, "Проверьте данные и подтвердите ручную проверку")
+    validate_borrower_document(db, survey.id, inputs)
     product, template, indicators, losses, calibration, calc = context_for(db, inputs)
     docs = db.scalars(select(Document).where(Document.survey_id == survey.id)).all()
     documents = [
@@ -81,6 +104,15 @@ def build_report(db, survey, user):
         for field, item in document["extracted"]["fields"].items():
             if item.get("value") is not None:
                 sources.setdefault(field, []).append(item)
+        date_fields = {
+            key: item
+            for key, item in document["extracted"]["fields"].items()
+            if key in {"contract_start", "contract_end"}
+        }
+        derive_document_term(date_fields, document["filename"])
+        derived = date_fields.get("term_days", {})
+        if derived.get("value") is not None:
+            sources.setdefault("term_days", []).append(derived)
     for field, values in sources.items():
 
         def comparable_value(value):
@@ -123,12 +155,14 @@ def build_report(db, survey, user):
         "author": {"name": user.name, "branch": user.branch, "id": user.id},
         "inputs": inputs,
         "product": {**product.data, "version_id": product.id},
+        "rnp_classification": classify_rnp(inputs["rnp_context"]) if inputs.get("rnp_context") else None,
         "template": template,
         "calculation": calc,
         "valuation": valuation(inputs, exchange=fx, policy=template),
         "documents": documents,
+        "assistance": assistance_snapshot(db, survey),
         "conflicts": conflicts,
-        "indicators": indicators,
+        "indicators": [i for i in indicators if i.get("subject", "market") in {"market", '"INSON" AJ'}],
         "losses": losses,
         "calibration": calibration,
         "clauses": (template or {})
@@ -137,7 +171,7 @@ def build_report(db, survey, user):
         "disclaimers": [
             "Подлежит подтверждению андеррайтером",
             "Не является кредитным скорингом",
-            "ИИ отключён; фото и сканы проверены сотрудником вручную",
+            "Значения документов проверены сотрудником; предложения ИИ требуют ручного подтверждения",
         ],
         "checklist": [
             "Проверить суммы, сроки и источники",
@@ -154,3 +188,21 @@ def build_report(db, survey, user):
     audit(db, user, "report.created", report.id, {"survey_id": survey.id, "revision": survey.revision})
     db.commit()
     return report
+
+
+def assistance_snapshot(db, survey):
+    from surveyor.inspection_assistant import guidance
+
+    guide = guidance(db, survey)
+    return {
+        "answers": (survey.assistance or {}).get("answers", {}),
+        "question_labels": (survey.assistance or {}).get("question_labels", {}),
+        "reviews": [
+            {
+                **r,
+                "stale": r["basis_hash"] != guide["basis_hash"]
+                or r.get("context_hash") != guide["context_hash"],
+            }
+            for r in (survey.assistance or {}).get("reviews", [])
+        ],
+    }

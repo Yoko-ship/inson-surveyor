@@ -4,11 +4,19 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
+from surveyor import ai_config
 from surveyor import bootstrap as boot
 from surveyor.auth import hasher
 from surveyor.config import settings
 from surveyor.db import Base, User, get_db
 from surveyor.main import app
+
+
+@pytest.fixture(autouse=True)
+def isolated_ai_config(tmp_path, monkeypatch):
+    path = tmp_path / "ai-config.json"
+    path.write_bytes(ai_config.DEFAULT_PATH.read_bytes())
+    monkeypatch.setattr(ai_config, "DEFAULT_PATH", path)
 
 
 @pytest.fixture
@@ -22,6 +30,7 @@ def client(tmp_path, monkeypatch):
     monkeypatch.setattr(settings, "data_mode", "synthetic")
     monkeypatch.setattr(settings, "public_url", "http://testserver")
     monkeypatch.setattr(settings, "cookie_secure", False)
+    monkeypatch.setattr(settings, "codex_telegram_enabled", False)
 
     def override():
         with factory() as db:

@@ -25,6 +25,14 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
     rate = D(product["rate"])
     minimum = D(product["min_rate"])
     warnings = []
+    from surveyor.factor_pricing import factor_result
+
+    factors = factor_result(inputs, template, kind == "normative")
+    if not factors and product.get("tariff_policy") and template and not template.get("approved_by"):
+        template = None
+        warnings.append("Поправки риска не применены: шаблон не утверждён страховщиком")
+    if product.get("tariff_policy", {}).get("amount_basis") == "limit":
+        warnings.append("База тарифа — сумма лимита; в поле страховой суммы должен быть указан лимит")
     if kind == "program":
         selected = product.get("program_rates", {}).get(inputs.get("program"))
         if selected is None:
@@ -80,7 +88,11 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
         reverse=True,
     )
     for indicator in indicators:
-        if indicator.get("stale"):
+        if (
+            indicator.get("stale")
+            or indicator.get("reference_only")
+            or indicator["metric"].startswith("napp_ref_")
+        ):
             continue
         metric = indicator["metric"]
         relevant = indicator.get("object_type", "all") in {"all", inputs.get("object_type")}
@@ -102,6 +114,7 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
             relevant
             and metric in (template or {}).get("indicator_metrics", [])
             and metric not in applied_metrics
+            and (not product.get("tariff_policy") or indicator.get("approved_by"))
         ):
             applied_metrics.add(metric)
             regional += D(str(indicator.get("rate_adjustment", 0)))
@@ -124,7 +137,31 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
     # Statutory tariffs may not be changed by discretionary risk/market factors.
     if kind == "normative":
         multiplier, regional, loss_adj = D(1), D(0), D(0)
+    elif not applied_metrics:
+        warnings.append(
+            "Региональная поправка не рассчитана: нет актуальных данных, связанных с правилами для этого объекта"
+        )
+    if market is None:
+        warnings.append(
+            "Рыночная годовая ставка недоступна: требуется сопоставимая котировка с источником и датой"
+        )
+    if factors:
+        # The complete factor product replaces legacy score/regional/loss multipliers.
+        # Their evidence remains available, but applying both would count risks twice.
+        multiplier = D(factors["multiplier"])
+        regional, loss_adj = D(0), D(0)
+        score, level = None, "unavailable"
+        if factors["status"] in {"unapproved", "stale"}:
+            warnings.append("Коэффициенты факторов не применены: требуется актуальное утверждение актуария")
+        if factors["clarify"]:
+            warnings.append(
+                "Незаполненные факторы и отсутствующие коэффициенты перечислены в разделе «Уточнить»"
+            )
+        if factors["calibration_status"] == "uncalibrated":
+            warnings.append("Коэффициенты факторов экспертные: не калибровано по статистике")
     recommended = max(minimum, rate * multiplier * (1 + regional) * (1 + loss_adj))
+    if factors and recommended > 100:
+        raise ValueError("Ставка по факторам превышает 100%; проверьте коэффициенты и ответы")
     time_factor = D(days) / 365 if basis == "annual" else D(1)
     annual_factor = D(365) / days if basis == "fixed" else D(1)
     annual_rate = recommended * annual_factor
@@ -170,7 +207,9 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
         "premium_discrepancy": money(discrepancy) if discrepancy is not None else None,
         "formula": "sum × rate / 100 × days / 365" if basis == "annual" else "sum × rate / 100",
         "warnings": list(dict.fromkeys(warnings)),
+        "factor_pricing": factors,
         "indicators": used,
+        "applied_metrics": sorted(applied_metrics) if kind != "normative" and not factors else [],
     }
 
 
@@ -198,7 +237,11 @@ def valuation(inputs, today=None, exchange=None, policy=None):
 
         cutoff = date(year, month, min(today.day, calendar.monthrange(year, month)[1]))
         reason = None
-        if not c.get("same_item", True):
+        if c.get("evidence_kind") == "auction_start":
+            reason = "стартовая цена торгов не является ценой сделки"
+        elif c.get("evidence_kind") == "completed_sale" and not c.get("transaction_reference"):
+            reason = "нет подтверждения завершённой сделки"
+        elif not c.get("same_item", True):
             reason = "другое изделие"
         elif age < 0 or date.fromisoformat(str(c["date"])) < cutoff:
             reason = "дата вне последних 6 месяцев"
@@ -265,10 +308,14 @@ def valuation(inputs, today=None, exchange=None, policy=None):
         if method == "appraiser_and_second_method" and estimate
         else None
     )
+    evidence_missing = []
+    if method == "purchase_less_depreciation":
+        evidence_missing = [key for key in ("purchase_source", "purchase_date") if not inputs.get(key)]
     confirmed = (
         deviation is not None
         and deviation <= tolerance
         and (second_deviation is None or second_deviation <= tolerance)
+        and not evidence_missing
     )
     return {
         "method": method,
@@ -283,6 +330,7 @@ def valuation(inputs, today=None, exchange=None, policy=None):
         "status": "unavailable" if estimate is None else "confirmed" if confirmed else "clarify",
         "comparables": kept,
         "rejected": rejected,
+        "evidence_missing": evidence_missing,
         "method_note": "Правило оценки утверждено актуарием"
         if policy.get("approved_by")
         else "Правило оценки — экспертное, не утверждено страховщиком",

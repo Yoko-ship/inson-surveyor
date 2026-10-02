@@ -1,0 +1,80 @@
+{
+  "reviewed_on": "2026-10-02",
+  "purpose": "Public documents for realistic extraction tests and actuarial methodology research",
+  "status": "Research only; no documents processed by AI, no experience imported, no operational coefficients changed.",
+  "sources": [
+    {
+      "id": "inson-complex-property-ru",
+      "url": "https://insuranceon.uz/media/attachments/2025/01/04/0833_complex_property.pdf",
+      "title": "INSON complex property and civil liability public offer",
+      "language": "ru",
+      "pages": 20,
+      "access": "PDF opened successfully",
+      "document_type": "Public wording and blank application questionnaire",
+      "use": "Clause extraction, missing-field handling and residential property form parsing; application questionnaire on PDF page 17.",
+      "limitations": "Individuals' residential property product, not a completed corporate inspection or customer policy. Published product prices are not approved factor coefficients."
+    },
+    {
+      "id": "inson-myhome-uz",
+      "url": "https://insuranceon.uz/media/offer/myHome/offer_myHome_uz.pdf",
+      "title": "INSON My Home public offer",
+      "language": "uz",
+      "pages": 8,
+      "access": "PDF opened successfully",
+      "document_type": "Public property insurance wording",
+      "use": "Uzbek-language policy extraction benchmark.",
+      "limitations": "Public wording does not establish accuracy on completed client documents or approve operational pricing."
+    },
+    {
+      "id": "inson-dsago-ru",
+      "url": "https://insuranceon.uz/media/attachments/2025/01/07/0101_dsago.pdf",
+      "title": "INSON voluntary motor third-party liability public offer",
+      "language": "ru",
+      "pages": 14,
+      "access": "PDF opened successfully",
+      "document_type": "Public motor liability wording",
+      "use": "Coverage, exclusions and claim-procedure extraction.",
+      "limitations": "Voluntary liability product; not vehicle physical-damage insurance or a completed customer policy."
+    },
+    {
+      "id": "inson-construction-ru",
+      "url": "https://apitestsite.insuranceon.uz/storage/image_front/GW6CO7g4dWXv4KLRGLrWUUL0qE9OihJ8KHNfGSjs.pdf",
+      "title": "INSON compulsory construction and installation risks public offer",
+      "language": "ru",
+      "pages": 4,
+      "access": "PDF opened successfully",
+      "document_type": "Public construction insurance wording for legal entities",
+      "use": "Corporate construction-risk terminology and covered-peril extraction.",
+      "limitations": "Hosted on the insurer's apitestsite subdomain. Current production applicability and legal currency have not been established. Not an approved operational tariff source."
+    },
+    {
+      "id": "cas-fremtpl",
+      "url": "https://dutangc.github.io/CASdatasets/reference/freMTPL.html",
+      "title": "CASdatasets French motor third-party liability datasets",
+      "language": "en",
+      "access": "Author documentation opened successfully",
+      "document_type": "Public risk-level actuarial benchmark",
+      "use": "Benchmark frequency/severity methods with policy exposure, risk features, claim counts and linked claim amounts.",
+      "limitations": "French portfolio, not INSON or Uzbekistan. freMTPL2 observations are approximately 2011–2013 and mostly one year per policy. Some claim amounts follow French settlement conventions. Not a direct import to the application's recent 3–5 complete-year paid-loss calibration workflow; do not invent years, currency conversion, or paid-loss semantics."
+    },
+    {
+      "id": "cas-basic-ratemaking",
+      "url": "https://www.casact.org/abstract/basic-ratemaking",
+      "title": "Casualty Actuarial Society — Basic Ratemaking",
+      "language": "en",
+      "access": "Publisher overview opened successfully",
+      "document_type": "Actuarial educational reference",
+      "use": "Review property/casualty ratemaking concepts and methods.",
+      "limitations": "Educational methodology; does not provide insurer-approved INSON coefficients or replace actuarial review."
+    }
+  ],
+  "unresolved": [
+    "Representative completed inspection/claim/valuation cases and expected extraction results have not been assembled.",
+    "INSON factor-segmented exposure and claims history has not been found publicly.",
+    "Operational coefficients and methodology still require insurer actuarial approval."
+  ],
+  "verification_notes": [
+    "The PDF text establishes the blank property application on page 17. A web screenshot request failed; no visually verified table values are claimed.",
+    "Only source links and research notes are saved; copyrighted PDFs and customer records are not copied into Git."
+  ]
+}

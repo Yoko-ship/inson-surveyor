@@ -975,6 +975,13 @@ dialog::backdrop {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+.pilot-scan {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  margin-block: 1rem;
+}
 .report-section p,
 .file-card a {
   overflow-wrap: anywhere;
@@ -983,4 +990,24 @@ dialog::backdrop {
   margin-block: 0.75rem;
   padding-block-end: 0.75rem;
   border-bottom: 1px solid #e5ebe8;
+}
+
+#factor-guide {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+/* AI prose is rendered using safe text nodes; evidence keeps its original text. */
+.ai-answer {
+  overflow-wrap: anywhere;
+  line-height: 1.65;
+}
+.ai-answer p {
+  margin: 0.5rem 0;
+}
+.ai-answer ul,
+.ai-answer ol {
+  padding-left: 1.5rem;
+}
+.ai-answer code {
+  white-space: pre-wrap;
 }

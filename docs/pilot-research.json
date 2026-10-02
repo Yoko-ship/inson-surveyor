@@ -1,0 +1,71 @@
+{
+  "reviewed_on": "2026-10-01",
+  "purpose": "Public evidence for pilot selection; not an approved tariff or claims import",
+  "operational_import": false,
+  "ai_recognition": "excluded_by_user",
+  "sources": [
+    {"id": "my_home", "url": "https://insuranceon.uz/media/offer/myHome/offer_myHome_uz.pdf", "discovered_from": "https://insuranceon.uz/products/property", "document_approval_date": "2024-01-25", "pages": [1, 4], "sha256": "23a8c52472377a7c8c8ddc208984af7f71484400a913329a43fa5c43e7743213"},
+    {"id": "complex_property", "url": "https://insuranceon.uz/media/attachments/2025/01/04/0833_complex_property.pdf", "document_approval_date": "2025-01-04", "pages": [19], "sha256": "f697e9437f51c247b244a65b0e292a0aa74080cc9c447b7a743073e6c0313da9"},
+    {"id": "napp_2023", "url": "https://napp.uz/storage/files/shares/opendata/2023/4Q/Im/%D0%A1%D1%82%D1%80%D0%B0%D1%85%20%D0%BE%D1%82%D1%87%D0%B5%D1%82(IV)%20rus%20%E2%80%94%20filtr.pdf", "pages": [10, 14, 19], "sha256": "aa30e4a4c4bb37216f9fdee09939bc49d2c06417588e5632ac2c1f5b83020266"},
+    {"id": "napp_2025", "url": "https://napp.uz/storage/files/shares/opendata/2025/4Q/%D0%A1%D1%82%D1%80%D0%B0%D1%85%20%D0%BE%D1%82%D1%87%D0%B5%D1%82(IV%20%D0%BA%D0%B2%D0%B0%D1%80%D1%82%D0%B0%D0%BB%D0%B0%202025%20%D0%B3%D0%BE%D0%B4%20)%20rus%20%E2%80%94%20filtr.pdf", "pages": [10, 14, 19], "sha256": "5ec5dedcd68d6bf48bd4fceff2356627a96e950276d36e76352e1548e8b5458b"},
+    {"id": "imkon", "url": "https://www.imkonsugurta.uz/ru/populations/kasko_index/", "publication_date": null},
+    {"id": "euroasia", "url": "https://eai.uz/uz/auto", "publication_date": null}
+  ],
+  "inson_my_home": {
+    "source_id": "my_home",
+    "published_classes": ["8", "9"],
+    "effective_from_confirmed": null,
+    "package_term_confirmed_days": null,
+    "tiers": [
+      {"insured_sum_uzs": 10000000, "premium_uzs": 20000},
+      {"insured_sum_uzs": 20000000, "premium_uzs": 35000},
+      {"insured_sum_uzs": 50000000, "premium_uzs": 50000},
+      {"insured_sum_uzs": 100000000, "premium_uzs": 90000}
+    ],
+    "custom_sum_annual_minimum_rate_percent": 0.09,
+    "unresolved": ["Confirm current effective tariff and package duration", "Confirm product code and class 8/9 treatment", "Approve exact coverage tiers and custom-amount eligibility", "Confirm whether risk adjustments may change these published package prices"]
+  },
+  "complex_property_example": {
+    "source_id": "complex_property",
+    "program": "LITTLE",
+    "property_sum_uzs": 100000000,
+    "property_rate_percent": 0.15,
+    "liability_limit_uzs": 25000000,
+    "liability_rate_percent": 0.1,
+    "published_total_premium_uzs": 175000,
+    "published_rounded_average_rate_percent": 0.18,
+    "implementation_note": "The rounded average gives 180000 UZS on 100000000 UZS, not the quoted 175000 UZS. Component pricing and limits must be modeled before adopting this package. Current availability and term are unconfirmed."
+  },
+  "company_aggregates": {
+    "insurer": "INSON",
+    "scope": "Company-wide general insurance; no product allocation",
+    "amount_unit": "million UZS, rounded as published",
+    "premium_definition": "Total insurance premiums, section 2.1; not the separate net-premium column",
+    "payout_definition": "Insurance payouts, section 2.5",
+    "claim_definition": "Received, paid, refused and unsettled claims, section 2.10; preserve categories separately",
+    "rows": [
+      {"year": 2023, "premium_total_million_uzs": 170713, "payouts_million_uzs": 17251, "claims_received": 2458, "claims_paid": 1830, "claims_refused": 113, "claims_unsettled": 515, "source_id": "napp_2023", "source_column": "31.12.2023"},
+      {"year": 2024, "premium_total_million_uzs": 252474, "payouts_million_uzs": 48290, "claims_received": 6074, "claims_paid": 5692, "claims_refused": 188, "claims_unsettled": 194, "source_id": "napp_2025", "source_column": "01.01.2025"},
+      {"year": 2025, "premium_total_million_uzs": 200947, "payouts_million_uzs": 44082, "claims_received": 5259, "claims_paid": 4950, "claims_refused": 233, "claims_unsettled": 76, "source_id": "napp_2025", "source_column": "01.01.2026"}
+    ],
+    "calibration_eligible": false,
+    "reason": "Product-specific claims, payouts and premiums are missing. These totals must not be copied to a product or apportioned without insurer evidence."
+  },
+  "market_references": [
+    {"insurer": "IMKON", "product": "KASKO Oson start", "annual_rate_percent": 0.5, "source_id": "imkon", "eligibility": "Vehicle value and eligibility require confirmation", "coverage": "Published basic package: collision, theft, fire and other listed events; check limits and exclusions", "comparison_approved": false},
+    {"insurer": "IMKON", "product": "Oson start + LITRO", "annual_rate_percent": 0.9, "source_id": "imkon", "eligibility": "Vehicle value and eligibility require confirmation", "coverage": "Oson start with the optional assistance subscription", "comparison_approved": false},
+    {"insurer": "EUROASIA", "product": "KASKO SIMPLE", "annual_rate_percent": 1.0, "source_id": "euroasia", "eligibility": "Vehicle value up to 500 million UZS; confirm treatment at boundary", "coverage": "Road accidents only", "comparison_approved": false},
+    {"insurer": "EUROASIA", "product": "KASKO SIMPLE", "annual_rate_percent": 1.2, "source_id": "euroasia", "eligibility": "Vehicle value above 500 million UZS", "coverage": "Road accidents only", "comparison_approved": false},
+    {"insurer": "EUROASIA", "product": "KASKO LITE", "annual_rate_percent": 1.3, "source_id": "euroasia", "eligibility": "Vehicle value up to 500 million UZS; confirm treatment at boundary", "coverage": "Accident, theft, fire and other listed risks; disaster coverage starts at SMART", "comparison_approved": false},
+    {"insurer": "EUROASIA", "product": "KASKO LITE", "annual_rate_percent": 1.5, "source_id": "euroasia", "eligibility": "Vehicle value above 500 million UZS", "coverage": "Accident, theft, fire and other listed risks; disaster coverage starts at SMART", "comparison_approved": false}
+  ],
+  "next_actions": [
+    {"area": "Pilot product", "owner": "Insurer and project owner", "needed": "Confirm My Home as pilot, its current tariff, duration, product code and treatment of classes 8/9"},
+    {"area": "Company experience", "owner": "Insurer finance team", "needed": "Export 2023-2025 by product: claim definition/count, payouts, premiums, policy counts and currency/unit"},
+    {"area": "Rules", "owner": "Actuary and underwriter", "needed": "Approve weights, thresholds, adjustment limits, valuation and duration conventions, clauses and calibration method"},
+    {"area": "Market quotes", "owner": "Underwriter", "needed": "Confirm matching coverage, eligibility, deductibles, observation date and validity before comparing"},
+    {"area": "Providers", "owner": "Company account holder", "needed": "Obtain permission, documentation and credentials for sources required by the pilot"},
+    {"area": "Hosting", "owner": "Company IT and project owner", "needed": "Provide Uzbekistan server/account and domain; verify database, documents and backup residency"},
+    {"area": "Acceptance", "owner": "Staff tester and underwriter", "needed": "Approve expected results for sample cases and test Telegram upload, review, exports and delivery on a real phone"}
+  ]
+}

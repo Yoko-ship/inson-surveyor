@@ -1,14 +1,14 @@
 """Explicit, allowlisted public-data adapters. No arbitrary URL fetches."""
 
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from xml.etree.ElementTree import ParseError
 from zipfile import BadZipFile
 
 import httpx
 from openpyxl.utils.exceptions import InvalidFileException
-from sqlalchemy import select
+from sqlalchemy import func, or_, select, update
 
 from surveyor.db import Audit, Channel, Indicator, now
 from surveyor.regions import region_code
@@ -17,6 +17,13 @@ from surveyor.source_lock import host_lock
 
 CBU_URL = "https://cbu.uz/ru/arkhiv-kursov-valyut/json/"
 CHANNELS = [
+    (
+        "market_quotes",
+        "Рыночные страховые котировки",
+        "manual_only",
+        "Проверенные сопоставимые котировки с типом ставки, сроком, источником и датой",
+        False,
+    ),
     ("cbu", "cbu.uz", "official_api", "Официальный JSON API", True),
     ("stat", "stat.uz / siat.stat.uz", "manual", "Открытые файлы; схема набора требует проверки", False),
     ("egov", "data.egov.uz", "manual", "Открытые файлы; выберите набор", False),
@@ -51,15 +58,17 @@ def store_indicator(db, channel, item, actor=None):
         select(Indicator)
         .where(
             Indicator.channel_code == channel,
+            func.coalesce(Indicator.data["subject"].as_string(), "market") == data.get("subject", "market"),
             *(Indicator.data[k].as_string() == data.get(k) for k in identity),
         )
         .order_by(Indicator.fetched_at.desc())
         .limit(1)
     )
-    if (
-        previous
-        and {k: v for k, v in previous.data.items() if k not in {"approved_by", "approved_at"}} == data
-    ):
+    if previous and {
+        k: v
+        for k, v in {"subject": "market", "reference_only": False, "note": "", **previous.data}.items()
+        if k not in {"approved_by", "approved_at"}
+    } == {"subject": "market", "reference_only": False, "note": "", **data}:
         return previous
     row = Indicator(channel_code=channel, data=data)
     db.add(row)
@@ -75,14 +84,35 @@ def store_indicator(db, channel, item, actor=None):
     return row
 
 
+def claim_collection(db, channel, force=False):
+    # A temporary failure is retried by the next hourly cycle, not treated as a successful daily cache.
+    seconds = (
+        60
+        if force
+        else 3600
+        if channel.error
+        else channel.data.get("config", {}).get("interval_hours", 24) * 3600
+    )
+    attempt = now()
+    claim = db.execute(
+        update(Channel)
+        .where(
+            Channel.code == channel.code,
+            Channel.enabled.is_(True),
+            or_(Channel.last_attempt.is_(None), Channel.last_attempt <= attempt - timedelta(seconds=seconds)),
+        )
+        .values(last_attempt=attempt)
+    )
+    db.commit()
+    return claim.rowcount == 1
+
+
 def collect_cbu(db, force=False):
     channel = db.get(Channel, "cbu")
     if not channel or not channel.enabled:
-        raise ValueError("Канал отключён; проверьте причину в панели источников")
-    if channel.last_attempt and (now() - channel.last_attempt).total_seconds() < (1 if force else 86400):
+        return {"status": "disabled", "channel": "cbu"}
+    if not claim_collection(db, channel, force):
         return {"status": "cached"}
-    channel.last_attempt = now()
-    db.commit()
     try:
         with (
             host_lock("cbu.uz"),
@@ -102,7 +132,7 @@ def collect_cbu(db, force=False):
             raise ValueError("Формат CBU изменился: ожидается непустой список")
         parsed = []
         for row in payload:
-            if not all(k in row for k in ["Ccy", "Rate", "Nominal", "Date"]):
+            if not isinstance(row, dict) or not all(k in row for k in ["Ccy", "Rate", "Nominal", "Date"]):
                 raise ValueError("Формат CBU изменился: отсутствуют обязательные поля")
             parsed.append(
                 IndicatorInput(
@@ -121,11 +151,18 @@ def collect_cbu(db, force=False):
         channel.last_success = now()
         db.commit()
         return {"status": "collected", "count": len(parsed)}
-    except (ValueError, KeyError, ArithmeticError) as exc:
+    except (ValueError, KeyError, TypeError, ArithmeticError):
+        db.rollback()
         channel.enabled = False
-        channel.error = str(exc)[:500]
+        channel.error = "Доступ отклонён или формат CBU изменился; канал отключён до проверки"
     except httpx.HTTPError:
+        db.rollback()
         channel.error = "Источник недоступен; используются последние сохранённые данные"
+    except OSError:
+        db.rollback()
+        channel.error = (
+            "Не удалось получить доступ к локальному хранилищу или сети; повтор в следующем часовом цикле"
+        )
     db.add(Audit(action="source.error", entity_id="cbu", data={"message": channel.error}))
     db.commit()
     return {"status": "error", "message": channel.error}
@@ -138,7 +175,14 @@ def latest_indicators(db, region=None, class_code=None):
     seen, result = set(), []
     for row in rows:
         d = row.data
-        key = (row.channel_code, d["metric"], d.get("region"), d.get("class_code"), d.get("object_type"))
+        key = (
+            row.channel_code,
+            d.get("subject", "market"),
+            d["metric"],
+            d.get("region"),
+            d.get("class_code"),
+            d.get("object_type"),
+        )
         if key in seen:
             continue
         seen.add(key)
@@ -171,27 +215,7 @@ def collect_channel(db, code, force=False):
     if not channel or not channel.enabled or not channel.data.get("config"):
         return {"status": "disabled", "channel": code}
     config = channel.data["config"]
-    seconds = 1 if force else config.get("interval_hours", 24) * 3600
-    # Persist the attempt before I/O; atomic claim also prevents concurrent collectors.
-    from datetime import timedelta
-
-    from sqlalchemy import or_, update
-
-    attempt = now()
-    claim = db.execute(
-        update(Channel)
-        .where(
-            Channel.code == code,
-            Channel.enabled.is_(True),
-            or_(
-                Channel.last_attempt.is_(None),
-                Channel.last_attempt <= attempt - timedelta(seconds=max(60, seconds)),
-            ),
-        )
-        .values(last_attempt=attempt)
-    )
-    db.commit()
-    if claim.rowcount != 1:
+    if not claim_collection(db, channel, force):
         return {"status": "cached", "channel": code}
     try:
         content = fetch_public(config, channel.data.get("host_channel", code))
@@ -206,12 +230,17 @@ def collect_channel(db, code, force=False):
             channel.last_success, channel.error = now(), None
             db.commit()
             return {"status": "collected", "channel": code, "reference_id": row.id, "count": 1}
-        if config["format"] == "napp":
+        if config["format"] in {"napp", "napp_reference"}:
             from surveyor.napp import latest_download, parse_napp
 
             dataset_url = latest_download(content)
             workbook = fetch_public({**config, "url": dataset_url}, "napp")
-            items, schema = parse_napp(workbook, dataset_url)
+            if config["format"] == "napp_reference":
+                from surveyor.napp_reference import parse_napp_reference
+
+                items, schema = parse_napp_reference(workbook, dataset_url)
+            else:
+                items, schema = parse_napp(workbook, dataset_url)
             channel.data = {**channel.data, "last_dataset_url": dataset_url}
         else:
             items, schema = parse_public(content, config)
@@ -265,4 +294,23 @@ def collect_channel(db, code, force=False):
 
 def collect_all(db):
     codes = db.scalars(select(Channel.code).where(Channel.enabled.is_(True))).all()
-    return [collect_channel(db, code) for code in codes]
+    results = []
+    for code in codes:
+        try:
+            results.append(collect_channel(db, code))
+        except Exception as exc:
+            # Keep one broken adapter from stopping other sources and scheduled backups.
+            db.rollback()
+            channel = db.get(Channel, code)
+            message = "Ошибка сборщика; остальные каналы продолжают работу"
+            channel.error = message
+            db.add(
+                Audit(
+                    action="source.error",
+                    entity_id=code,
+                    data={"message": message, "error_type": type(exc).__name__},
+                )
+            )
+            db.commit()
+            results.append({"status": "error", "channel": code, "message": message})
+    return results

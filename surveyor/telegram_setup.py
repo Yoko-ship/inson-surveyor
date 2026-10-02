@@ -18,9 +18,21 @@ COMMANDS = [
 
 async def set_menu(menu):
     # Telegram documents this parameter as a JSON-serialized MenuButton.
-    return await call_telegram(
+    result = await call_telegram(
         "setChatMenuButton", data={"menu_button": json.dumps(menu, ensure_ascii=False)}
     )
+    # Refresh the owner's chat-specific button too: it can retain an older
+    # temporary tunnel URL even after the bot's default menu changes.
+    if settings.codex_telegram_enabled and settings.codex_telegram_owner_id:
+        owner_menu = menu if menu.get("type") == "web_app" else {"type": "default"}
+        await call_telegram(
+            "setChatMenuButton",
+            data={
+                "chat_id": settings.codex_telegram_owner_id,
+                "menu_button": json.dumps(owner_menu, ensure_ascii=False),
+            },
+        )
+    return result
 
 
 async def verify_identity():

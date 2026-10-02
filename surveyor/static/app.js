@@ -24,6 +24,7 @@ const dateText = (v) => (v ? new Date(v).toLocaleDateString("ru-RU") : "—");
 const today = () => new Date().toLocaleDateString("en-CA");
 const state = {
   user: null,
+  codexPilot: false,
   csrf: "",
   page: "surveys",
   products: [],
@@ -39,6 +40,8 @@ const translations = {
   ru: {
     surveys: "Осмотры",
     calculator: "Калькулятор",
+    policy: "Тарифы и РНП",
+    codex: "ИИ",
     sources: "Открытые данные",
     admin: "Администрирование",
     profile: "Мой профиль",
@@ -49,6 +52,8 @@ const translations = {
   uz: {
     surveys: "Ko‘riklar",
     calculator: "Kalkulyator",
+    policy: "Tariflar va RNP",
+    codex: "AI",
     sources: "Ochiq ma’lumotlar",
     admin: "Boshqaruv",
     profile: "Mening profilim",
@@ -59,6 +64,8 @@ const translations = {
   en: {
     surveys: "Inspections",
     calculator: "Calculator",
+    policy: "Tariffs and reserves",
+    codex: "AI",
     sources: "Public data",
     admin: "Administration",
     profile: "My profile",
@@ -69,6 +76,7 @@ const translations = {
 };
 const t = (key) => translations[state.locale][key] || key;
 const names = {
+  factor_multiplier: "Произведение коэффициентов факторов",
   draft: "Черновик",
   review: "На проверке",
   official_file: "Открытый файл",
@@ -121,6 +129,19 @@ Object.assign(names, {
   contract_start: "Дата начала",
   contract_end: "Дата окончания",
   object_description: "Объект страхования",
+  base_rate: "Базовая ставка, %",
+  minimum_rate: "Минимальная ставка, %",
+  recommended_rate: "Рекомендуемая ставка, %",
+  premium: "Премия, UZS",
+  risk_level: "Уровень риска",
+  regional_adjustment: "Поправка региона",
+  loss_adjustment: "Поправка убытков",
+  formula: "Формула",
+  warnings: "Предупреждения",
+  contradiction: "Противоречие",
+  evidence: "Сведения из источника",
+  missing: "Недостающие сведения",
+  risk: "Риск",
 });
 const regionName = (v) =>
   state.regions.find((r) => r.code === v)?.[state.locale] || v;
@@ -144,6 +165,9 @@ async function api(path, options = {}) {
     "X-CSRF-Token": state.csrf,
     ...options.headers,
   };
+  if (path.startsWith("/ai-pilot") && window.Telegram?.WebApp?.initData) {
+    headers["X-Telegram-Init-Data"] = window.Telegram.WebApp.initData;
+  }
   const r = await fetch(`/api${path}`, { ...options, headers });
   const data = await r.json().catch(() => ({}));
   if (!r.ok) {
@@ -165,7 +189,7 @@ function bindForm(id, handler) {
     const btn = $("button[type=submit]", form);
     if (btn) btn.disabled = true;
     try {
-      await handler(Object.fromEntries(new FormData(form)), form);
+      await handler(Object.fromEntries(new FormData(form)), form, e);
     } catch (err) {
       toast(err.message, true);
       const error = $(".form-error", form);
@@ -224,10 +248,12 @@ function renderNav() {
   const items = [
     ["surveys", "▧"],
     ["calculator", "⌗"],
+    ["policy", "▤"],
     ["sources", "◎"],
   ];
   if (["admin", "actuary"].includes(state.user.role))
     items.push(["admin", "⚙"]);
+  if (state.codexPilot) items.push(["codex", "✦"]);
   items.push(["profile", "◯"]);
   $("#navigation").innerHTML = items
     .map(
@@ -241,6 +267,16 @@ function renderNav() {
 async function enter(data) {
   state.user = data.user;
   state.csrf = data.csrf;
+  state.codexPilot = false;
+  state.codexDocuments = false;
+  if (!state.user.must_change_password) {
+    state.codexPilot = await api("/ai-pilot")
+      .then((info) => {
+        state.codexDocuments = info.documents_enabled;
+        return true;
+      })
+      .catch(() => false);
+  }
   $("#login-view").hidden = true;
   $("#workspace").hidden = false;
   $("#demo-banner").hidden = data.data_mode === "real";
@@ -248,13 +284,19 @@ async function enter(data) {
   if (state.user.must_change_password) {
     return changePassword();
   }
+  state.calculatorDraft = null;
   state.regions = await api("/regions");
   state.products = await api("/products");
   state.templates = await api("/templates");
+  await window.SurveyorFactorPricing.load();
   await navigate("surveys");
 }
 async function navigate(page) {
   state.page = page;
+  $("#demo-banner").textContent =
+    page === "codex" && state.codexDocuments
+      ? "Личный анализ документов. Учебные тарифы не утверждены страховщиком."
+      : "Учебная среда · Используйте только синтетические данные. Демонстрационные тарифы не утверждены страховщиком.";
   renderNav();
   $("#breadcrumb").textContent = t(page);
   $("#content").innerHTML = '<div class="loading">Загрузка…</div>';
@@ -262,6 +304,8 @@ async function navigate(page) {
     await {
       surveys: dashboard,
       calculator: calculator,
+      policy: window.SurveyorPolicy.page,
+      codex: window.SurveyorCodexPilot.page,
       sources: sourcesPage,
       admin: () => adminPage("products"),
       profile: profilePage,
@@ -339,6 +383,7 @@ function surveyFrame(step) {
     ) +
     `<div class="steps">${[
       ["files", "Фото и документы"],
+      ["assistant", "Помощник"],
       ["review", "Проверить"],
       ["report", "Акт"],
     ]
@@ -354,16 +399,20 @@ function renderSurvey(step) {
   $("#back-surveys").onclick = () => navigate("surveys");
   action("[data-step]", (el) => renderSurvey(el.dataset.step));
   if (step === "files") renderFiles();
+  if (step === "assistant")
+    window.SurveyorAssistant.page().catch((error) =>
+      toast(error.message, true),
+    );
   if (step === "review") renderReview();
   if (step === "report") renderReportList();
 }
 function renderFiles() {
   const s = state.survey;
   $("#survey-body").innerHTML =
-    `<div class="two-col"><section class="panel"><div class="panel-head"><h3>Материалы осмотра</h3><span class="muted small">${s.documents.length} / 20 файлов</span></div>${s.owner_id === state.user.id ? `<form id="upload-form"><div class="upload-zone"><span class="empty-symbol">↑</span><strong>Добавьте фото, договор или запрос филиала</strong><p class="muted small">PDF, Word, Excel, TXT, CSV, JPG, PNG, WEBP<br>До 15 МБ на файл · PDF до 50 страниц</p><input type="file" name="file" multiple required accept=".pdf,.docx,.xlsx,.txt,.csv,.jpg,.jpeg,.png,.webp"></div><button type="submit" class="secondary">Загрузить выбранные файлы</button></form>` : ""}<div class="notice">Фото и сканы не распознаются автоматически: ИИ отключён. После загрузки проверьте их вручную.</div>${s.documents
+    `<div class="two-col"><section class="panel"><div class="panel-head"><h3>Материалы осмотра</h3><span class="muted small">${s.documents.length} / 20 файлов</span></div>${s.owner_id === state.user.id ? `<form id="upload-form"><div class="upload-zone"><span class="empty-symbol">↑</span><strong>Добавьте фото, договор или запрос филиала</strong><p class="muted small">PDF, Word, Excel, TXT, CSV, JPG, PNG, WEBP<br>До 15 МБ на файл · PDF до 50 страниц</p><input type="file" name="file" multiple required accept=".pdf,.docx,.xlsx,.txt,.csv,.jpg,.jpeg,.png,.webp"></div><button type="submit" class="secondary">Загрузить выбранные файлы</button></form>` : ""}<div class="notice">Проверьте документы вручную. Если доступен ИИ, его предложения требуют вашей проверки.</div>${s.documents
       .map(
         (d) =>
-          `<div class="file-card"><h4><a href="/api/documents/${d.id}/download">${esc(d.filename)} ↗</a></h4>${badge(d.extracted.mode)}${s.owner_id === state.user.id ? `<button type="button" class="text-button" data-review-document="${d.id}">Проверить / исправить поля</button>` : ""}<p class="small muted">${esc(d.extracted.notice)}</p><div>${Object.entries(
+          `<div class="file-card"><h4><a href="/api/documents/${d.id}/download">${esc(d.filename)} ↗</a></h4>${badge(d.extracted.mode)}${s.owner_id === state.user.id && state.codexDocuments ? `<button type="button" class="secondary" data-ai-document="${d.id}">ИИ · проверить документ</button>` : ""}${s.owner_id === state.user.id ? `<button type="button" class="text-button" data-review-document="${d.id}">Проверить / исправить поля</button>` : ""}<p class="small muted">${esc(d.extracted.notice)}</p><div>${Object.entries(
             d.extracted.fields,
           )
             .map(
@@ -388,6 +437,11 @@ function renderFiles() {
     });
   action("[data-review-document]", (el) =>
     reviewDocument(s.documents.find((d) => d.id === el.dataset.reviewDocument)),
+  );
+  action("[data-ai-document]", (el) =>
+    window.SurveyorInspectionAI.open(
+      s.documents.find((d) => d.id === el.dataset.aiDocument),
+    ),
   );
   $("#to-review").onclick = () => renderSurvey("review");
 }
@@ -417,7 +471,9 @@ function reviewDocument(doc) {
   bindForm("#document-review", async (d) => {
     const fields = Object.fromEntries(
       keys
-        .filter((k) => d[k] || doc.extracted.fields[k])
+        .filter(
+          (k) => (d[k] || null) !== (doc.extracted.fields[k]?.value || null),
+        )
         .map((k) => [k, d[k] || null]),
     );
     await api(`/documents/${doc.id}/review`, {
@@ -462,13 +518,13 @@ function renderReview() {
       if (item.value && !extracted[key]) extracted[key] = item.value;
   const inputs = { ...extracted, ...d };
   $("#survey-body").innerHTML =
-    `<form id="review-form"><div class="two-col"><div><section class="panel"><div class="panel-head"><h3>Объект и условия</h3><span class="badge">Ручная проверка</span></div><div class="form-grid">${basicFields(inputs)}<label class="span-2">Описание объекта<textarea name="object_description" maxlength="2000">${esc(inputs.object_description || "")}</textarea></label></div><p class="form-hint">Четыре основных поля: продукт, страховая сумма, стоимость, регион. Срок нужен для годовой ставки и сравнения с рынком.</p><h3>Признаки риска</h3><div class="feature-list" id="features"></div><h3>Нормы и материалы источников</h3><div class="feature-list">${state.references.map((r) => `<label><input type="checkbox" name="reference" value="${r.id}" ${(d.reference_ids || []).includes(r.id) ? "checked" : ""}>${esc(r.title)} · ${dateText(r.observation_date)}${r.stale ? " · Устарели" : ""}</label>`).join("") || `<p class="muted">Данные недоступны</p>`}</div></section><section class="panel"><h3>Сверка документов</h3><div class="form-grid">${field("declared_rate", "Тариф из запроса / договора, %", inputs.declared_rate || "", "number", 'min="0" max="100" step="0.000001"')}${field("declared_premium", "Премия из запроса / договора, UZS", inputs.declared_premium || "", "number", 'min="0" step="0.01"')}</div>${
+    `<form id="review-form"><div class="two-col"><div><section class="panel"><div class="panel-head"><h3>Объект и условия</h3><span class="badge">Ручная проверка</span></div><div class="form-grid">${basicFields(inputs)}${field("contract_start", "Дата начала договора", inputs.contract_start || "", "date")}${field("contract_end", "Дата окончания договора", inputs.contract_end || "", "date")}<p class="form-hint span-2">При изменении дат срок считается без даты окончания. Если договор использует другой подсчёт, измените срок и укажите причину.</p><label class="span-2">Описание объекта<textarea name="object_description" maxlength="2000">${esc(inputs.object_description || "")}</textarea></label></div><p class="form-hint">Четыре основных поля: продукт, страховая сумма, стоимость, регион. Срок нужен для годовой ставки и сравнения с рынком.</p><h3>Признаки риска</h3><div class="feature-list" id="features"></div><div id="inspection-factors"></div><h3>Нормы и материалы источников</h3><div class="feature-list">${state.references.map((r) => `<label><input type="checkbox" name="reference" value="${r.id}" ${(d.reference_ids || []).includes(r.id) ? "checked" : ""}>${esc(r.title)} · ${dateText(r.observation_date)}${r.stale ? " · Устарели" : ""}</label>`).join("") || `<p class="muted">Данные недоступны</p>`}</div></section><section class="panel"><h3>Сверка документов</h3><div class="form-grid">${field("declared_rate", "Тариф из запроса / договора, %", inputs.declared_rate || "", "number", 'min="0" max="100" step="0.000001"')}${field("declared_premium", "Премия из запроса / договора, UZS", inputs.declared_premium || "", "number", 'min="0" step="0.01"')}</div>${
       Object.keys(extracted).length
         ? `<p class="form-hint">Из документа: ${Object.entries(extracted)
             .map(([k, v]) => `${esc(named(k))} = ${esc(v)}`)
             .join(" · ")}</p>`
         : ""
-    }<label>Причина исправлений распознанных значений<textarea name="override_reason" placeholder="Если исправили значение документа — объясните почему">${esc(d.override_reason || "")}</textarea></label></section><section class="panel"><h3>Оценка стоимости</h3><p class="form-hint">Сопоставимые предложения: то же изделие, цена и дата обязательны, не старше 6 месяцев. Медиана до ручных правок сохраняется рядом с оценкой.</p><div id="comparables"></div><button type="button" class="secondary" id="add-comparable">＋ Сопоставимое предложение</button><details><summary>Оборудование: цена покупки и износ</summary><div class="form-grid">${field("purchase_price", "Цена покупки, UZS", d.purchase_price || "", "number", 'min="0" step="0.01"')}${field("depreciation_percent", "Износ, %", d.depreciation_percent || 0, "number", 'min="0" max="100" step="0.01"')}</div></details><details><summary>Крупный объект: отчёт оценщика + второй метод</summary><div class="form-grid">${field("appraiser_value", "Оценка, UZS", d.appraiser_value || "", "number", 'min="0"')}${field("appraiser_source", "Источник оценки", d.appraiser_source || "")}${field("appraiser_date", "Дата оценки", d.appraiser_date || "", "date")}${field("second_method_value", "Второй метод, UZS", d.second_method_value || "", "number", 'min="0"')}${field("second_method_source", "Источник второго метода", d.second_method_source || "")}${field("second_method_date", "Дата второго метода", d.second_method_date || "", "date")}</div></details></section></div><aside><section class="panel"><span class="section-title">ПЕРЕД ФОРМИРОВАНИЕМ</span><h3>Проверьте исходные данные</h3><p class="muted small">Расчёт использует версию тарифа на выбранную дату. Все введённые сотрудником значения отмечаются в акте.</p>${select(
+    }<label>Причина исправлений распознанных значений<textarea name="override_reason" placeholder="Если исправили значение документа — объясните почему">${esc(d.override_reason || "")}</textarea></label></section><section class="panel"><h3>Оценка стоимости</h3><p class="form-hint">Сопоставимые предложения: то же изделие, цена и дата обязательны, не старше 6 месяцев. Медиана до ручных правок сохраняется рядом с оценкой. OLX — цены предложений. E-auksion — завершённые сделки с протоколом; стартовые цены исключаются.</p><div id="comparables"></div><button type="button" class="secondary" id="add-comparable">＋ Сопоставимое предложение</button><details><summary>Оборудование: цена покупки и износ</summary><div class="form-grid">${field("purchase_price", "Цена покупки, UZS", d.purchase_price || "", "number", 'min="0" step="0.01"')}${field("purchase_source", "Источник цены покупки", d.purchase_source || "")}${field("purchase_date", "Дата источника цены покупки", d.purchase_date || "", "date", `max="${today()}"`)}${field("depreciation_percent", "Износ, %", d.depreciation_percent || 0, "number", 'min="0" max="100" step="0.01"')}</div></details><details><summary>Крупный объект: отчёт оценщика + второй метод</summary><div class="form-grid">${field("appraiser_value", "Оценка, UZS", d.appraiser_value || "", "number", 'min="0"')}${field("appraiser_source", "Источник оценки", d.appraiser_source || "")}${field("appraiser_date", "Дата оценки", d.appraiser_date || "", "date")}${field("second_method_value", "Второй метод, UZS", d.second_method_value || "", "number", 'min="0"')}${field("second_method_source", "Источник второго метода", d.second_method_source || "")}${field("second_method_date", "Дата второго метода", d.second_method_date || "", "date")}</div></details></section>${borrowerFields(d.borrower, s.documents)}</div><aside><section class="panel"><span class="section-title">ПЕРЕД ФОРМИРОВАНИЕМ</span><h3>Проверьте исходные данные</h3><p class="muted small">Расчёт использует версию тарифа на выбранную дату. Все введённые сотрудником значения отмечаются в акте.</p>${select(
       "language",
       "Язык акта",
       [
@@ -477,30 +533,78 @@ function renderReview() {
         ["en", "English"],
       ],
       d.language || state.locale,
-    )}<p class="form-hint">Тексты источников и оговорок сохраняются на исходном языке.</p><label class="check"><input name="manual_review_confirmed" type="checkbox" required ${d.manual_review_confirmed ? "checked" : ""}>Я проверил(а) документы, суммы, сроки и фотографии.</label><button type="submit" class="primary full" ${s.owner_id !== state.user.id ? "disabled" : ""}>Сохранить и сформировать →</button><p class="form-error"></p></section><div class="notice">Страховой балл не является кредитным скорингом. Окончательное решение принимает андеррайтер.</div></aside></div></form>`;
+    )}<p class="form-hint">Тексты источников и оговорок сохраняются на исходном языке.</p><label class="check"><input name="manual_review_confirmed" type="checkbox" required ${d.manual_review_confirmed ? "checked" : ""}>Я проверил(а) документы, суммы, сроки и фотографии.</label><button type="button" id="save-draft" class="secondary full">Сохранить черновик → помощник</button><button type="submit" class="primary full" ${s.owner_id !== state.user.id ? "disabled" : ""}>Сохранить и сформировать →</button><p class="form-error"></p></section><div class="notice">Страховой балл не является кредитным скорингом. Окончательное решение принимает андеррайтер.</div></aside></div></form>`;
+  $("#review-form .two-col > div").insertAdjacentHTML(
+    "beforeend",
+    `<section class="panel"><details><summary>Учётная группа РНП (необязательно)</summary>${window.SurveyorPolicy.rnpFields(d.rnp_context || {})}</details></section>`,
+  );
+  window.SurveyorInspectionAI.bindTransfer();
+  let currentFactorAnswers = d.factor_answers || {};
   const renderFeatures = () => {
     const code = $("[name=product_code]").value;
     const p = state.products.find((p) => p.code === code);
     const template = state.templates.find(
       (t) => t.class_code === p?.class_code,
     );
+    window.SurveyorFactorPricing.renderAnswers(
+      $("#inspection-factors"),
+      template,
+      currentFactorAnswers,
+    );
     $("#features").innerHTML =
-      Object.keys(template?.feature_weights || {})
+      Object.keys(
+        template?.factor_policy ? {} : template?.feature_weights || {},
+      )
         .map(
           (k) =>
             `<label><input type="checkbox" name="feature" value="${esc(k)}" ${(d.features || []).includes(k) ? "checked" : ""}>${esc(named(k))}</label>`,
         )
         .join("") ||
-      '<p class="muted small">Для класса пока нет шаблона риска.</p>';
+      (template?.factor_policy
+        ? ""
+        : '<p class="muted small">Для класса пока нет шаблона риска.</p>');
   };
   renderFeatures();
-  $("[name=product_code]").onchange = renderFeatures;
+  for (const key of ["contract_start", "contract_end"])
+    $(`[name=${key}]`).onchange = () => {
+      const start = $("[name=contract_start]").value;
+      const end = $("[name=contract_end]").value;
+      if (start && end) {
+        const days = (Date.parse(end) - Date.parse(start)) / 86400000;
+        if (days > 0) $("[name=term_days]").value = days;
+      }
+    };
+  const toggleBorrower = () => {
+    const enabled = $("[name=borrower_enabled]").checked;
+    $("#borrower-fields").hidden = !enabled;
+    $$("input,select,textarea", $("#borrower-fields")).forEach((el) => {
+      el.disabled = !enabled;
+      el.required = enabled && el.name !== "borrower_summary";
+    });
+  };
+  $("[name=borrower_enabled]").onchange = toggleBorrower;
+  toggleBorrower();
+  $("[name=product_code]").onchange = () => {
+    currentFactorAnswers = window.SurveyorFactorPricing.readAnswers();
+    renderFeatures();
+  };
   for (const c of d.comparables || []) addComparable(c);
   $("#add-comparable").onclick = () => addComparable();
+  $("#save-draft").onclick = () => {
+    const form = $("#review-form");
+    form.dataset.draft = "true";
+    form.noValidate = true;
+    form.requestSubmit();
+  };
   bindForm("#review-form", async (values, form) => {
+    const draft = form.dataset.draft === "true";
+    delete form.dataset.draft;
+    form.noValidate = false;
     const body = surveyBody(values);
+    body.rnp_context = window.SurveyorPolicy.readRnp(values);
     body.revision = s.revision;
     body.features = $$("input[name=feature]:checked", form).map((x) => x.value);
+    body.factor_answers = window.SurveyorFactorPricing.readAnswers();
     body.reference_ids = [
       ...new Set([
         ...$$("input[name=reference]:checked", form).map((x) => x.value),
@@ -509,7 +613,21 @@ function renderReview() {
         ),
       ]),
     ];
-    body.manual_review_confirmed = true;
+    body.manual_review_confirmed = !draft;
+    body.borrower = null;
+    if ($("[name=borrower_enabled]", form).checked) {
+      body.borrower = {};
+      for (const key of [
+        "organization_name",
+        "bureau_name",
+        "document_id",
+        "report_date",
+        "score",
+        "score_scale",
+        "summary",
+      ])
+        body.borrower[key] = values[`borrower_${key}`] || "";
+    }
     body.comparables = $$(".comparable").map((el) => {
       const obj = {};
       $$("input,select", el).forEach(
@@ -533,12 +651,20 @@ function renderReview() {
       body: JSON.stringify(body),
     });
     s.revision = result.revision;
+    if (draft) {
+      await openSurvey(s.id, "assistant");
+      return;
+    }
     const report = await post(`/surveys/${s.id}/reports`);
     state.survey = await api(`/surveys/${s.id}`);
     renderSurvey("report");
     await showReport(report.id);
     toast("Акт сформирован");
   });
+}
+function borrowerFields(data, documents) {
+  const d = data || {};
+  return `<section class="panel"><h3>Заёмщик</h3><label class="check"><input name="borrower_enabled" type="checkbox" ${data ? "checked" : ""}>Добавить сведения из отчёта кредитного бюро</label><p class="form-hint">Только организация. Загрузите отчёт в этот осмотр и перенесите оценку вместе со шкалой бюро. Страховой тариф автоматически не меняется.</p><div id="borrower-fields"><div class="form-grid">${field("borrower_organization_name", "Организация-заёмщик", d.organization_name || "")}${field("borrower_bureau_name", "Кредитное бюро", d.bureau_name || "")}${select("borrower_document_id", "Загруженный отчёт бюро", [["", "Выберите файл"], ...documents.map((doc) => [doc.id, doc.filename])], d.document_id || "")}${field("borrower_report_date", "Дата отчёта бюро", d.report_date || "", "date", `max="${today()}"`)}${field("borrower_score", "Оценка бюро", d.score || "")}${field("borrower_score_scale", "Шкала оценки бюро", d.score_scale || "")}</div><label>Результат проверки сотрудником<textarea name="borrower_summary" maxlength="3000">${esc(d.summary || "")}</textarea></label></div></section>`;
 }
 function addComparable(c = {}) {
   const el = document.createElement("div");
@@ -551,14 +677,24 @@ function addComparable(c = {}) {
     ["source", "Ссылка / файл источника", "text"],
     ["currency", "Валюта", "text"],
     ["edit_reason", "Причина правки", "text"],
+    ["transaction_reference", "Подтверждение сделки / протокол", "text"],
   ]
     .map(
       ([key, label, type]) =>
         `<label>${label}<input data-key="${key}" type="${type}" value="${esc(c[key] || (key === "currency" ? "UZS" : ""))}" ${["label", "price", "date", "source", "currency"].includes(key) ? "required" : ""} ${type === "number" ? 'min="0.01" step="0.01"' : ""}></label>`,
     )
+    .join("")}<label>Тип цены<select data-key="evidence_kind">${[
+    ["asking_price", "Цена предложения"],
+    ["completed_sale", "Завершённая сделка"],
+    ["auction_start", "Стартовая цена торгов"],
+  ]
+    .map(
+      ([key, label]) =>
+        `<option value="${key}" ${key === (c.evidence_kind || "asking_price") ? "selected" : ""}>${label}</option>`,
+    )
     .join(
       "",
-    )}</div><label class="check"><input data-key="same_item" type="checkbox" ${c.same_item !== false ? "checked" : ""}>То же изделие / сопоставимый объект</label><button class="text-button danger-button" type="button">Удалить предложение</button>`;
+    )}</select></label></div><label class="check"><input data-key="same_item" type="checkbox" ${c.same_item !== false ? "checked" : ""}>То же изделие / сопоставимый объект</label><button class="text-button danger-button" type="button">Удалить предложение</button>`;
   $("button", el).onclick = () => el.remove();
   $("#comparables").append(el);
 }
@@ -570,12 +706,16 @@ function surveyBody(values) {
     "object_value",
     "term_days",
     "tariff_date",
+    "contract_start",
+    "contract_end",
     "object_type",
     "program",
     "object_description",
     "declared_rate",
     "declared_premium",
     "purchase_price",
+    "purchase_source",
+    "purchase_date",
     "depreciation_percent",
     "appraiser_value",
     "appraiser_source",
@@ -603,14 +743,14 @@ function renderReportList() {
 function calculationView(c) {
   if (c.status !== "calculated")
     return `<div class="notice">${esc(c.reason)}</div>`;
-  return `<div class="result-card"><span class="eyebrow">РАСЧЁТНАЯ СТРАХОВАЯ ПРЕМИЯ</span><div class="result-value">${money(c.premium)} <small>UZS</small></div><small>${esc(named(c.rate_type))} ставка · ${c.term_days} дней · ${esc(c.formula)}</small><div class="result-grid"><div><small>Минимальная</small><strong>${c.minimum_rate}%</strong></div><div><small>Рекомендуемая</small><strong>${c.recommended_rate}%</strong></div><div><small>Рыночная, годовая</small><strong>${c.annual_market_rate === null ? "—" : c.annual_market_rate + "%"}</strong></div></div></div><p class="report-note">Годовой эквивалент рекомендации: ${c.annualized_rate}%. Рыночная ставка всегда сравнивается в годовом выражении.</p>${c.warnings.map((w) => `<div class="notice">${esc(w)}</div>`).join("")}`;
+  return `<div class="result-card"><span class="eyebrow">РАСЧЁТНАЯ СТРАХОВАЯ ПРЕМИЯ</span><div class="result-value">${money(c.premium)} <small>UZS</small></div><small>${esc(named(c.rate_type))} ставка · ${c.term_days} дней · ${esc(c.formula)}</small><div class="result-grid"><div><small>Минимальная</small><strong>${c.minimum_rate}%</strong></div><div><small>Рекомендуемая</small><strong>${c.recommended_rate}%</strong></div><div><small>Рыночная, годовая</small><strong>${c.annual_market_rate === null ? "—" : c.annual_market_rate + "%"}</strong></div></div></div><p class="report-note">Годовой эквивалент рекомендации: ${c.annualized_rate}%. Рыночная ставка всегда сравнивается в годовом выражении.</p>${c.warnings.map((w) => `<div class="notice">${esc(w)}</div>`).join("")}${c.factor_pricing ? `<p>Произведение коэффициентов факторов: <span data-no-translate>${esc(c.factor_pricing.multiplier)}</span></p><details><summary>Уточнить факторы</summary>${c.factor_pricing.clarify.map((r) => `<p data-no-translate>${esc(r.label)}</p>`).join("") || "—"}</details>` : ""}`;
 }
 async function showReport(id) {
   const report = await api(`/reports/${id}`),
     s = report.snapshot,
     c = s.calculation;
   $("#report-view").innerHTML =
-    `<div class="actions"><a class="secondary" href="/api/reports/${id}/export/docx">↓ Word</a><a class="secondary" href="/api/reports/${id}/export/pdf">↓ PDF</a><button class="primary" id="send-telegram">Отправить себе в Telegram ↗</button></div><p class="report-note">Акт № ${id.slice(0, 8)} · ${dateText(report.created_at)} · Подлежит подтверждению андеррайтером · Не является кредитным скорингом</p>${calculationView(c)}<p>${esc(named(c.comparison))} · ${money(c.premium_discrepancy)} UZS</p><section class="panel" data-no-translate>${report.sections.map((block) => `<div class="report-section"><h3>${esc(block.title)}</h3>${block.lines.map((line) => `<p class="small">${esc(line)}</p>`).join("")}</div>`).join("")}</section><section class="panel"><h3>Решение андеррайтера</h3>${report.decisions.map((d) => `<div class="file-card">${badge(d.data.decision)}<p>${esc(d.data.comment)}</p><small>${dateText(d.created_at)} · ${esc(d.user_id)}</small></div>`).join("") || '<p class="muted small">Решение ещё не принято.</p>'}${
+    `<div class="actions"><a class="secondary" data-report-export="docx" href="/api/reports/${id}/export/docx">↓ Word</a><a class="secondary" data-report-export="pdf" href="/api/reports/${id}/export/pdf">↓ PDF</a><button class="primary" id="send-telegram">Отправить себе в Telegram ↗</button></div><p class="report-note">Акт № ${id.slice(0, 8)} · ${dateText(report.created_at)} · Подлежит подтверждению андеррайтером · Не является кредитным скорингом</p>${calculationView(c)}<p>${esc(named(c.comparison))} · ${money(c.premium_discrepancy)} UZS</p><section class="panel" data-no-translate>${report.sections.map((block) => `<div class="report-section"><h3>${esc(block.title)}</h3>${block.lines.map((line) => `<p class="small">${esc(line)}</p>`).join("")}</div>`).join("")}</section><section class="panel"><h3>Решение андеррайтера</h3>${report.decisions.map((d) => `<div class="file-card">${badge(d.data.decision)}<p>${esc(d.data.comment)}</p><small>${dateText(d.created_at)} · ${esc(d.user_id)}</small></div>`).join("") || '<p class="muted small">Решение ещё не принято.</p>'}${
       state.user.role === "underwriter"
         ? `<form id="decision-form">${select("decision", "Решение", [
             ["changes_requested", "Нужны правки"],
@@ -619,6 +759,33 @@ async function showReport(id) {
           ])}<label>Комментарий<textarea name="comment" required minlength="3"></textarea></label><button type="submit" class="primary">Зафиксировать решение</button></form>`
         : ""
     }</section>`;
+  $$("[data-report-export]", $("#report-view")).forEach((link) => {
+    link.onclick = async (event) => {
+      const telegram = window.Telegram?.WebApp;
+      if (!telegram?.initData) return;
+      event.preventDefault();
+      if (link.getAttribute("aria-busy") === "true") return;
+      link.setAttribute("aria-busy", "true");
+      try {
+        const file = await post(
+          `/reports/${id}/export/${link.dataset.reportExport}/download-link`,
+        );
+        if (telegram.isVersionAtLeast?.("8.0") && telegram.downloadFile) {
+          telegram.downloadFile({ url: file.url, file_name: file.file_name });
+        } else {
+          // A fresh click preserves the user gesture needed by older clients.
+          modal(
+            `<h2>Загрузить файл</h2><button type="button" class="primary" id="open-report-file">Открыть файл</button>`,
+          );
+          $("#open-report-file").onclick = () => telegram.openLink(file.url);
+        }
+      } catch (error) {
+        toast(error.message, true);
+      } finally {
+        link.removeAttribute("aria-busy");
+      }
+    };
+  });
   $("#send-telegram").onclick = async () => {
     try {
       await post(`/reports/${id}/telegram`);
@@ -635,15 +802,41 @@ async function showReport(id) {
     });
 }
 async function calculator() {
+  const draft = state.calculatorDraft || {};
   $("#content").innerHTML =
     heading(
       t("calculator"),
       "Проверка премии по действующей тарифной политике.",
     ) +
-    `<div class="two-col"><section class="panel"><h3>Параметры расчёта</h3><form id="calculator-form"><div class="form-grid">${basicFields()}</div><button type="submit" class="primary">Рассчитать премию →</button></form></section><aside id="calculator-result"><section class="panel"><h3>Срок имеет значение</h3><p class="small muted">Годовая ставка: сумма × ставка × дни / 365.<br>Фиксированная: сумма × ставка.</p><p class="small muted">Для ОСГОР используйте продукт с типом «По нормативному акту». Тариф и источник задаёт администратор.</p></section></aside></div>`;
+    `<div class="two-col"><section class="panel"><h3>Параметры расчёта</h3><form id="calculator-form"><div class="form-grid">${basicFields(draft)}</div><div id="calculator-factors"></div><button type="submit" class="primary">Рассчитать премию →</button></form></section><aside id="calculator-result"><section class="panel"><h3>Срок имеет значение</h3><p class="small muted">Годовая ставка: сумма × ставка × дни / 365.<br>Фиксированная: сумма × ставка.</p><p class="small muted">Для ОСГОР используйте продукт с типом «По нормативному акту». Тариф и источник задаёт администратор.</p></section></aside></div>`;
+  const renderFactors = (initial = false) => {
+    const p = state.products.find(
+      (p) => p.code === $("#calculator-form [name=product_code]").value,
+    );
+    window.SurveyorFactorPricing.renderAnswers(
+      $("#calculator-factors"),
+      state.templates.find((t) => t.class_code === p?.class_code),
+      initial
+        ? draft.factor_answers || {}
+        : window.SurveyorFactorPricing.readAnswers(),
+    );
+  };
+  renderFactors(true);
+  $("#calculator-form [name=product_code]").onchange = () => renderFactors();
+  const remember = () => {
+    state.calculatorDraft = {
+      ...surveyBody(Object.fromEntries(new FormData($("#calculator-form")))),
+      factor_answers: window.SurveyorFactorPricing.readAnswers(),
+    };
+  };
+  $("#calculator-form").addEventListener("input", remember);
+  $("#calculator-form").addEventListener("change", remember);
   bindForm("#calculator-form", async (d) => {
     $("#calculator-result").innerHTML = calculationView(
-      await post("/calculate", surveyBody(d)),
+      await post("/calculate", {
+        ...surveyBody(d),
+        factor_answers: window.SurveyorFactorPricing.readAnswers(),
+      }),
     );
   });
 }
@@ -681,13 +874,24 @@ async function sourcesPage() {
   const render = () => {
     const q = $("#source-filter").value.toLowerCase();
     const rows = data.indicators.filter((i) =>
-      [i.metric, i.region, i.channel].join(" ").toLowerCase().includes(q),
+      [
+        i.metric,
+        sourceMetricName(i.metric),
+        i.region,
+        regionName(i.region),
+        i.channel,
+        i.subject,
+        i.class_code,
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(q),
     );
     $("#indicator-list").innerHTML =
       rows
         .map(
           (i) =>
-            `<div class="file-card"><strong>${esc(i.metric)} · ${money(i.value)} ${esc(i.unit)}</strong> ${i.stale ? '<span class="badge amber">Устарели</span>' : ""}<p class="small muted">${esc(regionName(i.region))} · ${esc(i.period)} · <a href="${esc(i.source_url)}" target="_blank" rel="noopener noreferrer">Источник ↗</a> · ${dateText(i.observation_date)}</p><p class="small">${i.approved_by ? "Утверждён актуарием" : "Экспертный, не утверждён"}</p>${state.user.role === "actuary" && !i.approved_by ? `<button class="secondary" data-approve-indicator="${i.id}">Утвердить поправку</button>` : ""}</div>`,
+            `<div class="file-card"><strong>${esc(i.subject === "market" ? "" : i.subject || "")} ${esc(sourceMetricName(i.metric))} · ${money(i.value)} ${esc(i.unit)}</strong> ${i.stale ? '<span class="badge amber">Устарели</span>' : ""}<p class="small muted">${esc(regionName(i.region))} · ${esc(i.class_code)} · ${esc(i.period)} · <a href="${esc(i.source_url)}" target="_blank" rel="noopener noreferrer">Источник ↗</a> · ${dateText(i.observation_date)}</p><p class="small">${i.reference_only ? "Только справочно; тариф не меняет" : i.approved_by ? "Утверждён актуарием" : "Экспертный, не утверждён"}</p>${i.note ? `<p class="form-hint" data-no-translate>${esc(i.note)}</p>` : ""}${state.user.role === "actuary" && !i.approved_by && !i.reference_only ? `<button class="secondary" data-approve-indicator="${i.id}">Утвердить поправку</button>` : ""}</div>`,
         )
         .join("") || "<p>Данные недоступны</p>";
     action("[data-approve-indicator]", async (el) => {
@@ -739,6 +943,7 @@ function sourceSettings(channel) {
               ["siat", "SIAT: статистика"],
               ["document", "Документ / страница (отслеживание изменений)"],
               ["napp", "NAPP: официальный страховой рынок"],
+              ["napp_reference", "NAPP: справочные таблицы"],
             ],
             c.format || "csv",
           )}${field("permission_url", "Ссылка на разрешение / условия доступа", c.permission_url || "", "url", "required")}${field("interval_hours", "Интервал обновления, часов", c.interval_hours || 24, "number", 'min="24" max="720" required')}${field("json_path", "Путь к списку в JSON (если вложен)", c.json_path || "")}${field("table_index", "Номер HTML-таблицы (с нуля)", c.table_index || 0, "number", 'min="0" max="30"')}</div><label>Основание автоматического доступа<textarea name="permission_note" required minlength="15">${esc(c.permission_note || "")}</textarea></label><h3>Документ / страница</h3><div class="form-grid">${field("reference_title", "Название материала", c.reference?.title || "")}${field("reference_date", "Дата публикации (если известна)", c.reference?.observation_date || "", "date")}</div><h3>Соответствие столбцов</h3><p class="form-hint">Укажите название столбца в файле или постоянное значение. SIAT сам определяет регион, период и единицы.</p><div class="table-wrap"><table><thead><tr><th>Поле</th><th>Столбец файла</th><th>Постоянное значение</th></tr></thead><tbody>${fields.map((k) => `<tr><td>${esc(named(k))}</td><td><input name="column_${k}" value="${esc(columns[k] || "")}"></td><td><input name="constant_${k}" value="${esc(constants[k] ?? "")}"></td></tr>`).join("")}</tbody></table></div><button type="submit" class="primary">Сохранить и включить</button></form>`
@@ -894,18 +1099,20 @@ async function adminProducts() {
   );
   bindImport("products");
 }
-function productModal(p = {}) {
+async function productModal(p = {}) {
+  await window.SurveyorPolicy.prepare();
   modal(
-    `<h2>${p.id ? "Новая версия тарифа" : "Добавить продукт"}</h2><form id="product-form"><div class="form-grid">${field("code", "Код", p.code || "", "text", "required")}${field("name", "Название", p.name || "", "text", "required")}${field("class_code", "Класс", p.class_code || "property", "text", "required")}${field("effective_from", "Дата начала действия", p.id ? today() : p.effective_from || today(), "date", "required")}${field("rate", "Ставка, %", p.rate || "", "number", 'required min="0" max="100" step="0.000001"')}${field("min_rate", "Минимум, %", p.min_rate || "", "number", 'required min="0" max="100" step="0.000001"')}${select(
+    `<h2>${p.id ? "Новая версия тарифа" : "Добавить продукт"}</h2><form id="product-form"><div class="form-grid">${field("code", "Код", p.code || "", "text", "required")}${field("name", "Название", p.name || "", "text", "required")}${field("class_code", "Класс", p.class_code || "property", "text", "required")}${field("effective_from", "Дата начала действия", p.id ? today() : p.effective_from || (p.policy_code ? "" : today()), "date", "required")}${field("rate", "Ставка, %", p.rate || "", "number", 'required min="0" max="100" step="0.000001"')}${field("min_rate", "Минимум, %", p.min_rate || "", "number", 'required min="0" max="100" step="0.000001"')}${select(
       "rate_type",
       "Тип ставки",
       [
+        ["", "Выберите базу по условиям"],
         ["annual", "Годовая"],
         ["fixed", "Фиксированная"],
         ["program", "По программе"],
         ["normative", "По нормативному акту"],
       ],
-      p.rate_type || "annual",
+      p.rate_type ?? "annual",
     )}${select(
       "program_basis",
       "База программ",
@@ -925,15 +1132,22 @@ function productModal(p = {}) {
       p.normative_basis || "",
     )}${field("normative_source", "Ссылка на нормативный акт", p.normative_source || "", "url")}<div class="span-2"><h3>Ставки программ</h3>${dictionaryEditor("program-rates", p.program_rates, "Программа", "Ставка, %")}</div></div><p class="form-hint">Ставки хранятся в процентах: 0.5 означает 0,5%. Изменение создаёт новую версию.</p><button type="submit" class="primary">Сохранить версию</button></form>`,
   );
+  $("#product-form button[type=submit]").insertAdjacentHTML(
+    "beforebegin",
+    window.SurveyorPolicy.productFields(p),
+  );
+  window.SurveyorPolicy.bindProduct(p);
   bindDictionaries();
-  bindForm("#product-form", async (d) => {
+  bindForm("#product-form", async (d, form) => {
+    window.SurveyorPolicy.readProduct(d, form);
     d.program_rates = readDictionary("program-rates");
     if (!d.normative_basis) delete d.normative_basis;
     if (!d.normative_source) delete d.normative_source;
     await post("/admin/products", d);
     $("#modal").close();
     state.products = await api("/products");
-    await adminProducts();
+    if (state.page === "policy") await window.SurveyorPolicy.page();
+    else await adminProducts();
     toast("Версия тарифа сохранена");
   });
 }
@@ -1072,18 +1286,19 @@ function readDictionary(id) {
   }
   return out;
 }
-function editTemplate(r) {
+async function editTemplate(r) {
+  const catalogue = await api("/admin/source-coverage");
   const d = { ...r };
   delete d.id;
   delete d.approved_by;
   modal(
-    `<h2>Версия шаблона</h2><p>Новая версия требует нового утверждения актуарием.</p><form id="template-form"><div class="form-grid">${field("class_code", "Класс", d.class_code || "", "text", "required")}${field("name", "Название", d.name || "", "text", "required")}${field("moderate_threshold", "Порог умеренного риска", d.moderate_threshold || 20, "number", 'required min="1" max="100"')}${field("high_threshold", "Порог высокого риска", d.high_threshold || 50, "number", 'required min="1" max="100"')}${["low", "moderate", "high"].map((k) => field(`multiplier_${k}`, `Множитель: ${named(k)}`, d.multipliers?.[k] || 1, "number", 'required min="0.5" max="3" step="0.01"')).join("")}${field("max_adjustment", "Граница поправки (0.2 = 20%)", d.max_adjustment || "0.2", "number", 'required min="0" max="0.5" step="0.01"')}</div><h3>Признаки и веса риска</h3>${dictionaryEditor("feature-weights", d.feature_weights, "Признак", "Вес (0–100)")}<h3>Доли рисков, %</h3>${dictionaryEditor("risk-shares", d.risk_shares, "Риск", "Доля, %")}<h3>Правила оценки стоимости</h3><div class="form-grid">${field("valuation_outlier_low", "Нижняя граница медианы", d.valuation_outlier_low ?? "0.5", "number", 'required min="0.01" max="1" step="0.01"')}${field("valuation_outlier_high", "Верхняя граница медианы", d.valuation_outlier_high ?? "1.5", "number", 'required min="1" max="10" step="0.01"')}${field("valuation_tolerance", "Допустимое отклонение (0.15 = 15%)", d.valuation_tolerance ?? "0.15", "number", 'required min="0" max="1" step="0.01"')}${field("large_object_threshold", "Порог крупного объекта, UZS", d.large_object_threshold || "", "number", 'min="0.01" step="0.01"')}</div><label>Показатели с готовой поправкой (по одному на строке)<textarea name="indicator_metrics">${esc((d.indicator_metrics || []).join("\n"))}</textarea></label><h3>Поправки из статистики</h3><p class="form-hint">Поправка = (значение / базовое значение − 1) × чувствительность. Применяется только к выбранным видам объектов, в пределах границы.</p><div id="indicator-rules"></div><button type="button" id="add-indicator-rule" class="secondary">＋ Правило показателя</button><h3>Оговорки</h3>${["ru", "uz", "en"].map((lang) => `<label>${lang.toUpperCase()}<textarea name="clauses_${lang}" rows="4">${esc((lang === "ru" ? d.clauses || [] : d.clauses_translations?.[lang] || []).join("\n"))}</textarea></label>`).join("")}<p class="form-hint">Каждая оговорка — отдельная строка. Тексты утверждает страховщик.</p><button type="submit" class="primary">Сохранить версию</button></form>`,
+    `<h2>Версия шаблона</h2><p>Новая версия требует нового утверждения актуарием.</p><form id="template-form"><div class="form-grid">${field("class_code", "Класс", d.class_code || "", "text", "required")}${field("name", "Название", d.name || "", "text", "required")}${field("moderate_threshold", "Порог умеренного риска", d.moderate_threshold || 20, "number", 'required min="1" max="100"')}${field("high_threshold", "Порог высокого риска", d.high_threshold || 50, "number", 'required min="1" max="100"')}${["low", "moderate", "high"].map((k) => field(`multiplier_${k}`, `Множитель: ${named(k)}`, d.multipliers?.[k] || 1, "number", 'required min="0.5" max="3" step="0.01"')).join("")}${field("max_adjustment", "Граница поправки (0.2 = 20%)", d.max_adjustment || "0.2", "number", 'required min="0" max="0.5" step="0.01"')}</div><h3>Признаки и веса риска</h3>${dictionaryEditor("feature-weights", d.feature_weights, "Признак", "Вес (0–100)")}<h3>Доли рисков, %</h3>${dictionaryEditor("risk-shares", d.risk_shares, "Риск", "Доля, %")}<h3>Правила оценки стоимости</h3><div class="form-grid">${field("valuation_outlier_low", "Нижняя граница медианы", d.valuation_outlier_low ?? "0.5", "number", 'required min="0.01" max="1" step="0.01"')}${field("valuation_outlier_high", "Верхняя граница медианы", d.valuation_outlier_high ?? "1.5", "number", 'required min="1" max="10" step="0.01"')}${field("valuation_tolerance", "Допустимое отклонение (0.15 = 15%)", d.valuation_tolerance ?? "0.15", "number", 'required min="0" max="1" step="0.01"')}${field("large_object_threshold", "Порог крупного объекта, UZS", d.large_object_threshold || "", "number", 'min="0.01" step="0.01"')}</div><label>Показатели с готовой поправкой (по одному на строке)<textarea name="indicator_metrics">${esc((d.indicator_metrics || []).join("\n"))}</textarea></label><h3>Поправки из статистики</h3><p class="form-hint">Поправка = (значение / базовое значение − 1) × чувствительность. Применяется только к выбранным видам объектов, в пределах границы.</p><datalist id="available-metrics">${[...new Set(catalogue.metrics.filter((m) => m.fresh > 0 && !m.reference_only).map((m) => m.metric))].map((metric) => `<option value="${esc(metric)}"></option>`).join("")}</datalist><div id="indicator-rules"></div><button type="button" id="add-indicator-rule" class="secondary">＋ Правило показателя</button><h3>Оговорки</h3>${["ru", "uz", "en"].map((lang) => `<label>${lang.toUpperCase()}<textarea name="clauses_${lang}" rows="4">${esc((lang === "ru" ? d.clauses || [] : d.clauses_translations?.[lang] || []).join("\n"))}</textarea></label>`).join("")}<p class="form-hint">Каждая оговорка — отдельная строка. Тексты утверждает страховщик.</p><button type="submit" class="primary">Сохранить версию</button></form>`,
   );
   bindDictionaries();
   const addRule = (metric = "", rule = {}) => {
     const el = document.createElement("div");
     el.className = "indicator-rule panel";
-    el.innerHTML = `<div class="form-grid">${field("metric", "Код показателя", metric, "text", "required")}${field("baseline", "Базовое значение", rule.baseline || "", "number", 'required min="0.000001" step="any"')}${field("sensitivity", "Чувствительность (−1…1)", rule.sensitivity || "0", "number", 'required min="-1" max="1" step="0.01"')}${field("max_adjustment", "Граница поправки (0.2 = 20%)", rule.max_adjustment || "0.1", "number", 'required min="0" max="0.5" step="0.01"')}</div><div class="feature-list">${[
+    el.innerHTML = `<div class="form-grid">${field("metric", "Код показателя", metric, "text", 'required list="available-metrics"')}${field("baseline", "Базовое значение", rule.baseline || "", "number", 'required min="0.000001" step="any"')}${field("sensitivity", "Чувствительность (−1…1)", rule.sensitivity || "0", "number", 'required min="-1" max="1" step="0.01"')}${field("max_adjustment", "Граница поправки (0.2 = 20%)", rule.max_adjustment || "0.1", "number", 'required min="0" max="0.5" step="0.01"')}</div><div class="feature-list">${[
       ["vehicle", "Автомобиль"],
       ["equipment", "Оборудование"],
       ["housing", "Жильё / техника"],
@@ -1107,6 +1322,7 @@ function editTemplate(r) {
   bindForm("#template-form", async (values) => {
     const body = {
       class_code: values.class_code,
+      factor_policy: d.factor_policy || null,
       name: values.name,
       moderate_threshold: Number(values.moderate_threshold),
       high_threshold: Number(values.high_threshold),
@@ -1163,10 +1379,18 @@ function editTemplate(r) {
 }
 
 async function adminTemplates() {
-  const rows = await api("/templates");
+  const [rows, coverage] = await Promise.all([
+    api("/templates"),
+    api("/admin/source-coverage"),
+  ]);
   $("#admin-content").innerHTML =
-    `<section class="panel"><div class="panel-head"><h3>Шаблоны страховых классов</h3><button class="primary" id="new-template">＋ Новый шаблон</button></div>${rows.map((r) => `<div class="file-card"><h3>${esc(r.name)} <small>${esc(r.class_code)}</small></h3><span class="badge ${r.approved_by ? "green" : "amber"}">${r.approved_by ? "Утверждён актуарием" : "Экспертный, не утверждён"}</span>${jsonDetails(r)}<div class="actions"><button class="secondary" data-edit-template="${r.id}">Новая версия</button>${state.user.role === "actuary" && !r.approved_by ? `<button class="primary" data-approve-template="${r.id}">Утвердить</button>` : ""}</div></div>`).join("")}</section>`;
-  const edit = editTemplate;
+    `<section class="panel"><div class="panel-head"><h3>Шаблоны страховых классов</h3><button class="primary" id="new-template">＋ Новый шаблон</button></div>${rows.map((r) => `<div class="file-card"><h3>${esc(r.name)} <small>${esc(r.class_code)}</small></h3><span class="badge ${r.approved_by ? "green" : "amber"}">${r.approved_by ? "Утверждён актуарием" : "Экспертный, не утверждён"}</span>${jsonDetails(r)}<div class="actions"><button class="secondary" data-edit-template="${r.id}">Новая версия</button><button class="secondary" data-factor-policy="${r.id}">Настроить факторы</button>${r.factor_policy ? `<button class="secondary" data-factor-experience="${r.id}">Статистика факторов</button><span class="badge">${r.factor_calibration_stale ? "Статистика изменилась" : r.factor_calibration ? "Статистическое предложение" : "Не калибровано"}</span>` : ""}${state.user.role === "actuary" && !r.approved_by ? `<button class="primary" data-approve-template="${r.id}">Утвердить</button>` : ""}</div></div>`).join("")}</section>`;
+  $("#admin-content").insertAdjacentHTML(
+    "beforeend",
+    sourceCoveragePanel(coverage),
+  );
+  const edit = (row) =>
+    editTemplate(row).catch((err) => toast(err.message, true));
   $("#new-template").onclick = () =>
     edit({
       class_code: "new-class",
@@ -1183,8 +1407,19 @@ async function adminTemplates() {
   action("[data-edit-template]", (el) =>
     edit(rows.find((r) => r.id === el.dataset.editTemplate)),
   );
+  action("[data-factor-policy]", (el) =>
+    window.SurveyorFactorPricing.edit(
+      rows.find((r) => r.id === el.dataset.factorPolicy),
+    ),
+  );
+  action("[data-factor-experience]", (el) =>
+    window.SurveyorFactorPricing.experience(
+      rows.find((r) => r.id === el.dataset.factorExperience),
+    ),
+  );
   action("[data-approve-template]", async (el) => {
     await post(`/admin/templates/${el.dataset.approveTemplate}/approve`);
+    state.templates = await api("/templates");
     await adminTemplates();
   });
 }
@@ -1196,6 +1431,8 @@ async function adminIndicators() {
       "Канал",
       data.channels.map((c) => [c.code, c.data.domain]),
     )}${field("metric", "Код показателя", "regional_risk", "text", "required")}${field("region", "Регион (all = вся страна)", "all", "text", "required")}${field("class_code", "Класс (all = все)", "all", "text", "required")}${field("object_type", "Тип объекта (all = все)", "all", "text", "required")}${field("period", "Период", String(new Date().getFullYear()), "text", "required")}${field("value", "Значение", 0, "number", 'required min="0" step="any"')}${field("unit", "Единица", "index", "text", "required")}${field("source_url", "Ссылка на источник", "", "url", "required")}${field("observation_date", "Дата данных", today(), "date", "required")}${field("stale_days", "Срок актуальности, дней", 365, "number", 'required min="1"')}${field("rate_adjustment", "Поправка (0.1 = +10%)", 0, "number", 'min="-0.5" max="0.5" step="0.01"')}${field("annual_market_rate", "Рыночная годовая ставка, %", "", "number", 'min="0" max="100" step="0.000001"')}</div><button type="submit" class="primary">Сохранить показатель</button></form></section><section class="panel"><h3>История версий</h3><button id="indicator-history" class="secondary">Показать историю</button><div id="history-output"></div></section>`;
+  $("#admin-content").insertAdjacentHTML("afterbegin", marketQuoteForm());
+  bindMarketQuote();
   bindForm("#indicator-form", async (d) => {
     const channel = d.channel;
     delete d.channel;

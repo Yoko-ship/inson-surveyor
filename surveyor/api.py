@@ -182,7 +182,13 @@ def save_product(db, body, user):
     )
     if existing:
         raise HTTPException(409, "Версия с этой датой уже существует. Выберите новую дату действия")
-    row = Product(code=body.code, effective_from=body.effective_from, data=body.model_dump(mode="json"))
+    from surveyor.tariff_policy import validate_product
+
+    data = body.model_dump(mode="json")
+    source = validate_product(data)
+    if source:
+        data["tariff_policy"] = source
+    row = Product(code=body.code, effective_from=body.effective_from, data=data)
     db.add(row)
     db.flush()
     audit(db, user, "product.version_created", row.id, row.data)
@@ -238,7 +244,16 @@ def templates(user=Depends(current_user), db=Depends(get_db)):
     seen, result = set(), []
     for row in rows:
         if row.class_code not in seen:
-            result.append({**row.data, "id": row.id, "approved_by": row.approved_by})
+            from surveyor.factor_pricing import calibration_stale
+
+            result.append(
+                {
+                    **row.data,
+                    "id": row.id,
+                    "approved_by": row.approved_by,
+                    "factor_calibration_stale": calibration_stale(db, row.data),
+                }
+            )
             seen.add(row.class_code)
     return result
 
@@ -258,6 +273,10 @@ def approve_template(template_id: str, user=Depends(actuary), db=Depends(get_db)
     row = db.get(ClassTemplate, template_id)
     if not row:
         raise HTTPException(404, "Шаблон не найден")
+    from surveyor.factor_pricing import calibration_stale
+
+    if calibration_stale(db, row.data):
+        raise HTTPException(409, "Статистика факторов изменилась; пересчитайте предложение")
     row.approved_by, row.approved_at = user.id, now()
     audit(db, user, "template.approved", row.id)
     db.commit()
@@ -305,9 +324,14 @@ def survey_detail(survey_id: str, user=Depends(current_user), db=Depends(get_db)
 
 @router.put("/surveys/{survey_id}")
 def update_survey(survey_id: str, body: SurveyInput, user=Depends(current_user), db=Depends(get_db)):
+    from surveyor.services import validate_borrower_document
+
     row = survey_for(db, survey_id, user, write=True)
     before = row.inputs
     data = body.model_dump(mode="json", exclude={"revision"})
+    validate_borrower_document(db, row.id, data)
+    if data.get("factor_answers"):
+        context_for(db, data)  # Validate factor/class scope before persisting answers.
     changed = db.execute(
         update(Survey)
         .where(Survey.id == row.id, Survey.revision == body.revision)
@@ -408,7 +432,10 @@ def report_detail(report_id: str, user=Depends(current_user), db=Depends(get_db)
 def export_report(
     report_id: str, fmt: Literal["pdf", "docx"], user=Depends(current_user), db=Depends(get_db)
 ):
-    report = report_for(db, report_id, user)
+    return report_file(report_for(db, report_id, user), fmt)
+
+
+def report_file(report, fmt):
     data = export_pdf(report) if fmt == "pdf" else export_docx(report)
     media = (
         "application/pdf"
@@ -435,6 +462,11 @@ def decision(report_id: str, body: Underwriting, user=Depends(roles("underwriter
         raise HTTPException(409, "Осмотр изменился после акта. Сформируйте новый акт")
     if body.decision == "approved" and report.snapshot["calculation"]["status"] != "calculated":
         raise HTTPException(422, "Нельзя утвердить акт без определённой ставки")
+    if body.decision == "approved" and report.snapshot["calculation"].get("factor_pricing"):
+        factors = report.snapshot["calculation"]["factor_pricing"]
+        *_, current = context_for(db, report.snapshot["inputs"])
+        if not factors["ready_for_underwriting"] or current.get("factor_pricing") != factors:
+            raise HTTPException(409, "Проверьте факторы и актуальность утверждения; сформируйте новый акт")
     db.add(Decision(report_id=report.id, user_id=user.id, data=body.model_dump()))
     survey.status = body.decision
     audit(db, user, "underwriting.decision", report.id, body.model_dump())
@@ -578,7 +610,7 @@ async def preview_import(
 @router.post("/admin/imports/{batch_id}/confirm")
 def confirm_import(batch_id: str, user=Depends(admin), db=Depends(get_db)):
     batch = db.get(ImportBatch, batch_id)
-    if not batch or batch.user_id != user.id:
+    if not batch or batch.user_id != user.id or batch.kind not in {"products", "losses"}:
         raise HTTPException(404, "Импорт не найден")
     if batch.consumed or batch.created_at < now() - timedelta(hours=1):
         raise HTTPException(409, "Импорт уже сохранён или устарел")
@@ -636,6 +668,8 @@ def approve_indicator(indicator_id: str, user=Depends(actuary), db=Depends(get_d
     row = db.get(Indicator, indicator_id)
     if not row:
         raise HTTPException(404, "Показатель не найден")
+    if row.data.get("reference_only") or row.data["metric"].startswith("napp_ref_"):
+        raise HTTPException(422, "Справочный показатель не может стать тарифной поправкой")
     # New version preserves the original publication and report snapshots.
     new = Indicator(
         channel_code=row.channel_code,

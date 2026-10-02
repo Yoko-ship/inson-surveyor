@@ -1,0 +1,20 @@
+{
+  "format": 1,
+  "created_at": "2026-10-02T06:56:26.017999",
+  "sha256": "1910d577719f95b326c4977377ab2d20d12c2763f9871d534f86c6dc90ff9dcc",
+  "observations": 12808,
+  "channels": {
+    "cbu": 74,
+    "napp_market": 142,
+    "napp_reference": 653,
+    "stat_accidents": 150,
+    "stat_crime": 240,
+    "stat_housing": 3552,
+    "stat_mortality": 3536,
+    "stat_population": 3757,
+    "stat_prices": 448,
+    "stat_robbery": 16,
+    "stat_theft": 240
+  },
+  "contents": "Public statistical observations only. No accounts, credentials, sessions, inspections, documents, reports, audit logs or approval identities."
+}
