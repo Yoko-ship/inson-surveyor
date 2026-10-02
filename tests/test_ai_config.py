@@ -13,16 +13,16 @@ def test_code_edits_are_loaded_without_runtime_overrides(tmp_path, monkeypatch):
     initial = ai_config.load()
     changed = initial.model_copy(deep=True)
     changed.prompts.system += " Prefer precise source references."
-    ai_config.DEFAULT_PATH.write_text(changed.model_dump_json())
+    ai_config.DEFAULT_PATH.write_text(changed.model_dump_json(), encoding="utf-8")
     assert ai_config.load() == changed
     assert ai_config.digest(changed) != ai_config.digest(initial)
     # Old UI-managed files and the retired override environment variable are ignored.
     legacy = tmp_path / "legacy-ai"
     legacy.mkdir()
-    (legacy / "active.json").write_text(initial.model_dump_json())
+    (legacy / "active.json").write_text(initial.model_dump_json(), encoding="utf-8")
     monkeypatch.setenv("AI_CONFIG_DIR", str(legacy))
     assert ai_config.load() == changed
-    ai_config.DEFAULT_PATH.write_text(initial.model_dump_json())
+    ai_config.DEFAULT_PATH.write_text(initial.model_dump_json(), encoding="utf-8")
     assert ai_config.load() == initial
 
 
@@ -47,7 +47,7 @@ def test_invalid_configuration_never_replaces_defaults(changes):
 
 
 def test_corrupt_configuration_stops_inference_instead_of_silent_fallback(monkeypatch, tmp_path):
-    ai_config.DEFAULT_PATH.write_text('{"enabled":')
+    ai_config.DEFAULT_PATH.write_text('{"enabled":', encoding="utf-8")
     monkeypatch.setattr(ai_providers, "generate", lambda *a, **k: pytest.fail("Must not run"))
     with pytest.raises(ValueError, match="недоступна"):
         codex_documents.recognize_document(b"contract", "contract.txt")
@@ -64,7 +64,7 @@ def test_configuration_is_not_exposed_or_editable_through_http(request, monkeypa
     assert ai_config.load() == original
     changed = original.model_copy(deep=True)
     changed.prompts.style = "Use short, clear sentences without Markdown."
-    ai_config.DEFAULT_PATH.write_text(changed.model_dump_json())
+    ai_config.DEFAULT_PATH.write_text(changed.model_dump_json(), encoding="utf-8")
     monkeypatch.setattr(codex_documents, "recognize_document", lambda *a, **k: pytest.fail("Stale consent"))
     response = client.post(
         "/api/ai-pilot/analyze",

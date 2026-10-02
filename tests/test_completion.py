@@ -285,7 +285,7 @@ def test_backup_restore_checks_documents_and_rejects_overwrite(tmp_path):
     Base.metadata.create_all(engine)
     engine.dispose()
     doc = tmp_path / "source.txt"
-    doc.write_text("source evidence")
+    doc.write_text("source evidence", encoding="utf-8")
     with sqlite3.connect(source) as conn:
         conn.execute(
             "INSERT INTO users (id,login,phone,name,position,department,branch,role,password_hash,must_change_password,active,created_at) VALUES ('u','u','1','A','','','','admin','hash',0,1,'2026-01-01')"
@@ -304,16 +304,21 @@ def test_backup_restore_checks_documents_and_rejects_overwrite(tmp_path):
     backup = create_backup(f"sqlite:///{source}", tmp_path / "backups")
     assert verify_backup(backup)["documents"] == {"d": "uploads/d.txt"}
     restored = restore_backup(backup, tmp_path / "restored")
-    assert ai_config.AIConfig.model_validate_json((restored / "ai/config.json").read_text()) == config
-    assert (restored / "ai/guardrails.txt").read_text() == ai_config.BASELINE_PATH.read_text()
+    assert (
+        ai_config.AIConfig.model_validate_json((restored / "ai/config.json").read_text(encoding="utf-8"))
+        == config
+    )
+    assert (restored / "ai/guardrails.txt").read_text(encoding="utf-8") == ai_config.BASELINE_PATH.read_text(
+        encoding="utf-8"
+    )
     with sqlite3.connect(restored / "database.sqlite") as conn:
         from pathlib import Path
 
         path = conn.execute("SELECT path FROM documents").fetchone()[0]
-        assert Path(path).read_text() == "source evidence"
+        assert Path(path).read_text(encoding="utf-8") == "source evidence"
     with pytest.raises(ValueError):
         restore_backup(backup, restored)
-    (backup / "uploads/d.txt").write_text("tampered")
+    (backup / "uploads/d.txt").write_text("tampered", encoding="utf-8")
     with pytest.raises(ValueError):
         verify_backup(backup)
 

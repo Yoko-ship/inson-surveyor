@@ -192,13 +192,13 @@ def export_snapshot(db, destination=SNAPSHOT):
             "contents": "Public statistical observations only. No accounts, credentials, sessions, inspections, documents, reports, audit logs or approval identities.",
         }
         path.replace(destination)
-        destination.with_suffix(".json").write_text(json.dumps(manifest, indent=2) + "\n")
+        destination.with_suffix(".json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     return verify_snapshot(destination)
 
 
 def read_snapshot(path=SNAPSHOT):
     path = Path(path).resolve()
-    manifest = json.loads(path.with_suffix(".json").read_text())
+    manifest = json.loads(path.with_suffix(".json").read_text(encoding="utf-8"))
     if manifest.get("format") != 1 or checksum(path) != manifest.get("sha256"):
         raise ValueError("Snapshot checksum or format mismatch")
     with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)) as db:

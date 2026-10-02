@@ -221,7 +221,7 @@ def test_consent_identity_stale_config_and_duplicate_queue(case):
     assert enqueue(case).json()["id"] == job["id"]
     config = ai_config.load()
     config.prompts.inspection += " Changed."
-    ai_config.DEFAULT_PATH.write_text(config.model_dump_json())
+    ai_config.DEFAULT_PATH.write_text(config.model_dump_json(), encoding="utf-8")
     assert ai_jobs.process_one(client.factory)
     assert client.get(f"/api/ai-pilot/jobs/{job['id']}").json()["status"] == "stale"
     assert not calls

@@ -22,7 +22,7 @@ LEASE_SECONDS = 180
 
 def worker_status():
     try:
-        data = json.loads((settings.storage_dir.parent / "ai-worker-status.json").read_text())
+        data = json.loads((settings.storage_dir.parent / "ai-worker-status.json").read_text(encoding="utf-8"))
         return 0 <= time.time() - data["last_seen"] < LEASE_SECONDS
     except (OSError, ValueError, TypeError, KeyError):
         return False

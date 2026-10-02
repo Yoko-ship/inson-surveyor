@@ -57,4 +57,6 @@ def factor_catalog(user=Depends(current_user)):
     import json
     from pathlib import Path
 
-    return json.loads((Path(__file__).parent / "policies" / "tariff-factors-2026-10-02.json").read_text())
+    return json.loads(
+        (Path(__file__).parent / "policies" / "tariff-factors-2026-10-02.json").read_text(encoding="utf-8")
+    )

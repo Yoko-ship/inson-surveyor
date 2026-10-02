@@ -115,9 +115,9 @@ def test_snapshot_rejects_operational_rows_even_with_updated_checksum(admin, tmp
         conn.execute("INSERT INTO telegram_updates VALUES (1, '2026-01-01')")
         conn.commit()
     manifest_path = destination.with_suffix(".json")
-    manifest = json.loads(manifest_path.read_text())
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest["sha256"] = checksum(destination)
-    manifest_path.write_text(json.dumps(manifest))
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(ValueError, match="nonpublic rows"):
         verify_snapshot(destination)
 

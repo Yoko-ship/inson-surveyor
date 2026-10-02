@@ -68,7 +68,8 @@ def run_session():
             processes.append(tunnel)
             for _ in range(60):
                 match = re.search(
-                    r"https://[a-z0-9-]+\.trycloudflare\.com", (runtime / "cloudflared.log").read_text()
+                    r"https://[a-z0-9-]+\.trycloudflare\.com",
+                    (runtime / "cloudflared.log").read_text(encoding="utf-8"),
                 )
                 if match:
                     url = match.group()
@@ -132,7 +133,7 @@ def run_session():
                 configured = True
                 bot = asyncio.run(configure_webhook())
                 status = {"url": url, "bot": bot["username"], "pid": os.getpid(), "port": port}
-                (runtime / "status.json").write_text(json.dumps(status, indent=2))
+                (runtime / "status.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
                 print(f"Telegram ready: https://t.me/{bot['username']}", flush=True)
                 print(f"Temporary Mini App URL: {url}", flush=True)
                 print(

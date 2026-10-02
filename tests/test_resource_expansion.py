@@ -84,7 +84,7 @@ def test_napp_missing_is_not_zero():
     ],
 )
 def test_siat_risk_units_and_observation_dates(dataset, metric, unit, value, observed):
-    samples = json.loads((FIXTURES / "siat-risk-samples.json").read_text())
+    samples = json.loads((FIXTURES / "siat-risk-samples.json").read_text(encoding="utf-8"))
     rows, _ = parse_public(
         json.dumps(samples[str(dataset)]),
         {
@@ -280,7 +280,7 @@ def test_reference_collector_routes_and_stores_verified_workbook(admin, monkeypa
 
 
 def test_siat_changed_units_are_rejected():
-    samples = json.loads((FIXTURES / "siat-risk-samples.json").read_text())["229"]
+    samples = json.loads((FIXTURES / "siat-risk-samples.json").read_text(encoding="utf-8"))["229"]
     for row in samples[0]["metadata"]:
         if row["name_en"] == "Unit of measurement":
             row["value_en"] = "percent"

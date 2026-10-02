@@ -69,7 +69,8 @@ def create_backup(database_url=None, backup_dir=None):
                     "documents": document_map,
                 },
                 indent=2,
-            )
+            ),
+            encoding="utf-8",
         )
         for p in dest.rglob("*"):
             if p.is_file():
@@ -83,7 +84,7 @@ def create_backup(database_url=None, backup_dir=None):
 
 def verify_backup(directory):
     directory = Path(directory).resolve()
-    manifest = json.loads((directory / "manifest.json").read_text())
+    manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
     if manifest.get("version") != 1:
         raise ValueError("Unsupported backup version")
     for name, expected in manifest["files"].items():

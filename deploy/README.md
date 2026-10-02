@@ -19,4 +19,4 @@ Use `sh deploy/backup-postgres.sh /absolute/private/backup-directory`. This expo
 
 To restore, create fresh volumes in a separate Compose project, restore the SQL dump with `pg_restore` and unpack `uploads.tar.gz` into that project's upload volume, retaining UID 10001. Run migrations, sign into Codex again, then verify document hashes, saved reports and queue state. Interrupted jobs recover after their lease expires (three attempts maximum). Do not restore over the running database.
 
-The existing Mac database and documents are not copied automatically. A later migration needs a verified backup and an explicit cutover. This package has configuration and application tests; a real container build, TLS/domain issuance and phone acceptance must be verified on the selected host.
+The existing Mac database and documents are not copied automatically. A later migration needs a verified backup and an explicit cutover. The container build, Compose configuration and container migrations pass GitHub CI. TLS/domain issuance, server sign-in and phone acceptance still need verification on the selected host.

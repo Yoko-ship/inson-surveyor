@@ -104,7 +104,8 @@ def main():
             },
             indent=2,
         )
-        + "\n"
+        + "\n",
+        encoding="utf-8",
     )
     if not all(c["passed"] and c["values_unchanged"] for c in checks):
         raise SystemExit("A fictional acceptance case failed; inspect behavior before rollout")

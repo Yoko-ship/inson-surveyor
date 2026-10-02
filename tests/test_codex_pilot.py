@@ -210,7 +210,8 @@ def test_timeout_terminates_wrapper_children_without_waiting_for_open_pipes(tmp_
 
     script = tmp_path / "wrapper.py"
     script.write_text(
-        'import subprocess, sys, time\nsubprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])\ntime.sleep(60)\n'
+        'import subprocess, sys, time\nsubprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])\ntime.sleep(60)\n',
+        encoding="utf-8",
     )
     started = time.monotonic()
     with pytest.raises(pilot.PilotError):

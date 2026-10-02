@@ -26,7 +26,7 @@ def main():
                 try:
                     status = settings.storage_dir.parent / "ai-worker-status.json"
                     temporary = status.with_suffix(".tmp")
-                    temporary.write_text(json.dumps({"last_seen": time.time()}))
+                    temporary.write_text(json.dumps({"last_seen": time.time()}), encoding="utf-8")
                     temporary.replace(status)
                     worked = process_one()
                 except Exception as exc:
