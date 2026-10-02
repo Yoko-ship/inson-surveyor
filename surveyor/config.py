@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     backup_retention_days: int = 14
     codex_local_pilot: bool = False
     codex_cli_path: str = ""
+    codex_telegram_enabled: bool = False
+    codex_telegram_owner_id: str = ""
 
     @model_validator(mode="after")
     def deployment_guard(self):

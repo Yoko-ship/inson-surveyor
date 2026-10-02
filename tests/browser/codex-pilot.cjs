@@ -77,4 +77,67 @@ module.exports = async (page) => {
   expect(calls).toBe(1);
   await page.unroute("**/api/ai-pilot");
   await page.unroute("**/api/ai-pilot/run");
+  await page.route("**/api/ai-pilot", (route) =>
+    route.fulfill({
+      json: {
+        ready: true,
+        documents_enabled: true,
+        message: "Signed in",
+        samples: [{ id: "text", title: "Sample", text: "Sample" }],
+      },
+    }),
+  );
+  await page.evaluate(() => {
+    window.Telegram = { WebApp: { initData: "signed-test-proof" } };
+  });
+  let uploads = 0;
+  await page.route("**/api/ai-pilot/analyze", (route) => {
+    uploads += 1;
+    expect(route.request().headers()["x-telegram-init-data"]).toBe(
+      "signed-test-proof",
+    );
+    expect(route.request().postData()).toContain('name="cloud_consent"');
+    return route.fulfill({
+      json: {
+        saved: false,
+        fields: [
+          {
+            field: "object_description",
+            value: "<img src=x onerror=alert(1)>",
+            quote: "<script>alert(1)</script>",
+            status: "needs_review",
+            quote_found_in_text: false,
+          },
+        ],
+      },
+    });
+  });
+  await page.locator("#locale").selectOption("en");
+  await expect(page.locator("#content h1")).toHaveText("Codex · my documents");
+  await page
+    .locator('#codex-document-form input[type="file"]')
+    .setInputFiles({
+      name: "contract.txt",
+      mimeType: "text/plain",
+      buffer: Buffer.from("Test contract"),
+    });
+  await page.locator('#codex-document-form input[type="checkbox"]').check();
+  await page.locator("#codex-document-form button").click();
+  await expect(page.locator("#document-result")).toBeVisible();
+  await expect(
+    page.locator("#document-result script, #document-result img"),
+  ).toHaveCount(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+  await page.screenshot({
+    path: "artifacts/codex-documents-mobile.png",
+    fullPage: true,
+  });
+  expect(uploads).toBe(1);
+  await page.unroute("**/api/ai-pilot");
+  await page.unroute("**/api/ai-pilot/analyze");
 };

@@ -97,6 +97,14 @@ The ordinary browser app at port 8010 remains available. The Telegram listener u
 
 Runtime status and logs are in ignored `data/telegram-dev/`. No bot token is written to status output, logs, GitHub Actions or repository files. See [environment profiles](docs/environments.md).
 
+### Personal Codex connection in Telegram
+
+Sign into the installed Codex CLI with ChatGPT on the computer running the app. In the ignored `.env`, set `CODEX_TELEGRAM_ENABLED=true` and `CODEX_TELEGRAM_OWNER_ID` to your numeric Telegram ID. Link that same ID to your administrator account. Restart `scripts/run_telegram_dev.py`, then open the bot's Mini App and select **Codex**.
+
+Only that administrator, with valid signed Telegram launch data, can use the subscription. No Codex credentials are copied into the Mini App or GitHub. Keep this computer and the runner online. Reopen the Mini App when its five-minute Telegram launch authorization expires.
+
+The Codex screen accepts PDF (up to 10 pages), images, DOCX, XLSX, TXT and CSV, up to 15 MB and 60,000 text characters. Clicking **Analyze document** after checking the cloud-processing consent sends the selected document to OpenAI using your Codex allowance. All PDF pages are rendered, including scanned pages. Temporary files are removed after processing; only a consent/preview event is audited. Values and source quotes are previews for human review and are not automatically saved to inspections or used for pricing. Images cannot establish a property's market value. Shared employee access is not enabled.
+
 After permanent hosting is selected, set `PUBLIC_URL`, `COOKIE_SECURE=true`, `COOKIE_SAMESITE=none`, `APP_ENV=production`, `TELEGRAM_EXPECTED_BOT_ID` and `TELEGRAM_WEBHOOK_SECRET`, then configure the bot:
 
 ```sh

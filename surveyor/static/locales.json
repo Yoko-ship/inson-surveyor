@@ -2862,5 +2862,61 @@
   "INSON: отношение региона к компании": {
     "uz": "INSON: hududning kompaniyaga nisbati",
     "en": "INSON: regional ratio / company ratio"
+  },
+  "Codex · мои документы": {
+    "uz": "Codex · hujjatlarim",
+    "en": "Codex · my documents"
+  },
+  "Распознавание через ваш вход в Codex. Все значения требуют проверки.": {
+    "uz": "Codex hisobingiz orqali o‘qish. Barcha qiymatlarni tekshirish kerak.",
+    "en": "Read documents using your Codex sign-in. Review every value."
+  },
+  "Учебные примеры": {
+    "uz": "O‘quv namunalari",
+    "en": "Sample documents"
+  },
+  "Выбранный учебный пример отправляется в облако OpenAI и расходует лимит Codex.": {
+    "uz": "Tanlangan namuna OpenAI bulutiga yuboriladi va Codex limitingizdan foydalanadi.",
+    "en": "The selected sample is sent to OpenAI and uses your Codex allowance."
+  },
+  "Загрузить документ": {
+    "uz": "Hujjat yuklash",
+    "en": "Upload a document"
+  },
+  "PDF до 10 страниц, фото, DOCX, XLSX, TXT или CSV. До 15 МБ и 60 000 символов. Результат появится здесь для проверки; значения не переносятся в осмотр автоматически.": {
+    "uz": "10 sahifagacha PDF, rasm, DOCX, XLSX, TXT yoki CSV. 15 MB va 60 000 belgigacha. Natija tekshirish uchun shu yerda ko‘rsatiladi; qiymatlar ko‘rikka avtomatik ko‘chirilmaydi.",
+    "en": "PDF up to 10 pages, photos, DOCX, XLSX, TXT or CSV. Up to 15 MB and 60,000 characters. Review the result here; values are not automatically added to an inspection."
+  },
+  "Отправить выбранный документ в OpenAI для анализа через мою подписку Codex.": {
+    "uz": "Tanlangan hujjatni Codex obunam orqali tahlil qilish uchun OpenAI xizmatiga yuborish.",
+    "en": "Send the selected document to OpenAI for analysis using my Codex subscription."
+  },
+  "Анализировать документ": {
+    "uz": "Hujjatni tahlil qilish",
+    "en": "Analyze document"
+  },
+  "Mac и подключение к интернету должны оставаться включёнными. Если авторизация устарела, откройте Mini App заново.": {
+    "uz": "Mac va internet ishlayotgan bo‘lishi kerak. Kirish muddati tugasa, Mini Appni qayta oching.",
+    "en": "Keep the Mac online. Reopen the Mini App if your Telegram authorization expires."
+  },
+  "Codex читает документ. Это может занять до полутора минут…": {
+    "uz": "Codex hujjatni o‘qimoqda. Bu bir yarim daqiqagacha vaqt olishi mumkin…",
+    "en": "Codex is reading the document. This may take up to 90 seconds…"
+  },
+  "Сверьте значения и цитаты с оригиналом. Для сканов цитаты не проверены автоматически. Результат не сохранён в осмотр.": {
+    "uz": "Qiymatlar va iqtiboslarni asl hujjat bilan tekshiring. Skanlar iqtiboslari avtomatik tekshirilmaydi. Natija ko‘rikka saqlanmagan.",
+    "en": "Compare values and quotes with the original. Quotes from scans are not automatically verified. The result has not been saved to an inspection."
+  },
+  "Предложение Codex": {
+    "uz": "Codex taklifi",
+    "en": "Codex suggestion"
+  },
+  "Цитата": {
+    "uz": "Iqtibos",
+    "en": "Quote"
+  },
+  "Личный анализ документов через OpenAI. Учебные тарифы не утверждены страховщиком.": {
+    "uz": "OpenAI orqali shaxsiy hujjat tahlili. O‘quv tariflari sug‘urtalovchi tomonidan tasdiqlanmagan.",
+    "en": "Personal document analysis through OpenAI. Demo tariffs are not insurer-approved."
   }
 }

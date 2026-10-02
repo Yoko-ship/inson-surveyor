@@ -23,6 +23,7 @@ module.exports = defineConfig({
       APP_ENV: "development",
       COOKIE_SECURE: "false",
       DATA_MODE: "synthetic",
+      CODEX_TELEGRAM_ENABLED: "false",
     },
   },
 });

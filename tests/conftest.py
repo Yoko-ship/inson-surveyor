@@ -22,6 +22,7 @@ def client(tmp_path, monkeypatch):
     monkeypatch.setattr(settings, "data_mode", "synthetic")
     monkeypatch.setattr(settings, "public_url", "http://testserver")
     monkeypatch.setattr(settings, "cookie_secure", False)
+    monkeypatch.setattr(settings, "codex_telegram_enabled", False)
 
     def override():
         with factory() as db:

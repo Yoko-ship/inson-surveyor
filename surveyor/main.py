@@ -16,6 +16,7 @@ from surveyor.db import engine
 from surveyor.document_api import router as document_router
 from surveyor.pilot_api import enabled as pilot_enabled
 from surveyor.pilot_api import router as pilot_router
+from surveyor.pilot_api import telegram_enabled
 from surveyor.policy_api import router as policy_router
 from surveyor.source_api import router as source_router
 from surveyor.telegram import router as telegram_router
@@ -99,7 +100,7 @@ def health():
         conn.execute(text("SELECT 1"))
     return {
         "status": "ok",
-        "ai_enabled": False,
+        "ai_enabled": bool(telegram_enabled()),
         "data_mode": settings.data_mode,
         "codex_local_pilot": bool(pilot_enabled()),
     }

@@ -151,6 +151,9 @@ async function api(path, options = {}) {
     "X-CSRF-Token": state.csrf,
     ...options.headers,
   };
+  if (path.startsWith("/ai-pilot") && window.Telegram?.WebApp?.initData) {
+    headers["X-Telegram-Init-Data"] = window.Telegram.WebApp.initData;
+  }
   const r = await fetch(`/api${path}`, { ...options, headers });
   const data = await r.json().catch(() => ({}));
   if (!r.ok) {
@@ -251,13 +254,13 @@ async function enter(data) {
   state.user = data.user;
   state.csrf = data.csrf;
   state.codexPilot = false;
-  if (
-    state.user.role === "admin" &&
-    !state.user.must_change_password &&
-    ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)
-  ) {
+  state.codexDocuments = false;
+  if (state.user.role === "admin" && !state.user.must_change_password) {
     state.codexPilot = await api("/ai-pilot")
-      .then(() => true)
+      .then((info) => {
+        state.codexDocuments = info.documents_enabled;
+        return true;
+      })
       .catch(() => false);
   }
   $("#login-view").hidden = true;
@@ -274,6 +277,10 @@ async function enter(data) {
 }
 async function navigate(page) {
   state.page = page;
+  $("#demo-banner").textContent =
+    page === "codex" && state.codexDocuments
+      ? "Личный анализ документов через OpenAI. Учебные тарифы не утверждены страховщиком."
+      : "Учебная среда · Используйте только синтетические данные. Демонстрационные тарифы не утверждены страховщиком.";
   renderNav();
   $("#breadcrumb").textContent = t(page);
   $("#content").innerHTML = '<div class="loading">Загрузка…</div>';
