@@ -1,4 +1,4 @@
-"""Guided inspections and owner-only durable analysis jobs."""
+"""Guided inspections and authenticated, private durable analysis jobs."""
 
 from typing import Annotated, Literal
 
@@ -11,7 +11,7 @@ from surveyor.ai_jobs import public_job
 from surveyor.auth import current_user
 from surveyor.db import AIJob, Survey, audit, get_db, now
 from surveyor.inspection_assistant import basis_hash, documents_for, guidance
-from surveyor.pilot_api import telegram_owner
+from surveyor.pilot_api import telegram_user
 from surveyor.schemas import Strict
 from surveyor.services import survey_for
 
@@ -106,7 +106,7 @@ def save_answers(survey_id: str, body: Answers, user=Depends(current_user), db=D
 
 
 @router.post("/ai-pilot/surveys/{survey_id}/jobs", status_code=202)
-def enqueue(survey_id: str, body: JobInput, user=Depends(telegram_owner), db=Depends(get_db)):
+def enqueue(survey_id: str, body: JobInput, user=Depends(telegram_user), db=Depends(get_db)):
     survey = survey_for(db, survey_id, user, write=True)
     config = ai_config.load()
     if not config.enabled or ai_config.digest(config) != body.config_revision:
@@ -134,11 +134,12 @@ def enqueue(survey_id: str, body: JobInput, user=Depends(telegram_owner), db=Dep
     active = db.scalar(
         select(AIJob).where(AIJob.survey_id == survey.id, AIJob.status.in_(["queued", "running"]))
     )
+    request_data = {**body.model_dump(), "telegram_id": user.telegram_id}
     if active:
-        if active.request == body.model_dump():
+        if active.user_id == user.id and active.request == request_data:
             return public_job(active)
         raise HTTPException(409, "Анализ этого осмотра уже выполняется")
-    job = AIJob(user_id=user.id, survey_id=survey.id, kind=body.kind, request=body.model_dump())
+    job = AIJob(user_id=user.id, survey_id=survey.id, kind=body.kind, request=request_data)
     db.add(job)
     db.flush()
     audit(
@@ -158,7 +159,7 @@ def enqueue(survey_id: str, body: JobInput, user=Depends(telegram_owner), db=Dep
 
 
 @router.get("/ai-pilot/surveys/{survey_id}/jobs")
-def jobs(survey_id: str, user=Depends(telegram_owner), db=Depends(get_db)):
+def jobs(survey_id: str, user=Depends(telegram_user), db=Depends(get_db)):
     survey_for(db, survey_id, user, write=True)
     return [
         public_job(j)
@@ -180,13 +181,13 @@ def job_for(db, job_id, user):
 
 
 @router.get("/ai-pilot/jobs/{job_id}")
-def job_status(job_id: str, user=Depends(telegram_owner), db=Depends(get_db)):
+def job_status(job_id: str, user=Depends(telegram_user), db=Depends(get_db)):
     job, _ = job_for(db, job_id, user)
     return public_job(job)
 
 
 @router.post("/ai-pilot/jobs/{job_id}/cancel")
-def cancel(job_id: str, user=Depends(telegram_owner), db=Depends(get_db)):
+def cancel(job_id: str, user=Depends(telegram_user), db=Depends(get_db)):
     job, _ = job_for(db, job_id, user)
     # Running model calls cannot be recalled. Discard their eventual result.
     changed = db.execute(
@@ -202,7 +203,7 @@ def cancel(job_id: str, user=Depends(telegram_owner), db=Depends(get_db)):
 
 
 @router.post("/ai-pilot/jobs/{job_id}/review")
-def review_job(job_id: str, body: Review, user=Depends(telegram_owner), db=Depends(get_db)):
+def review_job(job_id: str, body: Review, user=Depends(telegram_user), db=Depends(get_db)):
     job, survey = job_for(db, job_id, user)
     if job.status != "completed" or job.kind == "document":
         raise HTTPException(409, "Результат недоступен для этой проверки")

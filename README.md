@@ -2,7 +2,7 @@
 
 [Public repository](https://github.com/Yoko-ship/inson-surveyor) · [Telegram bot](https://t.me/analyzing12_bot)
 
-Local-first insurance surveying platform implementing the deterministic workflows in the supplied ТЗ (01.10.2026). A browser application, Telegram Mini App integration, admin workspace and calculation engine share one Python backend. Financial calculations remain deterministic. An optional personal AI connection assists document extraction, with explicit human review before values are saved.
+Local-first insurance surveying platform implementing the deterministic workflows in the supplied ТЗ (01.10.2026). A browser application, Telegram Mini App integration, admin workspace and calculation engine share one Python backend. Financial calculations remain deterministic. An optional server-side AI connection assists document extraction, with explicit human review before values are saved.
 
 **[Подробное руководство на русском (PDF)](docs/Surveyor-Manual-RU.pdf)** — вход, осмотры, ИИ, оценка стоимости, тарифы и факторы, акты, администрирование и ограничения текущей версии. Редактируемый текст: [`docs/manual-ru.json`](docs/manual-ru.json). Пересборка: `uv run python scripts/build_manual_ru.py` (Arial или DejaVu Sans с кириллицей; при необходимости `--font-dir`).
 
@@ -105,15 +105,15 @@ The inspection's **Assistant / Помощник** step provides cross-document c
 
 [Always-on deployment](deploy/README.md) is prepared with PostgreSQL, HTTPS, persistent uploads/authentication and separate workers. Hosting selection and provisioning are deferred by the user; the current local setup still needs the Mac online. Validation uses fictional documents only.
 
-### Personal Codex connection in Telegram
+### Codex connection in Telegram
 
 AI prompts, models, guardrails and response formatting are configured only in code (`surveyor/ai/defaults.json` and `surveyor/ai/guardrails.txt`). Users have no settings editor or configuration API. Git preserves the configuration across machines and provider changes. See [AI configuration and provider changes](docs/ai-configuration.md).
 
 Sign into the installed Codex CLI with ChatGPT on the computer running the app. In the ignored `.env`, set `CODEX_TELEGRAM_ENABLED=true` and `CODEX_TELEGRAM_OWNER_ID` to your numeric Telegram ID. Link that same ID to your administrator account. Restart `scripts/run_telegram_dev.py`, then open the bot's Mini App and select **AI / ИИ**.
 
-Only that administrator, with valid signed Telegram launch data, can use the subscription. No Codex credentials are copied into the Mini App or GitHub. Keep this computer and the runner online. Reopen the Mini App when its five-minute Telegram launch authorization expires.
+The code-owned `telegram_access` setting is now `linked_users`: active employee, underwriter, actuary and administrator accounts can use the server's existing Codex connection after linking their own Telegram identity. Each request requires matching signed Telegram launch data. Set `telegram_access` to `owner` in code to restore owner-only access. No Codex credentials are copied into the Mini App or GitHub. Keep this computer and the runner online. Reopen the Mini App when its five-minute Telegram launch authorization expires.
 
-The Codex screen accepts PDF (up to 10 pages), images, DOCX, XLSX, TXT and CSV, up to 15 MB and 60,000 text characters. Clicking **Analyze document** after checking the cloud-processing consent sends the selected document to OpenAI using your Codex allowance. All PDF pages are rendered, including scanned pages. Temporary files are removed after processing; only a consent/preview event is audited. Values and source quotes are previews for human review and are not automatically saved to inspections or used for pricing. Images cannot establish a property's market value. Shared employee access is not enabled.
+The Codex screen accepts PDF (up to 10 pages), images, DOCX, XLSX, TXT and CSV, up to 15 MB and 60,000 text characters. Clicking **Analyze document** after checking the cloud-processing consent sends the selected document to OpenAI using your Codex allowance. All PDF pages are rendered, including scanned pages. Temporary files are removed after processing; only a consent/preview event is audited. Values and source quotes are previews for human review and are not automatically saved to inspections or used for pricing. Images cannot establish a property's market value. All authorized users share the connected subscription allowance; requests are serialized. No API key or per-user Codex sign-in is introduced. AI access does not grant access to another employee's private proposals or jobs.
 
 Inside an inspection, upload a file under **Materials**, then select **AI · review document**. Consent sends that stored file to the configured provider. Select the proposed fields you have checked, correct any values, and save your review; unchecked suggestions are rejected. Pending proposals survive reopening the screen. On the inspection form, use **Reviewed document fields** to copy accepted values, check the full inspection, and save to generate its report. Existing inspection inputs are replaced only through that explicit copy action or your edits.
 
@@ -167,7 +167,7 @@ For Compose, add a strong URL-safe `POSTGRES_PASSWORD` to `.env`, then run `dock
 
 ## Scope and acceptance
 
-See [architecture](docs/architecture.md), [requirement coverage](docs/requirements.md) and [operations](docs/operations.md). Photos/scans support manual review and, for the configured Telegram owner, AI-assisted extraction. The interface and generated report sections support RU/UZ/EN; original source quotations and insurer-authored clauses remain verbatim, with per-language clause fields available. Actual tariffs, normative sources, company claims, approvals, restricted-provider access, production hosting and native Telegram acceptance remain external inputs/acceptance steps, not fabricated demo values.
+See [architecture](docs/architecture.md), [requirement coverage](docs/requirements.md) and [operations](docs/operations.md). Photos/scans support manual review and, for linked Telegram users allowed by the code-owned access policy, AI-assisted extraction. The interface and generated report sections support RU/UZ/EN; original source quotations and insurer-authored clauses remain verbatim, with per-language clause fields available. Actual tariffs, normative sources, company claims, approvals, restricted-provider access, production hosting and native Telegram acceptance remain external inputs/acceptance steps, not fabricated demo values.
 
 
 ### Factor pricing and work history

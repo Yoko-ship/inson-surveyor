@@ -74,7 +74,7 @@ window.SurveyorCodexPilot = (() => {
     const consent =
       info.provider === "ollama"
         ? "Обработать выбранный документ локальной моделью Ollama."
-        : "Отправить выбранный документ в OpenAI для анализа через мою подписку Codex.";
+        : "Отправить выбранный документ в OpenAI через подключение Codex приложения. Используется общий лимит подписки.";
     return `<section class="panel"><h2>Загрузить документ</h2><p>PDF / фото / DOCX / XLSX / TXT / CSV · ${esc(limits.max_pages)} стр. · ${esc(limits.max_text_chars)} символов · 15 MB</p><p>Результат появится здесь для проверки; значения не переносятся в осмотр автоматически.</p><form id="codex-document-form"><input type="file" name="file" required accept=".pdf,.jpg,.jpeg,.png,.webp,.docx,.xlsx,.txt,.csv"><label class="check"><input type="checkbox" name="cloud_consent" required>${esc(consent)}</label><button type="submit" class="primary" ${info.ready ? "" : "disabled"}>Анализировать документ</button><p class="form-hint">Mac и подключение к интернету должны оставаться включёнными. Если авторизация устарела, откройте Mini App заново.</p><p role="status" id="document-progress"></p><p class="form-error"></p></form><div id="document-result" hidden></div></section>`;
   }
   function bindDocumentForm(info) {

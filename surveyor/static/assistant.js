@@ -127,7 +127,7 @@ window.SurveyorAssistant = (() => {
         ["photo", "Видимые условия на фотографиях"],
       ],
       "inspection",
-    )}<p>Выберите материалы. Общий лимит: 10 страниц или фото и 60 000 символов.</p>${survey.documents.map((d) => `<label class="check"><input type="checkbox" name="document" value="${d.id}"><span data-no-translate>${esc(d.filename)}</span></label>`).join("")}<label class="check"><input type="checkbox" name="consent" required>${info.provider === "ollama" ? "Обработать выбранные материалы локальной моделью." : "Отправить выбранные материалы и контекст осмотра в OpenAI через мою подписку Codex."}</label><button type="submit" class="primary" ${info.ready ? "" : "disabled"}>Начать анализ</button><p class="form-error"></p></form></section>`;
+    )}<p>Выберите материалы. Общий лимит: 10 страниц или фото и 60 000 символов.</p>${survey.documents.map((d) => `<label class="check"><input type="checkbox" name="document" value="${d.id}"><span data-no-translate>${esc(d.filename)}</span></label>`).join("")}<label class="check"><input type="checkbox" name="consent" required>${info.provider === "ollama" ? "Обработать выбранные материалы локальной моделью." : "Отправить выбранные материалы и контекст осмотра в OpenAI через подключение Codex приложения. Используется общий лимит подписки."}</label><button type="submit" class="primary" ${info.ready ? "" : "disabled"}>Начать анализ</button><p class="form-error"></p></form></section>`;
   }
   function bindAnalysis(survey, info) {
     bindForm("#assistant-analyze", async (_, form) => {

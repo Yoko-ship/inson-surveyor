@@ -13,11 +13,27 @@ from surveyor.config import settings
 from surveyor.db import AIJob, ImportBatch, SessionLocal, Survey, User, audit, now, uid
 from surveyor.inspection_ai import checked_bytes, owned_document, proposal_data
 from surveyor.inspection_assistant import analyze, basis_hash, documents_for
-from surveyor.pilot_api import single_request
+from surveyor.pilot_api import ai_user_allowed, single_request
 
 log = logging.getLogger(__name__)
 MAX_ATTEMPTS = 3
 LEASE_SECONDS = 180
+
+
+def check_job_access(db, job, config):
+    user = db.get(User, job.user_id)
+    survey = db.get(Survey, job.survey_id)
+    if not (
+        ai_user_allowed(user, config)
+        and settings.codex_telegram_enabled
+        and user.telegram_id == job.request.get("telegram_id")
+        and survey
+        and survey.owner_id == user.id
+    ):
+        raise HTTPException(403, "Доступ к ИИ изменился. Обработка остановлена.")
+    if not config.enabled or job.request["config_revision"] != ai_config.digest(config):
+        raise HTTPException(409, "Настройки ИИ изменились. Подтвердите обработку снова.")
+    return user, survey
 
 
 def worker_status():
@@ -86,21 +102,8 @@ def process_one(factory=SessionLocal):
     try:
         with factory() as db:
             job = db.get(AIJob, job_id)
-            user = db.get(User, job.user_id)
-            survey = db.get(Survey, job.survey_id)
             config = ai_config.load()
-            if not (
-                user
-                and user.active
-                and user.role == "admin"
-                and user.telegram_id == settings.codex_telegram_owner_id
-                and settings.codex_telegram_enabled
-                and survey
-                and survey.owner_id == user.id
-            ):
-                raise HTTPException(403, "Доступ к ИИ изменился. Обработка остановлена.")
-            if job.request["config_revision"] != ai_config.digest(config):
-                raise HTTPException(409, "Настройки ИИ изменились. Подтвердите обработку снова.")
+            user, survey = check_job_access(db, job, config)
             if survey.revision != job.request["revision"]:
                 raise HTTPException(409, "Осмотр изменился. Подтвердите новый анализ.")
             if job.kind == "document":
@@ -149,6 +152,14 @@ def process_one(factory=SessionLocal):
         error, status = "Временная ошибка обработки. Повторный запуск запланирован.", "retry"
     with factory() as db:
         job = db.get(AIJob, job_id)
+        if status == "completed":
+            try:
+                check_job_access(db, job, ai_config.load())
+            except HTTPException as exc:
+                status = "stale" if exc.status_code == 409 else "failed"
+                error = str(exc.detail)
+            except ValueError:
+                status, error = "failed", "Конфигурация ИИ недоступна. Результат не сохранён."
         if status == "retry":
             status = "queued" if job.attempts < MAX_ATTEMPTS else "failed"
         if status == "completed" and job.kind == "document":

@@ -12,7 +12,7 @@ from surveyor import ai_config, codex_documents
 from surveyor.config import settings
 from surveyor.db import Document, ImportBatch, Survey, audit, get_db, now
 from surveyor.document_api import DocumentReview, apply_review
-from surveyor.pilot_api import single_request, telegram_owner
+from surveyor.pilot_api import ai_user_allowed, single_request, telegram_user
 from surveyor.schemas import Strict
 from surveyor.services import survey_for
 
@@ -51,7 +51,7 @@ def checked_bytes(document):
 
 
 @router.get("/{document_id}/proposal")
-def latest(document_id: str, user=Depends(telegram_owner), db=Depends(get_db)):
+def latest(document_id: str, user=Depends(telegram_user), db=Depends(get_db)):
     document, survey = owned_document(db, document_id, user)
     batch = db.scalar(
         select(ImportBatch)
@@ -73,12 +73,13 @@ def latest(document_id: str, user=Depends(telegram_owner), db=Depends(get_db)):
 
 
 @router.post("/{document_id}/analyze")
-def analyze(document_id: str, body: Analyze, user=Depends(telegram_owner), db=Depends(get_db)):
+def analyze(document_id: str, body: Analyze, user=Depends(telegram_user), db=Depends(get_db)):
     document, survey = owned_document(db, document_id, user)
     if survey.revision != body.revision:
         raise HTTPException(409, "Осмотр изменён. Обновите страницу.")
     data = checked_bytes(document)
     filename, fingerprint, survey_id = document.filename, document.sha256, survey.id
+    telegram_id = user.telegram_id
     with single_request():
         config = ai_config.load()
         if body.config_revision != ai_config.digest(config):
@@ -89,6 +90,10 @@ def analyze(document_id: str, body: Analyze, user=Depends(telegram_owner), db=De
         db.commit()
         result = codex_documents.recognize_document(data, filename, locale=body.locale, config=config)
         db.expire_all()
+        if not ai_user_allowed(user, ai_config.load()) or user.telegram_id != telegram_id:
+            raise HTTPException(403, "Доступ к ИИ изменился. Результат не сохранён.")
+        if ai_config.digest(ai_config.load()) != body.config_revision:
+            raise HTTPException(409, "Настройки ИИ изменились. Повторите анализ.")
         document, survey = owned_document(db, document_id, user)
         if document.sha256 != fingerprint:
             raise HTTPException(409, "Документ изменился. Повторите анализ.")
@@ -134,9 +139,7 @@ def proposal_data(document, revision, config, result):
 
 
 @router.post("/{document_id}/proposals/{proposal_id}/review")
-def review(
-    document_id: str, proposal_id: str, body: Review, user=Depends(telegram_owner), db=Depends(get_db)
-):
+def review(document_id: str, proposal_id: str, body: Review, user=Depends(telegram_user), db=Depends(get_db)):
     document, survey = owned_document(db, document_id, user)
     batch = db.get(ImportBatch, proposal_id)
     if (

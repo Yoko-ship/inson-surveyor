@@ -1,4 +1,4 @@
-"""Local samples and an explicitly enabled, Telegram-owner-only Codex connection."""
+"""Local admin samples and code-configured access to the server's AI connection."""
 
 import base64
 import threading
@@ -9,14 +9,14 @@ from urllib.parse import urlsplit
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, UploadFile
 
 from surveyor import ai_config, ai_providers, codex_pilot
-from surveyor.auth import roles, validate_telegram
+from surveyor.auth import current_user, validate_telegram
 from surveyor.config import settings
 from surveyor.db import audit, get_db
 from surveyor.file_lock import locked_file
 from surveyor.pilot_samples import SAMPLES, scan_png
 from surveyor.schemas import Strict
 
-router = APIRouter(prefix="/api/ai-pilot", dependencies=[Depends(roles("admin"))])
+router = APIRouter(prefix="/api/ai-pilot", dependencies=[Depends(current_user)])
 RUNNING = threading.Lock()
 LOOPBACK = {"127.0.0.1", "::1", "localhost"}
 
@@ -52,21 +52,40 @@ def telegram_enabled():
     )
 
 
-def telegram_owner(request: Request, user=Depends(roles("admin"))):
+def ai_user_allowed(user, config):
+    """Shared by HTTP admission and durable workers; never grants document access."""
+    if not (
+        user
+        and user.active
+        and not user.must_change_password
+        and user.role in {"employee", "underwriter", "actuary", "admin"}
+        and user.telegram_id
+        and user.telegram_id.isdecimal()
+        and int(user.telegram_id) > 0
+    ):
+        return False
+    return config.telegram_access == "linked_users" or (
+        user.role == "admin" and user.telegram_id == settings.codex_telegram_owner_id
+    )
+
+
+def telegram_user(request: Request, user=Depends(current_user)):
     if not telegram_enabled() or request.url.hostname != urlsplit(settings.public_url).hostname:
-        raise HTTPException(404, "Личное подключение Codex недоступно.")
+        raise HTTPException(404, "Подключение ИИ недоступно.")
     proof = request.headers.get("x-telegram-init-data", "")
     if not proof or len(proof) > 10000:
         raise HTTPException(403, "Откройте Mini App заново в своём Telegram.")
     telegram_id = validate_telegram(proof, settings.telegram_bot_token)
-    if telegram_id != settings.codex_telegram_owner_id or user.telegram_id != telegram_id:
-        raise HTTPException(403, "Codex доступен только владельцу подписки.")
+    if user.telegram_id != telegram_id or not ai_user_allowed(user, ai_config.load()):
+        raise HTTPException(403, "Для ИИ нужна разрешённая учётная запись, связанная с вашим Telegram.")
     return user
 
 
-def access(request: Request, user=Depends(roles("admin"))):
+def access(request: Request, user=Depends(current_user)):
     if telegram_enabled():
-        return telegram_owner(request, user)
+        return telegram_user(request, user)
+    if user.role != "admin":
+        raise HTTPException(403, "Локальный пилот доступен только администратору.")
     local_only(request)
     return user
 
@@ -103,6 +122,7 @@ def status():
         "config_revision": ai_config.digest(config),
         "limits": config.limits.model_dump(),
         "display_mode": config.display_mode,
+        "telegram_access": config.telegram_access,
         "documents_enabled": telegram_enabled(),
         "jobs_ready": worker_status(),
         "sample_image": "data:image/png;base64," + base64.b64encode(scan_png()).decode("ascii"),
@@ -118,7 +138,7 @@ def sample_image():
 
 
 @router.post("/run", dependencies=[Depends(access)])
-def run(body: PilotInput, user=Depends(roles("admin")), db=Depends(get_db)):
+def run(body: PilotInput, user=Depends(current_user), db=Depends(get_db)):
     with single_request():
         result = codex_pilot.recognize(body.sample_id)
         audit(
@@ -142,7 +162,7 @@ def analyze(
     cloud_consent: bool = Form(False),
     config_revision: str = Form(...),
     locale: Literal["ru", "uz", "en"] = Form("ru"),
-    user=Depends(telegram_owner),
+    user=Depends(telegram_user),
     db=Depends(get_db),
 ):
     if not cloud_consent:
@@ -152,6 +172,7 @@ def analyze(
         raise HTTPException(422, "Нужен непустой файл размером до 15 МБ.")
     from surveyor.codex_documents import recognize_document
 
+    telegram_id = user.telegram_id
     with single_request():
         config = ai_config.load()
         if config_revision != ai_config.digest(config):
@@ -159,6 +180,11 @@ def analyze(
                 409, "Настройки ИИ изменились. Обновите страницу и подтвердите обработку снова."
             )
         result = recognize_document(data, file.filename or "document", locale=locale, config=config)
+        db.refresh(user)
+        if not ai_user_allowed(user, ai_config.load()) or user.telegram_id != telegram_id:
+            raise HTTPException(403, "Доступ к ИИ изменился. Результат не опубликован.")
+        if ai_config.digest(ai_config.load()) != config_revision:
+            raise HTTPException(409, "Настройки ИИ изменились. Повторите анализ.")
         audit(
             db,
             user,

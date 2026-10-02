@@ -17,7 +17,7 @@ window.SurveyorInspectionAI = (() => {
       api(`/ai-pilot/surveys/${survey.id}/jobs`),
     ]);
     modal(
-      `<h2>ИИ · проверка документа</h2>${info.jobs_ready === false ? `<p class="notice">Фоновый обработчик недоступен. Задание начнётся после его запуска.</p>` : ""}<p><a href="/api/documents/${doc.id}/download" target="_blank" rel="noopener" data-no-translate>${esc(doc.filename)} ↗</a></p><form id="inspection-ai-analyze"><label class="check"><input type="checkbox" name="consent" required>${info.provider === "ollama" ? "Обработать выбранный документ локальной моделью Ollama." : "Отправить выбранный документ в OpenAI для анализа через мою подписку Codex."}</label><button class="secondary" type="submit" ${info.ready ? "" : "disabled"}>Анализировать документ</button><p role="status"></p><p class="form-error"></p></form><div id="inspection-ai-result"></div>`,
+      `<h2>ИИ · проверка документа</h2>${info.jobs_ready === false ? `<p class="notice">Фоновый обработчик недоступен. Задание начнётся после его запуска.</p>` : ""}<p><a href="/api/documents/${doc.id}/download" target="_blank" rel="noopener" data-no-translate>${esc(doc.filename)} ↗</a></p><form id="inspection-ai-analyze"><label class="check"><input type="checkbox" name="consent" required>${info.provider === "ollama" ? "Обработать выбранный документ локальной моделью Ollama." : "Отправить выбранный документ в OpenAI через подключение Codex приложения. Используется общий лимит подписки."}</label><button class="secondary" type="submit" ${info.ready ? "" : "disabled"}>Анализировать документ</button><p role="status"></p><p class="form-error"></p></form><div id="inspection-ai-result"></div>`,
     );
     const form = $("#inspection-ai-analyze");
     const output = $("#inspection-ai-result");

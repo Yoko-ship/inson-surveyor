@@ -25,7 +25,7 @@ flowchart TD
 ## Boundaries
 
 - `calculations.py`: formulas, minimum rates, annual equivalents, risk adjustments, valuation and loss ratios. No network calls.
-- `documents.py`: size/format/page checks, office-archive limits, text extraction and source-linked field parsing. Images/scanned PDFs initially require review; the optional personal recognizer can propose values.
+- `documents.py`: size/format/page checks, office-archive limits, text extraction and source-linked field parsing. Images/scanned PDFs initially require review; the optional server-side recognizer can propose values.
 - `services.py`: tariff and template selection, scope/ownership, source context, report snapshots and cross-document conflicts.
 - `reports.py`: five-section Word/PDF renderers driven only by the saved snapshot. No recalculation at export time.
 - `auth.py`: Argon2 passwords, hashed opaque sessions, CSRF tokens, role checks and Telegram HMAC validation with a five-minute freshness limit.
@@ -56,7 +56,7 @@ Maximum file size: 15 MB; maximum PDF pages: 50; maximum photos: 25 MP; maximum 
 
 ## AI review boundary
 
-`inspection_ai.py` stores validated proposals in private `ImportBatch` records (`kind=ai_document`), separate from `Document.extracted`. Inference uses the existing provider adapter and requires the configured Telegram owner, current inspection/configuration revisions and processing consent. No database transaction stays open during inference. A compare-and-swap on the inspection revision rejects changes during processing.
+`inspection_ai.py` stores validated proposals in private `ImportBatch` records (`kind=ai_document`), separate from `Document.extracted`. Inference uses the existing provider adapter and requires a linked Telegram user allowed by the code-owned scope, current inspection/configuration revisions and processing consent. No database transaction stays open during inference. A compare-and-swap on the inspection revision rejects changes during processing.
 
 Review validates values through the same helper as manual document review, atomically consumes the proposal and increments the inspection revision. It invalidates final inspection confirmation and appends source quotations, original suggestions, decisions, reviewer/time and configuration provenance to document evidence. Consumed, stale, foreign and mismatched-file proposals cannot be applied. Ordinary import endpoints reject AI batches. No schema migration is needed.
 
@@ -84,4 +84,4 @@ Class templates now include object-scoped statistical adjustment rules and valua
 
 ## Durable inspection assistance
 
-`assistant_api.py` provides guided answers, queued owner-only analysis and reviewed findings. `inspection_assistant.py` builds the grounded context and validates citations through the shared provider boundary. `ai_jobs.py` claims durable database jobs with expiring leases and publishes results atomically; `scripts/run_ai_worker.py` runs independently of the browser. `Survey.assistance` stores human answers and reviewed evidence separately from financial inputs. Both evidence and deterministic context fingerprints invalidate obsolete explanations. Migration `483bbb0a63a7` introduces these private records. See [assistant workflow](inspection-assistant.md) and [deployment](../deploy/README.md).
+`assistant_api.py` provides guided answers, queued user-isolated analysis and reviewed findings. `inspection_assistant.py` builds the grounded context and validates citations through the shared provider boundary. `ai_jobs.py` claims durable database jobs with expiring leases and publishes results atomically; `scripts/run_ai_worker.py` runs independently of the browser. `Survey.assistance` stores human answers and reviewed evidence separately from financial inputs. Both evidence and deterministic context fingerprints invalidate obsolete explanations. Migration `483bbb0a63a7` introduces these private records. See [assistant workflow](inspection-assistant.md) and [deployment](../deploy/README.md).

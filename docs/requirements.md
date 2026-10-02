@@ -161,3 +161,12 @@ Page 11 of the supplied factor PDF is now implemented as an opt-in, versioned cl
 - **Reports/AI:** Reports retain coefficients, choices, evidence, source pages/hash, exact template, approval, calibration data/hash/method and outstanding clarifications. Screen, PDF and Word share the same content. Saved reports do not change after edits. AI guidance includes missing-factor questions and the deterministic factor product; raw aggregate experience stays in the saved context, while bounded estimates and hashes are sent for explanation.
 
 This closes the factor-workflow implementation gap, not external acceptance: company coefficients, representative segmented experience and actuarial approval still have to be supplied. Existing templates remain on legacy pricing until a factor version is explicitly configured; switching is never automatic. Persistent Uzbekistan hosting, restricted-provider access and real-document validation retain their previously documented status. All new testing uses fictional cases.
+
+
+## Shared AI through the existing Codex connection (2026-10-02)
+
+The user superseded owner-only access and explicitly retained the existing Codex subscription/CLI connection. The checked-in policy is now `telegram_access=linked_users`: active employee, underwriter, actuary and admin accounts can use AI after changing their initial password and linking their own Telegram account. Each request must carry fresh signed Telegram proof matching that account. Provider credentials remain server-side and users share the existing connection's allowance; no API key or alternate billing provider was introduced.
+
+AI document, proposal and job access remains restricted to the requesting account's own inspections. Queued jobs bind the Telegram identity at submission and recheck account eligibility, link, ownership and configuration before inference and before publishing. Deactivation, relinking or a policy change prevents publication. Explicit cloud consent and human review remain required. The local-only fictional sample pilot remains admin-only. Policy and prompts are configured in code, with no user settings editor.
+
+Validation: 338 Python tests, including all four roles, two-user privacy and access revocation. Browser tests exercise a real disposable employee account with simulated Telegram/provider responses; a second real Telegram account is still an external acceptance step.

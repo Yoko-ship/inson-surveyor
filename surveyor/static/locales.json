@@ -3450,5 +3450,13 @@
   "Формат CSV и коды факторов": {
     "uz": "CSV formati va omil kodlari",
     "en": "CSV format and factor codes"
+  },
+  "Отправить выбранный документ в OpenAI через подключение Codex приложения. Используется общий лимит подписки.": {
+    "uz": "Tanlangan hujjatni ilovaning Codex ulanishi orqali OpenAI xizmatiga yuborish. Obunaning umumiy limiti ishlatiladi.",
+    "en": "Send the selected document to OpenAI through the app’s Codex connection. This uses the shared subscription allowance."
+  },
+  "Отправить выбранные материалы и контекст осмотра в OpenAI через подключение Codex приложения. Используется общий лимит подписки.": {
+    "uz": "Tanlangan materiallar va ko‘rik kontekstini ilovaning Codex ulanishi orqali OpenAI xizmatiga yuborish. Obunaning umumiy limiti ishlatiladi.",
+    "en": "Send selected materials and inspection context to OpenAI through the app’s Codex connection. This uses the shared subscription allowance."
   }
 }

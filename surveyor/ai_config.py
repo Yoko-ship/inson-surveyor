@@ -44,6 +44,7 @@ class OllamaOptions(StrictConfig):
 class AIConfig(StrictConfig):
     schema_version: Literal[1] = 1
     enabled: bool = True
+    telegram_access: Literal["owner", "linked_users"] = "owner"
     provider: Literal["codex", "ollama"] = "codex"
     codex: CodexOptions = Field(default_factory=CodexOptions)
     ollama: OllamaOptions = Field(default_factory=OllamaOptions)

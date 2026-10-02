@@ -269,7 +269,7 @@ async function enter(data) {
   state.csrf = data.csrf;
   state.codexPilot = false;
   state.codexDocuments = false;
-  if (state.user.role === "admin" && !state.user.must_change_password) {
+  if (!state.user.must_change_password) {
     state.codexPilot = await api("/ai-pilot")
       .then((info) => {
         state.codexDocuments = info.documents_enabled;

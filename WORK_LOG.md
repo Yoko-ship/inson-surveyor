@@ -104,3 +104,28 @@ Implement the outstanding workflow on page 11 of the supplied tariff-factor PDF:
 - Rebuild comparison initially differed because ReportLab document settings overrode the canvas timestamp flag. Set invariance on the document itself; two subsequent builds are byte-identical. Final PDF size: 177,044 bytes; SHA-256: `565bb1eaaf8d58111956ad76fdcf46d309040430b1d5a579a10e03d0f1dbbbcc`.
 - Builder lint and formatting checks passed. Full application tests were not rerun for this documentation-only change; the manual labels prior application test results as historical evidence.
 - Application behavior, bot settings, working database, credentials and provider configuration were not changed. Public manual, editable content and builder are prepared for GitHub delivery.
+
+## 2026-10-02 — Shared AI access investigation
+
+- User requested AI access for other Mini App users, superseding the earlier owner-only preference.
+- Confirmed owner/admin checks in AI routes and the durable worker; removing only a UI restriction would not enable shared operation. Existing document and survey ownership checks must remain.
+- Consulted official Codex authentication and Sign in with ChatGPT documentation. The documented plan-usage flow authorizes the individual user's plan; it does not establish shared entitlement through the current owner's CLI session. A shared API connection is the proposed route, subject to the user's credential/billing choice.
+- No access rules, provider configuration, secrets or operational data have been changed. Checking only API-key presence before the required credential decision.
+
+## 2026-10-02 — Shared access through existing Codex connection (in progress)
+
+- User explicitly rejected a separate API key and requested the existing Codex subscription connection. No API key will be created or used; the current server-side CLI transport/sign-in stays in place.
+- Implementing code-owned `telegram_access=linked_users` for active app accounts with a matching signed Telegram identity. The earlier owner-only option remains available in code, not in the user interface.
+- Keeping document/survey/proposal/job ownership, explicit consent, human review and serialized provider execution. Updating the worker to honor the same access policy and stop revoked/relinked accounts before publishing results.
+
+### Implementation and tests
+
+- Removed the admin-only UI probe and replaced owner-only AI route checks with a shared code-owned policy. All four app roles require active accounts, completed password changes and a matching signed Telegram link; the local-only sample pilot remains admin-only.
+- Queued work records the requesting Telegram identity and checks account/link/scope/configuration before inference and publication. Synchronous analysis also discards results when access changes during inference.
+- Updated RU/UZ/EN consent wording to identify the app's shared subscription allowance; provider transport and authentication are unchanged.
+- All 338 Python tests passed, including new two-user isolation, all-role access, owner-mode rollback and revocation/relinking before/during analysis checks. The first expanded browser run failed because the preceding scenario leaves an actuary signed in; corrected the test setup to sign in as administrator before creating the test employee.
+- Subsequent browser attempts exposed two test setup issues: logout needed to await page load, and the locale-switch test needed to retain its simulated jobs response. Corrected both; the complete headless workflow now passes with a real disposable employee account, private-record denial, AI document review, assistant review and EN/UZ consent checks. Telegram/provider responses in this browser test are simulated.
+- Re-ran the 21 shared-access Python tests after the fixture lint cleanup; all passed. Repository lint, formatting and whitespace checks passed.
+- Ran the actual configured Codex provider against two fictional acceptance cases: conflicting sums/prompt injection and a document scan presented for photo analysis. Both passed; saved input values remained unchanged. No real customer documents were used.
+- Refreshed the existing local background AI worker after confirming no jobs were running. The existing Telegram listener reports healthy with AI enabled in synthetic mode, and the worker has a fresh heartbeat. No bot settings, public URL or provider credentials changed.
+- Updated operational documentation. Updating the Russian PDF manual to explain shared account access and remaining second-account Telegram acceptance.

@@ -4,12 +4,12 @@ AI configuration belongs to the codebase. The Mini App exposes document analysis
 
 ## Configuration files
 
-- `surveyor/ai/defaults.json` is the authoritative runtime configuration: active provider, model options, system/defensive/extraction/style prompts, request limits, and display mode. Despite its filename, it is read directly for every request; there is no runtime override.
+- `surveyor/ai/defaults.json` is the authoritative runtime configuration: active provider, model options, system/defensive/extraction/style prompts, request limits, Telegram access scope, and display mode. Despite its filename, it is read directly for every request; there is no runtime override.
 - `surveyor/ai/guardrails.txt` contains the mandatory application policy.
 - `surveyor/ai_providers.py` implements the provider adapters and common output contract.
 - `surveyor/static/ai_text.js` renders AI summaries safely.
 
-Codex with the existing ChatGPT sign-in remains active, using medium reasoning, a 90-second timeout, 10 PDF pages, 60,000 input characters and 20,000 output characters. The configured style requests short professional prose in RU/UZ/EN; the renderer handles paired Markdown emphasis and lists if the model still produces them. Existing requests retain their configuration snapshot. If a code change updates settings while an upload form is open, the owner must refresh and reconfirm processing.
+Codex with the existing ChatGPT sign-in remains active, using medium reasoning, a 90-second timeout, 10 PDF pages, 60,000 input characters and 20,000 output characters. The configured style requests short professional prose in RU/UZ/EN; the renderer handles paired Markdown emphasis and lists if the model still produces them. Existing requests retain their configuration snapshot. If a code change updates settings while an upload form is open, the requesting user must refresh and reconfirm processing.
 
 To update behavior, edit `surveyor/ai/defaults.json`, validate it and commit the change:
 
@@ -45,8 +45,8 @@ The document result contains ten extracted fields plus a short summary. Each res
 
 ## Inspection document review
 
-The inspection workflow reuses this same code-owned configuration. `POST /api/ai-pilot/documents/{id}/analyze` creates a private persisted proposal after consent and revision checks; `GET .../{id}/proposal` resumes the latest pending proposal. `POST .../{id}/proposals/{proposal_id}/review` accepts only explicitly submitted fields, validates corrections, records all decisions and invalidates the inspection's final confirmation. All three endpoints retain the Telegram-owner restriction. Changed inspection versions require re-analysis.
+The inspection workflow reuses this same code-owned configuration. `POST /api/ai-pilot/documents/{id}/analyze` creates a private persisted proposal after consent and revision checks; `GET .../{id}/proposal` resumes the latest pending proposal. `POST .../{id}/proposals/{proposal_id}/review` accepts only explicitly submitted fields, validates corrections, records all decisions and invalidates the inspection's final confirmation. All three endpoints require an active account and matching signed Telegram identity. `telegram_access=linked_users` enables shared use; `owner` retains the original admin/owner restriction. Each user can analyze/review only their own inspection documents. Changed inspection versions require re-analysis.
 
 Document evidence and immutable reports include the provider, configured model (or `provider_default`), configuration digest, file hash, source quote, original suggestion, decision, reviewed value, reviewer and timestamp. Rejected and unselected proposals never replace document values. Private proposal/review contents are retained in the operational database and backups, never the GitHub public snapshot. The standalone AI upload screen remains an unsaved preview.
 
-The code-owned prompt set now also includes `inspection` and `photo` tasks. All transports use the same schema, secret-pattern, timeout, source-size and tool restrictions. Queued tasks record the configuration revision and stop before inference if it changes; the owner must consent again. Jobs use the shared source/image budget across selected files. The worker does not retain a database transaction during cloud processing. See [durable assistance](inspection-assistant.md).
+The code-owned prompt set now also includes `inspection` and `photo` tasks. All transports use the same schema, secret-pattern, timeout, source-size and tool restrictions. Queued tasks record the configuration revision and stop before inference if it changes; the requesting user must consent again. Jobs use the shared source/image budget across selected files. The worker does not retain a database transaction during cloud processing. See [durable assistance](inspection-assistant.md).
