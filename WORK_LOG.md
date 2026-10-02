@@ -21,9 +21,9 @@ Implement the outstanding workflow on page 11 of the supplied tariff-factor PDF:
 - Added private CSV/XLSX segmented experience preview/confirmation, statistical proposals and invalidation when the confirmed dataset changes. Reuses versioned JSON storage; no schema migration.
 - Added factor administration, inspection and calculator UI, with RU/UZ/EN labels.
 
-### In progress
+### Current status
 
-- Commit/push the verified implementation and check GitHub CI.
+- Implementation and validation complete. Code is pushed to PR #10; the final follow-up commit records this delivery result. External insurer inputs remain listed below.
 
 ### Verification
 
@@ -39,20 +39,30 @@ Implement the outstanding workflow on page 11 of the supplied tariff-factor PDF:
 - The large-context regression detected shared calibration references causing the omitted-row count to be overwritten from 1,000 to 0. Fixed the trimming operation to run only when raw rows are present; original saved context remains intact.
 - Extended headless acceptance to the standalone calculator and English/Uzbek factor labels.
 
-- Final Python regression suite after the source audit: 316 passed. Ruff lint/format, JavaScript syntax, Prettier, diff checks, public database integrity, migration consistency and tracked/history secret scan passed.
+- Final Python regression suite: 317 passed (24.27 seconds). Ruff lint/format, JavaScript syntax, Prettier, diff checks, public database integrity, migration consistency and tracked/history secret scan passed.
 - Extended browser test found that language switching discarded calculator inputs and selected factors by returning to the first product. Added in-memory calculator draft preservation across navigation/language changes, reset on authentication; browser retest passed.
 
 - Final headless browser acceptance passed again, including exact calculator pricing, retained inputs/evidence after language changes, English/Uzbek labels, mobile layout, actuarial workflow and PDF/Word exports. No visible browser was opened.
 - Local API reloads the new implementation. Refreshed the separate AI worker gracefully after confirming no queued/running jobs, so explanation jobs also use the new factor context.
 
-### External inputs
-
-- The PDF supplies directions of influence, not numerical coefficients or an approved statistical method. Operational coefficients, representative factor-segmented experience and actuarial approval must come from the insurer. Only fictional data was used for validation.
-- Existing local templates were not switched or assigned invented coefficients. Configure a new factor version in Admin → Class templates → Configure factors, then obtain actuarial approval.
-- Permanent hosting, restricted-provider integrations, native Telegram client acceptance and real-document validation retain their previous status; this change does not claim those are complete.
 
 - Final page-by-page source review found six further class-9 prose factors under “Прочие факторы” (a different heading from “Прочие”). Included all six: the complete configurable catalogue now has 179 entries (139 table rows + 40 prose factors). Added a source-text consistency regression.
 
 - Exposed stable factor codes alongside labels in administration and inline CSV guidance. The import guide is readable inside Telegram without relying on an iframe-blocked attachment download.
 
 - Added a validation guard against assigning another legal class to a numbered class template; covered both factor-policy and generic template endpoints. All affected pricing/assistant tests passed. Final browser run passed (13.7 seconds).
+
+
+### Delivery
+
+- Implementation committed and pushed as `1c46f17` on `codex/tariff-policy-local-codex`.
+- Updated [PR #10](https://github.com/Yoko-ship/inson-surveyor/pull/10) with factor workflow, validation and remaining operational dependencies.
+- [GitHub CI run 36999727254](https://github.com/Yoko-ship/inson-surveyor/actions/runs/36999727254) passed all five jobs: checks, Windows, PostgreSQL, browser and container. This validates implementation commit `1c46f17`; the delivery follow-up changes only this log.
+- Local API health reports OK with AI enabled; the refreshed AI worker heartbeat is current.
+
+
+### External inputs
+
+- The PDF supplies directions of influence, not numerical coefficients or an approved statistical method. Operational coefficients, representative factor-segmented experience and actuarial approval must come from the insurer. Only fictional data was used for validation.
+- Existing local templates were not switched or assigned invented coefficients. Configure a new factor version in Admin → Class templates → Configure factors, then obtain actuarial approval.
+- Permanent hosting, restricted-provider integrations, native Telegram client acceptance and real-document validation retain their previous status; this change does not claim those are complete.
