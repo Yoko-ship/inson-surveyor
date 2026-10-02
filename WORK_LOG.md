@@ -81,3 +81,26 @@ Implement the outstanding workflow on page 11 of the supplied tariff-factor PDF:
 - French motor experience can support method benchmarking, but cannot establish INSON coefficients or be inserted into the current recent-year paid-loss calibration workflow without resolving incompatible fields and semantics.
 - No suitable public INSON factor-segmented claims history or completed inspection/valuation corpus was established. Insurer experience and actuarial approval remain dependencies.
 - No AI processing, private-document retrieval, database imports or operational pricing changes were performed.
+
+## 2026-10-02 — Russian application manual (in progress)
+
+- User requested detailed PDF documentation in Russian explaining how the app works.
+- Reviewing the current UI, schemas, pricing/valuation logic, factor workflows, AI review, sources and operating documentation. The manual will distinguish implemented behavior from external acceptance and use fictional examples only.
+- Confirmed different upload/AI limits (50 versus 10 PDF pages). Found the existing System status screen contains a static “AI disabled” label; the manual will identify it as an unreliable AI availability indicator, without changing runtime code in this documentation task.
+- Preparing a reproducible PDF with embedded Cyrillic fonts, contents, workflow diagrams, role-specific instructions, examples and troubleshooting. No private records or authentication data will be included.
+
+### Draft and layout review
+
+- Wrote 22 Russian chapters in `docs/manual-ru.json` and a reproducible ReportLab builder in `scripts/build_manual_ru.py`; added a README link and a narrow Git exception for the public manual PDF.
+- Content covers employee workflows, role boundaries, AI review/limits, valuation and tariff formulas, a fictional numerical example, factors/calibration, reports, sources, administration, storage, troubleshooting and remaining acceptance.
+- First build produced 25 pages; visual contact-sheet review found the last contents entry spilling onto an otherwise empty page. Tightened contents spacing. Initial lint passed; formatting check requested standard formatting, being applied before final validation.
+- Revised build fits 24 pages with all 22 contents entries on one page. Full-text validation detected unsupported subscript glyphs in Arial in the factor formula; replaced them with portable K1/K2/Kn notation and rebuilt before final checks.
+
+### Completed documentation and validation
+
+- Completed `docs/Surveyor-Manual-RU.pdf`: 24 pages, 22 chapters, clickable contents/bookmarks, diagrams, source links and embedded Cyrillic fonts. The manual documents current behavior rather than claiming pending production acceptance is complete.
+- Checked the full rendered draft and enlarged final contents/formula/example pages. Programmatic extraction verified every chapter's text/table content, all 22 bookmark destinations and absence of missing-glyph NUL characters.
+- Confirmed the fictional 600,000 UZS annual premium, 295,890.41 UZS 180-day premium, fixed/unapproved variants and 125,000,000 UZS valuation against the actual pure calculation functions. An initial ad-hoc fixture omitted required policy rationale; corrected the fixture and all checks passed. No database writes or provider calls occurred.
+- Rebuild comparison initially differed because ReportLab document settings overrode the canvas timestamp flag. Set invariance on the document itself; two subsequent builds are byte-identical. Final PDF size: 177,044 bytes; SHA-256: `565bb1eaaf8d58111956ad76fdcf46d309040430b1d5a579a10e03d0f1dbbbcc`.
+- Builder lint and formatting checks passed. Full application tests were not rerun for this documentation-only change; the manual labels prior application test results as historical evidence.
+- Application behavior, bot settings, working database, credentials and provider configuration were not changed. Public manual, editable content and builder are prepared for GitHub delivery.

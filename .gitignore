@@ -16,6 +16,7 @@ data/
 .DS_Store
 *.pdf
 !tests/fixtures/*.pdf
+!docs/Surveyor-Manual-RU.pdf
 artifacts/
 node_modules/
 .playwright/

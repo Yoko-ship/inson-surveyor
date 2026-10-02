@@ -4,6 +4,8 @@
 
 Local-first insurance surveying platform implementing the deterministic workflows in the supplied ТЗ (01.10.2026). A browser application, Telegram Mini App integration, admin workspace and calculation engine share one Python backend. Financial calculations remain deterministic. An optional personal AI connection assists document extraction, with explicit human review before values are saved.
 
+**[Подробное руководство на русском (PDF)](docs/Surveyor-Manual-RU.pdf)** — вход, осмотры, ИИ, оценка стоимости, тарифы и факторы, акты, администрирование и ограничения текущей версии. Редактируемый текст: [`docs/manual-ru.json`](docs/manual-ru.json). Пересборка: `uv run python scripts/build_manual_ru.py` (Arial или DejaVu Sans с кириллицей; при необходимости `--font-dir`).
+
 ## Run locally
 
 Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
