@@ -172,7 +172,7 @@ class ManualDoc(BaseDocTemplate):
         c.setFillColor(MUTED)
         c.setFont("Manual", 8)
         c.drawString(
-            20 * mm, 9 * mm, "Редакция 1.0 · Вымышленные примеры · " + self.metadata["source_commit"]
+            20 * mm, 9 * mm, "Редакция 1.1 · Вымышленные примеры · " + self.metadata["source_commit"]
         )
         c.drawRightString(PAGE_W - 20 * mm, 9 * mm, str(doc.page))
         c.restoreState()

@@ -129,3 +129,9 @@ Implement the outstanding workflow on page 11 of the supplied tariff-factor PDF:
 - Ran the actual configured Codex provider against two fictional acceptance cases: conflicting sums/prompt injection and a document scan presented for photo analysis. Both passed; saved input values remained unchanged. No real customer documents were used.
 - Refreshed the existing local background AI worker after confirming no jobs were running. The existing Telegram listener reports healthy with AI enabled in synthetic mode, and the worker has a fresh heartbeat. No bot settings, public URL or provider credentials changed.
 - Updated operational documentation. Updating the Russian PDF manual to explain shared account access and remaining second-account Telegram acceptance.
+
+### Completed shared-access update
+
+- Updated Russian manual revision 1.1 and linked it to implementation commit `5fa0843`. Rebuilt 24 pages with 22 chapter bookmarks, checked the changed role/configuration/acceptance pages visually, verified extracted text and missing-glyph checks, and confirmed byte-identical rebuilding.
+- The existing local connection is configured for linked active employees; credentials remain server-side. All users share the provider allowance and the Mac/worker must stay online. No permanent hosting or new billing setup was introduced.
+- A second real Telegram account and native-phone acceptance remain unverified; automated multi-user tests and the headless employee browser workflow passed, alongside two live fictional Codex cases.
