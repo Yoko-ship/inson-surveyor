@@ -24,7 +24,6 @@ module.exports = defineConfig({
       COOKIE_SECURE: "false",
       DATA_MODE: "synthetic",
       CODEX_TELEGRAM_ENABLED: "false",
-      AI_CONFIG_DIR: "data/browser-test-ai",
     },
   },
 });

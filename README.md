@@ -99,7 +99,7 @@ Runtime status and logs are in ignored `data/telegram-dev/`. No bot token is wri
 
 ### Personal Codex connection in Telegram
 
-AI prompts, models, guardrails and response formatting are configurable under **AI → AI settings**. Defaults stay in Git, active settings persist locally with revision history, and exports work across providers. See [AI configuration and provider changes](docs/ai-configuration.md).
+AI prompts, models, guardrails and response formatting are configured only in code (`surveyor/ai/defaults.json` and `surveyor/ai/guardrails.txt`). Users have no settings editor or configuration API. Git preserves the configuration across machines and provider changes. See [AI configuration and provider changes](docs/ai-configuration.md).
 
 Sign into the installed Codex CLI with ChatGPT on the computer running the app. In the ignored `.env`, set `CODEX_TELEGRAM_ENABLED=true` and `CODEX_TELEGRAM_OWNER_ID` to your numeric Telegram ID. Link that same ID to your administrator account. Restart `scripts/run_telegram_dev.py`, then open the bot's Mini App and select **AI / ИИ**.
 

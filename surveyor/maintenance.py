@@ -43,17 +43,13 @@ def create_backup(database_url=None, backup_dir=None):
             conn.backup(copy)
             documents = copy.execute("SELECT id, path, sha256 FROM documents").fetchall()
         files = {"database.sqlite": checksum(dest / "database.sqlite")}
-        from surveyor.file_lock import locked_file
+        from surveyor import ai_config
 
-        with locked_file(settings.ai_config_dir / "settings.lock"):
-            for source in settings.ai_config_dir.rglob("*.json"):
-                if source.is_symlink() or not source.is_file():
-                    continue
-                relative = Path("ai") / source.relative_to(settings.ai_config_dir)
-                target = dest / relative
-                target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-                shutil.copyfile(source, target)
-                files[relative.as_posix()] = checksum(target)
+        (dest / "ai").mkdir(mode=0o700)
+        (dest / "ai/config.json").write_text(ai_config.load().model_dump_json(indent=2), encoding="utf-8")
+        shutil.copyfile(ai_config.BASELINE_PATH, dest / "ai/guardrails.txt")
+        for name in ("ai/config.json", "ai/guardrails.txt"):
+            files[name] = checksum(dest / name)
         document_map = {}
         for doc_id, path, expected in documents:
             path = Path(path)

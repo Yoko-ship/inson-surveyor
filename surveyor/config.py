@@ -31,7 +31,6 @@ class Settings(BaseSettings):
     codex_cli_path: str = ""
     codex_telegram_enabled: bool = False
     codex_telegram_owner_id: str = ""
-    ai_config_dir: Path = Path("data/ai")
     ollama_base_url: str = "http://127.0.0.1:11434"
 
     @model_validator(mode="after")

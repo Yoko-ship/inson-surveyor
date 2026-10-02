@@ -1,4 +1,4 @@
-"""Inspect, validate and apply AI configuration without running an AI provider."""
+"""Inspect and validate code-owned AI configuration without running a provider."""
 
 import argparse
 import json
@@ -14,9 +14,8 @@ from surveyor.codex_pilot import PilotError  # noqa: E402
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["show", "validate", "apply", "history"])
+    parser.add_argument("command", choices=["show", "validate"])
     parser.add_argument("file", nargs="?", type=Path)
-    parser.add_argument("--expected-revision", help="Required for apply; read it with show first")
     args = parser.parse_args()
     if args.command == "show":
         config = ai_config.load()
@@ -28,20 +27,13 @@ def main():
                 indent=2,
             )
         )
-    elif args.command == "history":
-        for path in sorted((ai_config.directory() / "history").glob("*.json")):
-            print(path)
     else:
-        if not args.file or args.file.stat().st_size > 100000:
+        path = args.file or ai_config.DEFAULT_PATH
+        if path.stat().st_size > 100000:
             parser.error("Provide a config JSON file up to 100 KB")
-        config = ai_config.AIConfig.model_validate_json(args.file.read_text(encoding="utf-8"))
+        config = ai_config.AIConfig.model_validate_json(path.read_text(encoding="utf-8"))
         reject_secrets(config.model_dump_json())
-        if args.command == "validate":
-            print("Valid AI configuration: " + ai_config.digest(config))
-        else:
-            if not args.expected_revision:
-                parser.error("apply requires --expected-revision")
-            print("Applied revision: " + ai_config.save(config, args.expected_revision))
+        print("Valid AI configuration: " + ai_config.digest(config))
 
 
 if __name__ == "__main__":
@@ -49,5 +41,5 @@ if __name__ == "__main__":
         main()
     except (ValueError, OSError, PilotError):
         raise SystemExit(
-            "Configuration rejected. Check its schema, limits, file and expected revision."
+            "Configuration rejected. Check the version-controlled file, schema and limits."
         ) from None

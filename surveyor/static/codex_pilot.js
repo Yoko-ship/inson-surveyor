@@ -12,7 +12,6 @@ window.SurveyorCodexPilot = (() => {
             ? "Codex · мои документы"
             : "Codex · учебный пилот",
         `${info.provider_label || "Codex"} · ${t("workspace")}`,
-        '<button class="secondary" id="ai-settings">Настройки ИИ</button>',
       ) +
       (info.documents_enabled ? documentForm(info) : "") +
       `<section class="panel"><h2>Учебные примеры</h2><p class="notice">${local ? "Выбранный пример обрабатывается локальной моделью Ollama." : "Выбранный учебный пример отправляется в облако OpenAI и расходует лимит Codex."}</p><p>${esc(info.message)}</p><form id="codex-pilot-form">${select(
@@ -21,8 +20,6 @@ window.SurveyorCodexPilot = (() => {
         info.samples.map((s) => [s.id, s.title]),
         "text",
       )}<div id="codex-sample"></div><button type="submit" class="primary" ${info.ready ? "" : "disabled"}>${local ? "Прочитать через ИИ" : "Прочитать через Codex"}</button><p id="codex-progress" role="status"></p><p class="form-error"></p></form></section><section class="panel" id="codex-result" hidden></section>`;
-    $("#ai-settings").onclick = () =>
-      window.SurveyorAISettings.open().catch((err) => toast(err.message, true));
     const form = $("#codex-pilot-form");
     const preview = () => {
       const sample = info.samples.find(

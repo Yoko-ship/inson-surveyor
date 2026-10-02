@@ -1,16 +1,11 @@
-"""Provider-independent AI configuration: validated snapshots and atomic revisions."""
+"""Code-owned AI configuration, validated from the version-controlled source."""
 
 import hashlib
 import json
-import os
-import tempfile
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-
-from surveyor.config import settings
-from surveyor.file_lock import locked_file
 
 DEFAULT_PATH = Path(__file__).parent / "ai" / "defaults.json"
 BASELINE_PATH = Path(__file__).parent / "ai" / "guardrails.txt"
@@ -61,69 +56,27 @@ class AIConfig(StrictConfig):
         return self
 
 
-class ConfigConflict(ValueError):
-    pass
-
-
-def directory():
-    return settings.ai_config_dir
-
-
 def digest(config):
     canonical = json.dumps(config.model_dump(), sort_keys=True, ensure_ascii=False).encode()
     return hashlib.sha256(canonical).hexdigest()
 
 
-def defaults():
-    return AIConfig.model_validate_json(DEFAULT_PATH.read_text(encoding="utf-8"))
-
-
 def load():
-    path = directory() / "active.json"
-    if not path.exists():
-        return defaults()
     try:
-        if path.stat().st_size > 100000:
+        if DEFAULT_PATH.stat().st_size > 100000:
             raise ValueError()
-        return AIConfig.model_validate_json(path.read_text(encoding="utf-8"))
+        return AIConfig.model_validate_json(DEFAULT_PATH.read_text(encoding="utf-8"))
     except (ValueError, OSError):
-        # Do not silently run with different prompts after a corrupt edit.
-        raise ValueError("Настройки ИИ повреждены. Восстановите проверенную версию конфигурации.") from None
+        # Fail closed; legacy runtime files must never override code-owned settings.
+        raise ValueError("Конфигурация ИИ недоступна. Обратитесь к разработчику.") from None
 
 
-def atomic_write(path, content):
-    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    descriptor, temporary = tempfile.mkstemp(dir=path.parent, prefix=".ai-")
-    try:
-        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
-            stream.write(content)
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.replace(temporary, path)
-    finally:
-        Path(temporary).unlink(missing_ok=True)
-
-
-def save(config, expected_revision):
-    # Validate even callers outside HTTP; configuration is data, never executable code.
-    config = AIConfig.model_validate(config.model_dump())
-    from surveyor.ai_providers import reject_secrets
-
-    reject_secrets(config.model_dump_json())
-    with locked_file(directory() / "settings.lock"):
-        current = load()
-        if digest(current) != expected_revision:
-            raise ConfigConflict("Настройки уже изменены. Обновите страницу перед сохранением.")
-        for snapshot in (current, config):
-            path = directory() / "history" / f"{digest(snapshot)}.json"
-            if not path.exists():
-                atomic_write(path, snapshot.model_dump_json(indent=2) + "\n")
-        atomic_write(directory() / "active.json", config.model_dump_json(indent=2) + "\n")
-    return digest(config)
+def defaults():
+    return load()
 
 
 def trusted_instructions(config, locale="ru"):
-    # Only administrator configuration belongs here. Never interpolate documents.
+    # Only version-controlled developer configuration belongs here. Never interpolate documents.
     prompts = config.prompts
     return "\n\n".join(
         [

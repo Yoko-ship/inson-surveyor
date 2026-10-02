@@ -9,17 +9,20 @@ from tests.test_codex_pilot import readings
 from tests.test_codex_telegram import owner  # noqa: F401
 
 
-def test_configuration_persists_history_and_rejects_stale_edits():
+def test_code_edits_are_loaded_without_runtime_overrides(tmp_path, monkeypatch):
     initial = ai_config.load()
     changed = initial.model_copy(deep=True)
     changed.prompts.system += " Prefer precise source references."
-    revision = ai_config.save(changed, ai_config.digest(initial))
+    ai_config.DEFAULT_PATH.write_text(changed.model_dump_json())
     assert ai_config.load() == changed
-    assert (ai_config.directory() / "history" / f"{ai_config.digest(initial)}.json").is_file()
-    assert (ai_config.directory() / "history" / f"{revision}.json").is_file()
-    with pytest.raises(ai_config.ConfigConflict):
-        ai_config.save(initial, ai_config.digest(initial))
-    ai_config.save(initial, revision)
+    assert ai_config.digest(changed) != ai_config.digest(initial)
+    # Old UI-managed files and the retired override environment variable are ignored.
+    legacy = tmp_path / "legacy-ai"
+    legacy.mkdir()
+    (legacy / "active.json").write_text(initial.model_dump_json())
+    monkeypatch.setenv("AI_CONFIG_DIR", str(legacy))
+    assert ai_config.load() == changed
+    ai_config.DEFAULT_PATH.write_text(initial.model_dump_json())
     assert ai_config.load() == initial
 
 
@@ -40,41 +43,36 @@ def test_invalid_configuration_never_replaces_defaults(changes):
     source.update(changes)
     with pytest.raises(ValidationError):
         ai_config.AIConfig.model_validate(source)
-    assert not (ai_config.directory() / "active.json").exists()
+    assert ai_config.load() == ai_config.defaults()
 
 
 def test_corrupt_configuration_stops_inference_instead_of_silent_fallback(monkeypatch, tmp_path):
-    ai_config.directory().mkdir()
-    (ai_config.directory() / "active.json").write_text('{"enabled":')
+    ai_config.DEFAULT_PATH.write_text('{"enabled":')
     monkeypatch.setattr(ai_providers, "generate", lambda *a, **k: pytest.fail("Must not run"))
-    with pytest.raises(ValueError, match="повреждены"):
+    with pytest.raises(ValueError, match="недоступна"):
         codex_documents.recognize_document(b"contract", "contract.txt")
 
 
-def test_owner_settings_api_revision_csrf_and_document_consent(request, monkeypatch):
+def test_configuration_is_not_exposed_or_editable_through_http(request, monkeypatch):
     client = request.getfixturevalue("owner")
-    response = client.get("/api/ai-pilot/settings")
-    assert response.status_code == 200
-    original = response.json()
-    config = original["config"]
-    config["prompts"]["style"] = "Use short, clear sentences without Markdown."
-    body = {"revision": original["revision"], "config": config}
-    assert client.put("/api/ai-pilot/settings", json=body, headers={"X-CSRF-Token": "bad"}).status_code == 403
-    saved = client.put("/api/ai-pilot/settings", json=body)
-    assert saved.status_code == 200
-    assert client.put("/api/ai-pilot/settings", json=body).status_code == 409
-    assert client.get("/api/ai-pilot/settings", headers={"X-Telegram-Init-Data": ""}).status_code == 403
+    original = ai_config.load()
+    for method in ("get", "put", "post", "delete"):
+        response = getattr(client, method)("/api/ai-pilot/settings")
+        assert response.status_code == 404
+    assert client.get("/static/ai_settings.js").status_code == 404
+    assert "prompts" not in client.get("/api/ai-pilot").json()
+    assert ai_config.load() == original
+    changed = original.model_copy(deep=True)
+    changed.prompts.style = "Use short, clear sentences without Markdown."
+    ai_config.DEFAULT_PATH.write_text(changed.model_dump_json())
     monkeypatch.setattr(codex_documents, "recognize_document", lambda *a, **k: pytest.fail("Stale consent"))
     response = client.post(
         "/api/ai-pilot/analyze",
         files={"file": ("a.txt", b"contract")},
-        data={
-            "cloud_consent": "true",
-            "config_revision": original["revision"],
-        },
+        data={"cloud_consent": "true", "config_revision": ai_config.digest(original)},
     )
     assert response.status_code == 409
-    assert ai_config.load().prompts.style == config["prompts"]["style"]
+    assert ai_config.load() == changed
 
 
 def test_switch_provider_keeps_prompts_and_common_validation(monkeypatch, tmp_path):
@@ -114,7 +112,7 @@ def test_pause_and_secret_guard_block_before_provider(monkeypatch, tmp_path):
         ai_providers.generate(config, secret, [], tmp_path)
     config.prompts.system += secret
     with pytest.raises(codex_pilot.PilotError):
-        ai_config.save(config, ai_config.digest(ai_config.defaults()))
+        ai_providers.generate(config, "contract", [], tmp_path)
 
 
 def test_codex_separates_trusted_instructions_and_untrusted_data(monkeypatch, tmp_path):

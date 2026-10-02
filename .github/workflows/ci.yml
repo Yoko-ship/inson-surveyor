@@ -28,7 +28,6 @@ jobs:
       - run: node --check surveyor/static/factors.js
       - run: node --check surveyor/static/tariff_policy.js
       - run: node --check surveyor/static/codex_pilot.js
-      - run: node --check surveyor/static/ai_settings.js
       - run: node --check surveyor/static/ai_text.js
       - run: uv run python scripts/public_database.py check
       - run: uv run pytest --cov=surveyor --cov-report=term-missing

@@ -143,62 +143,25 @@ module.exports = async (page) => {
     fullPage: true,
   });
   expect(uploads).toBe(1);
-  const fs = require("fs");
-  const defaults = JSON.parse(
-    fs.readFileSync("surveyor/ai/defaults.json", "utf8"),
+  await expect(page.locator("#ai-settings, #ai-settings-form")).toHaveCount(0);
+  expect((await page.request.get("/api/ai-pilot/settings")).status()).toBe(404);
+  expect(
+    (
+      await page.request.put("/api/ai-pilot/settings", {
+        data: { provider: "ollama" },
+      })
+    ).status(),
+  ).toBe(404);
+  expect((await page.request.get("/static/ai_settings.js")).status()).toBe(404);
+  await page.evaluate(() =>
+    window.SurveyorAIText.render(
+      document.querySelector("#ai-summary"),
+      "**INSON**",
+      "plain",
+    ),
   );
-  let config = structuredClone(defaults);
-  let revision = "a".repeat(64);
-  await page.route("**/api/ai-pilot/settings", (route) => {
-    if (route.request().method() === "PUT") {
-      const body = route.request().postDataJSON();
-      expect(body.revision).toBe(revision);
-      config = body.config;
-      revision = "b".repeat(64);
-      return route.fulfill({ json: { revision, config } });
-    }
-    return route.fulfill({
-      json: {
-        revision,
-        config,
-        defaults,
-        guardrails: "Tools disabled; human review required.",
-        providers: [
-          { id: "codex", label: "Codex" },
-          { id: "ollama", label: "Ollama" },
-        ],
-      },
-    });
-  });
-  await page.locator("#ai-settings").click();
-  await expect(page.locator("#ai-settings-form")).toBeVisible();
-  await expect(page.locator("#ai-style-preview strong")).toHaveText("INSON");
-  await page
-    .locator('#ai-settings-form [name="display_mode"]')
-    .selectOption("plain");
-  await expect(page.locator("#ai-style-preview strong")).toHaveCount(0);
-  await expect(page.locator("#ai-style-preview")).not.toContainText("**");
-  await page
-    .locator('#ai-settings-form [name="system"]')
-    .fill("You are a careful insurance document assistant. Preserve evidence.");
-  const download = page.waitForEvent("download");
-  await page.locator("#ai-export").click();
-  expect((await download).suggestedFilename()).toBe("surveyor-ai-config.json");
-  await page.screenshot({
-    path: "artifacts/ai-settings-mobile.png",
-    fullPage: true,
-  });
-  await page.locator('#ai-settings-form button[type="submit"]').click();
-  await expect(page.locator("#modal")).not.toBeVisible();
-  await page.locator("#ai-settings").click();
-  await expect(
-    page.locator('#ai-settings-form [name="display_mode"]'),
-  ).toHaveValue("plain");
-  await expect(page.locator('#ai-settings-form [name="system"]')).toHaveValue(
-    config.prompts.system,
-  );
-  await page.locator("#modal-close").click();
-  await page.unroute("**/api/ai-pilot/settings");
+  await expect(page.locator("#ai-summary")).toHaveText("INSON");
+  await expect(page.locator("#ai-summary strong")).toHaveCount(0);
   await page.unroute("**/api/ai-pilot");
   await page.unroute("**/api/ai-pilot/analyze");
 };
