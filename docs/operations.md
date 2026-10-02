@@ -40,6 +40,8 @@ The new bot is `@analyzing12_bot`. `scripts/run_telegram_dev.py` starts a tempor
 
 After a computer crash or lost tunnel, inspect the bot using `getWebhookInfo` before intentionally replacing its stale development URL. For permanent hosting, use the documented configure command. Compare `/health`, login, fresh Mini App signed authorization, report download and explicit send-to-self from a real phone. Browser verification does not establish native mobile Telegram acceptance.
 
+Telegram report downloads use five-minute signed links tied to the requesting app session. Logging out, disabling the account or rotating the bot token revokes access. Uvicorn redacts `/api/report-downloads/` capabilities in access logs; apply equivalent redaction if proxy access logs or request tracing are enabled. The downloader does not require the Mini App's cookies, and only the signed report/format is accessible. See [Telegram's download API](https://core.telegram.org/bots/webapps#downloadfileparams).
+
 ## Production gates
 
 HTTPS cookies; Uzbekistan hosting for real data as required by the supplied ТЗ; actual approved tariffs; reviewed statutory formulas; calibrated risk settings; non-demo accounts; persistent database/uploads; tested backups; protected logs; live source permission review; complete translations; real Telegram phone test. `HOSTING_COUNTRY` is an assertion, not an independent residency detector.

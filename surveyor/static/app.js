@@ -733,7 +733,7 @@ async function showReport(id) {
     s = report.snapshot,
     c = s.calculation;
   $("#report-view").innerHTML =
-    `<div class="actions"><a class="secondary" href="/api/reports/${id}/export/docx">↓ Word</a><a class="secondary" href="/api/reports/${id}/export/pdf">↓ PDF</a><button class="primary" id="send-telegram">Отправить себе в Telegram ↗</button></div><p class="report-note">Акт № ${id.slice(0, 8)} · ${dateText(report.created_at)} · Подлежит подтверждению андеррайтером · Не является кредитным скорингом</p>${calculationView(c)}<p>${esc(named(c.comparison))} · ${money(c.premium_discrepancy)} UZS</p><section class="panel" data-no-translate>${report.sections.map((block) => `<div class="report-section"><h3>${esc(block.title)}</h3>${block.lines.map((line) => `<p class="small">${esc(line)}</p>`).join("")}</div>`).join("")}</section><section class="panel"><h3>Решение андеррайтера</h3>${report.decisions.map((d) => `<div class="file-card">${badge(d.data.decision)}<p>${esc(d.data.comment)}</p><small>${dateText(d.created_at)} · ${esc(d.user_id)}</small></div>`).join("") || '<p class="muted small">Решение ещё не принято.</p>'}${
+    `<div class="actions"><a class="secondary" data-report-export="docx" href="/api/reports/${id}/export/docx">↓ Word</a><a class="secondary" data-report-export="pdf" href="/api/reports/${id}/export/pdf">↓ PDF</a><button class="primary" id="send-telegram">Отправить себе в Telegram ↗</button></div><p class="report-note">Акт № ${id.slice(0, 8)} · ${dateText(report.created_at)} · Подлежит подтверждению андеррайтером · Не является кредитным скорингом</p>${calculationView(c)}<p>${esc(named(c.comparison))} · ${money(c.premium_discrepancy)} UZS</p><section class="panel" data-no-translate>${report.sections.map((block) => `<div class="report-section"><h3>${esc(block.title)}</h3>${block.lines.map((line) => `<p class="small">${esc(line)}</p>`).join("")}</div>`).join("")}</section><section class="panel"><h3>Решение андеррайтера</h3>${report.decisions.map((d) => `<div class="file-card">${badge(d.data.decision)}<p>${esc(d.data.comment)}</p><small>${dateText(d.created_at)} · ${esc(d.user_id)}</small></div>`).join("") || '<p class="muted small">Решение ещё не принято.</p>'}${
       state.user.role === "underwriter"
         ? `<form id="decision-form">${select("decision", "Решение", [
             ["changes_requested", "Нужны правки"],
@@ -742,6 +742,33 @@ async function showReport(id) {
           ])}<label>Комментарий<textarea name="comment" required minlength="3"></textarea></label><button type="submit" class="primary">Зафиксировать решение</button></form>`
         : ""
     }</section>`;
+  $$("[data-report-export]", $("#report-view")).forEach((link) => {
+    link.onclick = async (event) => {
+      const telegram = window.Telegram?.WebApp;
+      if (!telegram?.initData) return;
+      event.preventDefault();
+      if (link.getAttribute("aria-busy") === "true") return;
+      link.setAttribute("aria-busy", "true");
+      try {
+        const file = await post(
+          `/reports/${id}/export/${link.dataset.reportExport}/download-link`,
+        );
+        if (telegram.isVersionAtLeast?.("8.0") && telegram.downloadFile) {
+          telegram.downloadFile({ url: file.url, file_name: file.file_name });
+        } else {
+          // A fresh click preserves the user gesture needed by older clients.
+          modal(
+            `<h2>Загрузить файл</h2><button type="button" class="primary" id="open-report-file">Открыть файл</button>`,
+          );
+          $("#open-report-file").onclick = () => telegram.openLink(file.url);
+        }
+      } catch (error) {
+        toast(error.message, true);
+      } finally {
+        link.removeAttribute("aria-busy");
+      }
+    };
+  });
   $("#send-telegram").onclick = async () => {
     try {
       await post(`/reports/${id}/telegram`);

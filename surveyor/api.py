@@ -417,7 +417,10 @@ def report_detail(report_id: str, user=Depends(current_user), db=Depends(get_db)
 def export_report(
     report_id: str, fmt: Literal["pdf", "docx"], user=Depends(current_user), db=Depends(get_db)
 ):
-    report = report_for(db, report_id, user)
+    return report_file(report_for(db, report_id, user), fmt)
+
+
+def report_file(report, fmt):
     data = export_pdf(report) if fmt == "pdf" else export_docx(report)
     media = (
         "application/pdf"

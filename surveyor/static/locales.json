@@ -3290,5 +3290,13 @@
   "Недостающие сведения": {
     "uz": "Yetishmayotgan ma’lumotlar",
     "en": "Missing evidence"
+  },
+  "Открыть файл": {
+    "uz": "Faylni ochish",
+    "en": "Open file"
+  },
+  "Для загрузки через Telegram требуется HTTPS": {
+    "uz": "Telegram orqali yuklab olish uchun HTTPS kerak",
+    "en": "Telegram downloads require HTTPS"
   }
 }

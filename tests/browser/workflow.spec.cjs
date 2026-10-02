@@ -228,5 +228,6 @@ test("local browser: first login, documents, fixed premium, exports, admin and m
   await require("./codex-pilot.cjs")(page);
   await require("./inspection-ai.cjs")(page);
   await require("./assistant.cjs")(page);
+  await require("./telegram-downloads.cjs")(page);
   expect(errors).toEqual([]);
 });

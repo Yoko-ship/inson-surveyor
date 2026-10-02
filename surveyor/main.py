@@ -21,12 +21,15 @@ from surveyor.pilot_api import enabled as pilot_enabled
 from surveyor.pilot_api import router as pilot_router
 from surveyor.pilot_api import telegram_enabled
 from surveyor.policy_api import router as policy_router
+from surveyor.report_downloads import DownloadLogFilter
+from surveyor.report_downloads import router as download_router
 from surveyor.source_api import router as source_router
 from surveyor.telegram import router as telegram_router
 
 STATIC = Path(__file__).parent / "static"
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("uvicorn.access").addFilter(DownloadLogFilter())
 
 
 @asynccontextmanager
@@ -44,6 +47,7 @@ app = FastAPI(
 )
 app.include_router(router)
 app.include_router(assistant_router)
+app.include_router(download_router)
 
 app.include_router(source_router)
 app.include_router(document_router)
@@ -68,7 +72,9 @@ async def security(request: Request, call_next):
         return JSONResponse({"detail": "Слишком большой запрос"}, status_code=413)
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Referrer-Policy"] = "same-origin"
+    response.headers["Referrer-Policy"] = (
+        "no-referrer" if request.url.path.startswith("/api/report-downloads/") else "same-origin"
+    )
     response.headers["Cache-Control"] = (
         "no-store" if request.url.path.startswith(("/api", "/telegram")) else "no-cache"
     )
