@@ -298,9 +298,15 @@ def test_backup_restore_checks_documents_and_rejects_overwrite(tmp_path):
             (str(doc), hashlib.sha256(doc.read_bytes()).hexdigest()),
         )
         conn.commit()
+    from surveyor import ai_config
+
+    config = ai_config.defaults()
+    ai_config.save(config, ai_config.digest(config))
     backup = create_backup(f"sqlite:///{source}", tmp_path / "backups")
     assert verify_backup(backup)["documents"] == {"d": "uploads/d.txt"}
     restored = restore_backup(backup, tmp_path / "restored")
+    assert ai_config.AIConfig.model_validate_json((restored / "ai/active.json").read_text()) == config
+    assert (restored / "ai/history" / f"{ai_config.digest(config)}.json").is_file()
     with sqlite3.connect(restored / "database.sqlite") as conn:
         from pathlib import Path
 

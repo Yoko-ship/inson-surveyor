@@ -43,6 +43,17 @@ def create_backup(database_url=None, backup_dir=None):
             conn.backup(copy)
             documents = copy.execute("SELECT id, path, sha256 FROM documents").fetchall()
         files = {"database.sqlite": checksum(dest / "database.sqlite")}
+        from surveyor.file_lock import locked_file
+
+        with locked_file(settings.ai_config_dir / "settings.lock"):
+            for source in settings.ai_config_dir.rglob("*.json"):
+                if source.is_symlink() or not source.is_file():
+                    continue
+                relative = Path("ai") / source.relative_to(settings.ai_config_dir)
+                target = dest / relative
+                target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                shutil.copyfile(source, target)
+                files[relative.as_posix()] = checksum(target)
         document_map = {}
         for doc_id, path, expected in documents:
             path = Path(path)
@@ -109,6 +120,7 @@ def restore_backup(directory, destination):
     (dest / "uploads").mkdir(mode=0o700)
     try:
         for name in manifest["files"]:
+            (dest / name).parent.mkdir(parents=True, exist_ok=True, mode=0o700)
             shutil.copyfile(directory / name, dest / name)
             (dest / name).chmod(0o600)
         with closing(sqlite3.connect(dest / "database.sqlite")) as conn:

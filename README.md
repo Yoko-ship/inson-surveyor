@@ -99,7 +99,9 @@ Runtime status and logs are in ignored `data/telegram-dev/`. No bot token is wri
 
 ### Personal Codex connection in Telegram
 
-Sign into the installed Codex CLI with ChatGPT on the computer running the app. In the ignored `.env`, set `CODEX_TELEGRAM_ENABLED=true` and `CODEX_TELEGRAM_OWNER_ID` to your numeric Telegram ID. Link that same ID to your administrator account. Restart `scripts/run_telegram_dev.py`, then open the bot's Mini App and select **Codex**.
+AI prompts, models, guardrails and response formatting are configurable under **AI → AI settings**. Defaults stay in Git, active settings persist locally with revision history, and exports work across providers. See [AI configuration and provider changes](docs/ai-configuration.md).
+
+Sign into the installed Codex CLI with ChatGPT on the computer running the app. In the ignored `.env`, set `CODEX_TELEGRAM_ENABLED=true` and `CODEX_TELEGRAM_OWNER_ID` to your numeric Telegram ID. Link that same ID to your administrator account. Restart `scripts/run_telegram_dev.py`, then open the bot's Mini App and select **AI / ИИ**.
 
 Only that administrator, with valid signed Telegram launch data, can use the subscription. No Codex credentials are copied into the Mini App or GitHub. Keep this computer and the runner online. Reopen the Mini App when its five-minute Telegram launch authorization expires.
 

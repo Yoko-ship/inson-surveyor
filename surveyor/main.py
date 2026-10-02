@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
+from surveyor import ai_config
 from surveyor.api import router
 from surveyor.bootstrap import bootstrap
 from surveyor.config import settings
@@ -98,9 +99,13 @@ async def validation_error(request, exc):
 def health():
     with engine.connect() as conn:
         conn.execute(text("SELECT 1"))
+    try:
+        ai_active = ai_config.load().enabled
+    except ValueError:
+        ai_active = False
     return {
         "status": "ok",
-        "ai_enabled": bool(telegram_enabled()),
+        "ai_enabled": bool(telegram_enabled() and ai_active),
         "data_mode": settings.data_mode,
         "codex_local_pilot": bool(pilot_enabled()),
     }

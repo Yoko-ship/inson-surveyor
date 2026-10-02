@@ -8,7 +8,7 @@ from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, UploadFile
 
-from surveyor import codex_pilot
+from surveyor import ai_config, ai_providers, codex_pilot
 from surveyor.auth import roles, validate_telegram
 from surveyor.config import settings
 from surveyor.db import audit, get_db
@@ -93,8 +93,14 @@ class PilotInput(Strict):
 
 @router.get("", dependencies=[Depends(access)])
 def status():
+    config = ai_config.load()
     return {
-        **codex_pilot.connection(),
+        **ai_providers.connection(config),
+        "provider": config.provider,
+        "provider_label": ai_providers.PROVIDERS[config.provider].label,
+        "config_revision": ai_config.digest(config),
+        "limits": config.limits.model_dump(),
+        "display_mode": config.display_mode,
         "documents_enabled": telegram_enabled(),
         "sample_image": "data:image/png;base64," + base64.b64encode(scan_png()).decode("ascii"),
         "samples": [
@@ -131,18 +137,78 @@ def run(body: PilotInput, user=Depends(roles("admin")), db=Depends(get_db)):
 def analyze(
     file: UploadFile,
     cloud_consent: bool = Form(False),
+    config_revision: str = Form(...),
+    locale: Literal["ru", "uz", "en"] = Form("ru"),
     user=Depends(telegram_owner),
     db=Depends(get_db),
 ):
     if not cloud_consent:
-        raise HTTPException(422, "Подтвердите отправку выбранного файла в OpenAI.")
+        raise HTTPException(422, "Подтвердите обработку файла выбранным провайдером ИИ.")
     data = file.file.read(settings.max_upload_bytes + 1)
     if not data or len(data) > settings.max_upload_bytes:
         raise HTTPException(422, "Нужен непустой файл размером до 15 МБ.")
     from surveyor.codex_documents import recognize_document
 
     with single_request():
-        result = recognize_document(data, file.filename or "document")
-        audit(db, user, "codex.document_preview", user.id, {"cloud_consent": True, "saved": False})
+        config = ai_config.load()
+        if config_revision != ai_config.digest(config):
+            raise HTTPException(
+                409, "Настройки ИИ изменились. Обновите страницу и подтвердите обработку снова."
+            )
+        result = recognize_document(data, file.filename or "document", locale=locale, config=config)
+        audit(
+            db,
+            user,
+            "codex.document_preview",
+            user.id,
+            {
+                "cloud_consent": True,
+                "saved": False,
+                "config_revision": result.get("config_revision"),
+                "provider": result.get("provider"),
+            },
+        )
         db.commit()
         return result
+
+
+class SettingsInput(Strict):
+    revision: str
+    config: ai_config.AIConfig
+
+
+@router.get("/settings", dependencies=[Depends(access)])
+def get_settings():
+    config = ai_config.load()
+    return {
+        "revision": ai_config.digest(config),
+        "config": config.model_dump(),
+        "defaults": ai_config.defaults().model_dump(),
+        "guardrails": ai_config.BASELINE_PATH.read_text(encoding="utf-8"),
+        "providers": [
+            {"id": key, "label": provider.label} for key, provider in ai_providers.PROVIDERS.items()
+        ],
+    }
+
+
+@router.put("/settings")
+def put_settings(body: SettingsInput, user=Depends(access), db=Depends(get_db)):
+    try:
+        revision = ai_config.save(body.config, body.revision)
+    except ai_config.ConfigConflict as exc:
+        raise HTTPException(409, str(exc)) from None
+    except codex_pilot.PilotError as exc:
+        raise HTTPException(422, str(exc)) from None
+    audit(
+        db,
+        user,
+        "ai.config_updated",
+        revision,
+        {
+            "previous_revision": body.revision,
+            "provider": body.config.provider,
+            "enabled": body.config.enabled,
+        },
+    )
+    db.commit()
+    return {"revision": revision, "config": body.config.model_dump()}

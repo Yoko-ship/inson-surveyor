@@ -11,6 +11,11 @@ from surveyor.db import Base, User, get_db
 from surveyor.main import app
 
 
+@pytest.fixture(autouse=True)
+def isolated_ai_config(tmp_path, monkeypatch):
+    monkeypatch.setattr(settings, "ai_config_dir", tmp_path / "ai")
+
+
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
@@ -23,6 +28,7 @@ def client(tmp_path, monkeypatch):
     monkeypatch.setattr(settings, "public_url", "http://testserver")
     monkeypatch.setattr(settings, "cookie_secure", False)
     monkeypatch.setattr(settings, "codex_telegram_enabled", False)
+    monkeypatch.setattr(settings, "ai_config_dir", tmp_path / "ai")
 
     def override():
         with factory() as db:

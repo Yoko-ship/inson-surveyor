@@ -111,6 +111,8 @@ Three live sample requests passed all 30 expected field comparisons on the insta
 
 ### Personal Telegram Codex connection — 2 October 2026
 
+The subsequent configuration update separates provider transports from persistent system/defensive/extraction/style prompts. **AI → AI settings** edits validated settings with revision history, JSON export/import and backup inclusion. Codex remains active; an optional local Ollama adapter uses the same prompts and output validation. Samples and documents now use the configured timeout (90 seconds by default). Document previews include a short, safely rendered summary; original fields/quotes remain verbatim. Consent is tied to the configuration revision to prevent an unnoticed provider switch. See [configuration and enforced guardrails](ai-configuration.md).
+
 The owner explicitly expanded the scope to their own Telegram account and uploaded documents, acknowledging OpenAI cloud processing. This supersedes the initial Telegram/upload exclusion for that owner only. The company-wide local-inference requirement is not claimed as satisfied.
 
 `CODEX_TELEGRAM_ENABLED` defaults false. Enabling it requires HTTPS/secure cookies, a configured numeric owner ID, a linked administrator and freshly signed Telegram launch data matching both identities. Other accounts, password-only browser sessions, altered launch data, expired launch data and missing CSRF tokens cannot invoke inference. The owner ID stays in local configuration, outside Git. Requests are serialized across threads and processes sharing the upload storage; samples time out at 120 seconds and uploads at 90 seconds.

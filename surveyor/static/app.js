@@ -41,7 +41,7 @@ const translations = {
     surveys: "Осмотры",
     calculator: "Калькулятор",
     policy: "Тарифы и РНП",
-    codex: "Codex · пилот",
+    codex: "ИИ",
     sources: "Открытые данные",
     admin: "Администрирование",
     profile: "Мой профиль",
@@ -53,7 +53,7 @@ const translations = {
     surveys: "Ko‘riklar",
     calculator: "Kalkulyator",
     policy: "Tariflar va RNP",
-    codex: "Codex · sinov",
+    codex: "AI",
     sources: "Ochiq ma’lumotlar",
     admin: "Boshqaruv",
     profile: "Mening profilim",
@@ -65,7 +65,7 @@ const translations = {
     surveys: "Inspections",
     calculator: "Calculator",
     policy: "Tariffs and reserves",
-    codex: "Codex · pilot",
+    codex: "AI",
     sources: "Public data",
     admin: "Administration",
     profile: "My profile",
@@ -279,7 +279,7 @@ async function navigate(page) {
   state.page = page;
   $("#demo-banner").textContent =
     page === "codex" && state.codexDocuments
-      ? "Личный анализ документов через OpenAI. Учебные тарифы не утверждены страховщиком."
+      ? "Личный анализ документов. Учебные тарифы не утверждены страховщиком."
       : "Учебная среда · Используйте только синтетические данные. Демонстрационные тарифы не утверждены страховщиком.";
   renderNav();
   $("#breadcrumb").textContent = t(page);

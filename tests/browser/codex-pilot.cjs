@@ -100,6 +100,9 @@ module.exports = async (page) => {
     return route.fulfill({
       json: {
         saved: false,
+        summary:
+          "**Check the source**\n- Keep 0.5% unchanged.\n<img src=x onerror=alert(1)>",
+        display_mode: "formatted",
         fields: [
           {
             field: "object_description",
@@ -114,16 +117,18 @@ module.exports = async (page) => {
   });
   await page.locator("#locale").selectOption("en");
   await expect(page.locator("#content h1")).toHaveText("Codex · my documents");
-  await page
-    .locator('#codex-document-form input[type="file"]')
-    .setInputFiles({
-      name: "contract.txt",
-      mimeType: "text/plain",
-      buffer: Buffer.from("Test contract"),
-    });
+  await page.locator('#codex-document-form input[type="file"]').setInputFiles({
+    name: "contract.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from("Test contract"),
+  });
   await page.locator('#codex-document-form input[type="checkbox"]').check();
   await page.locator("#codex-document-form button").click();
   await expect(page.locator("#document-result")).toBeVisible();
+  await expect(page.locator("#ai-summary strong")).toHaveText(
+    "Check the source",
+  );
+  await expect(page.locator("#ai-summary")).not.toContainText("**");
   await expect(
     page.locator("#document-result script, #document-result img"),
   ).toHaveCount(0);
@@ -138,6 +143,62 @@ module.exports = async (page) => {
     fullPage: true,
   });
   expect(uploads).toBe(1);
+  const fs = require("fs");
+  const defaults = JSON.parse(
+    fs.readFileSync("surveyor/ai/defaults.json", "utf8"),
+  );
+  let config = structuredClone(defaults);
+  let revision = "a".repeat(64);
+  await page.route("**/api/ai-pilot/settings", (route) => {
+    if (route.request().method() === "PUT") {
+      const body = route.request().postDataJSON();
+      expect(body.revision).toBe(revision);
+      config = body.config;
+      revision = "b".repeat(64);
+      return route.fulfill({ json: { revision, config } });
+    }
+    return route.fulfill({
+      json: {
+        revision,
+        config,
+        defaults,
+        guardrails: "Tools disabled; human review required.",
+        providers: [
+          { id: "codex", label: "Codex" },
+          { id: "ollama", label: "Ollama" },
+        ],
+      },
+    });
+  });
+  await page.locator("#ai-settings").click();
+  await expect(page.locator("#ai-settings-form")).toBeVisible();
+  await expect(page.locator("#ai-style-preview strong")).toHaveText("INSON");
+  await page
+    .locator('#ai-settings-form [name="display_mode"]')
+    .selectOption("plain");
+  await expect(page.locator("#ai-style-preview strong")).toHaveCount(0);
+  await expect(page.locator("#ai-style-preview")).not.toContainText("**");
+  await page
+    .locator('#ai-settings-form [name="system"]')
+    .fill("You are a careful insurance document assistant. Preserve evidence.");
+  const download = page.waitForEvent("download");
+  await page.locator("#ai-export").click();
+  expect((await download).suggestedFilename()).toBe("surveyor-ai-config.json");
+  await page.screenshot({
+    path: "artifacts/ai-settings-mobile.png",
+    fullPage: true,
+  });
+  await page.locator('#ai-settings-form button[type="submit"]').click();
+  await expect(page.locator("#modal")).not.toBeVisible();
+  await page.locator("#ai-settings").click();
+  await expect(
+    page.locator('#ai-settings-form [name="display_mode"]'),
+  ).toHaveValue("plain");
+  await expect(page.locator('#ai-settings-form [name="system"]')).toHaveValue(
+    config.prompts.system,
+  );
+  await page.locator("#modal-close").click();
+  await page.unroute("**/api/ai-pilot/settings");
   await page.unroute("**/api/ai-pilot");
   await page.unroute("**/api/ai-pilot/analyze");
 };

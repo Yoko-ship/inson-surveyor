@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 from reportlab.pdfgen.canvas import Canvas
 from sqlalchemy import select
 
-from surveyor import codex_documents, codex_pilot
+from surveyor import ai_config, codex_documents, codex_pilot
 from surveyor.config import settings
 from surveyor.db import Audit, Document, User
 from surveyor.file_lock import locked_file
@@ -53,7 +53,7 @@ def upload(client, **kwargs):
     return client.post(
         "/api/ai-pilot/analyze",
         files={"file": ("contract.txt", b"contract", "text/plain")},
-        data={"cloud_consent": "true"},
+        data={"cloud_consent": "true", "config_revision": ai_config.digest(ai_config.load())},
         **kwargs,
     )
 
@@ -61,7 +61,7 @@ def upload(client, **kwargs):
 def test_owner_only_preview_consent_and_no_document_storage(owner, monkeypatch):
     calls = []
 
-    def recognize(data, filename):
+    def recognize(data, filename, locale="ru", config=None):
         calls.append((data, filename))
         return {"fields": [], "saved": False}
 
@@ -75,7 +75,12 @@ def test_owner_only_preview_consent_and_no_document_storage(owner, monkeypatch):
     with owner.factory() as db:
         assert db.scalar(select(Document)) is None
         audit = db.scalar(select(Audit).where(Audit.action == "codex.document_preview"))
-        assert audit.data == {"cloud_consent": True, "saved": False}
+        assert audit.data == {
+            "cloud_consent": True,
+            "saved": False,
+            "config_revision": None,
+            "provider": None,
+        }
 
 
 @pytest.mark.parametrize("header", ["", "forged", proof("987654321"), proof(age=600)])
@@ -156,7 +161,13 @@ def test_document_process_receives_only_rendered_file_and_cleans_up(monkeypatch,
         assert kwargs["timeout"] == 90
         return (
             json.dumps(
-                {"type": "item.completed", "item": {"type": "agent_message", "text": json.dumps(readings())}}
+                {
+                    "type": "item.completed",
+                    "item": {
+                        "type": "agent_message",
+                        "text": json.dumps({"fields": readings(), "summary": "Sample document."}),
+                    },
+                }
             )
             + '\n{"type":"turn.completed"}'
         )

@@ -49,7 +49,7 @@ async def handle_update(update, db):
             and user
             and user.role == "admin"
         ):
-            reply += "Для анализа документов через вашу подписку откройте раздел Codex в приложении.\n"
+            reply += "Для анализа документов откройте раздел ИИ в приложении.\n"
         reply += f"Ваш Telegram ID: {chat_id}. "
         reply += (
             "Откройте приложение для работы."
