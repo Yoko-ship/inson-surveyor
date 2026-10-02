@@ -3270,5 +3270,25 @@
   "Сохраните продукт, регион, суммы и срок для объяснения расчёта.": {
     "uz": "Hisobni izohlash uchun mahsulot, hudud, summalar va muddatni saqlang.",
     "en": "Save the product, region, amounts and term for a calculation explanation."
+  },
+  "Базовая ставка, %": {
+    "uz": "Bazaviy stavka, %",
+    "en": "Base rate, %"
+  },
+  "Предупреждения": {
+    "uz": "Ogohlantirishlar",
+    "en": "Warnings"
+  },
+  "Противоречие": {
+    "uz": "Qarama-qarshilik",
+    "en": "Contradiction"
+  },
+  "Сведения из источника": {
+    "uz": "Manbadagi ma’lumotlar",
+    "en": "Source evidence"
+  },
+  "Недостающие сведения": {
+    "uz": "Yetishmayotgan ma’lumotlar",
+    "en": "Missing evidence"
   }
 }

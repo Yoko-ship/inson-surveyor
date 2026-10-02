@@ -128,6 +128,19 @@ Object.assign(names, {
   contract_start: "Дата начала",
   contract_end: "Дата окончания",
   object_description: "Объект страхования",
+  base_rate: "Базовая ставка, %",
+  minimum_rate: "Минимальная ставка, %",
+  recommended_rate: "Рекомендуемая ставка, %",
+  premium: "Премия, UZS",
+  risk_level: "Уровень риска",
+  regional_adjustment: "Поправка региона",
+  loss_adjustment: "Поправка убытков",
+  formula: "Формула",
+  warnings: "Предупреждения",
+  contradiction: "Противоречие",
+  evidence: "Сведения из источника",
+  missing: "Недостающие сведения",
+  risk: "Риск",
 });
 const regionName = (v) =>
   state.regions.find((r) => r.code === v)?.[state.locale] || v;

@@ -226,10 +226,22 @@ def analyze(db, survey, selected_ids, kind, config, locale):
             )
             images.extend(pages)
         if kind == "inspection":
+            context = dict(guide["context"])
+            if "indicators" in context:
+                # The public catalogue can dwarf the uploaded documents. Explain
+                # only the observations actually selected by the calculation;
+                # retain the complete context in the review snapshot below.
+                available = len(context["indicators"])
+                context["indicators"] = context["calculation"]["indicators"]
+                context["indicator_scope"] = {
+                    "description": "Only observations used by the deterministic calculation are supplied. Do not infer omitted observations.",
+                    "available_count": available,
+                    "included_count": len(context["indicators"]),
+                }
             for key, value in {
                 "inputs": survey.inputs,
                 "answers": guide["answers"],
-                **guide["context"],
+                **context,
             }.items():
                 sources.append(
                     {

@@ -7,7 +7,7 @@ from PIL import Image
 from sqlalchemy import select
 
 from surveyor import ai_config, ai_jobs, ai_providers, codex_documents, codex_pilot
-from surveyor.db import AIJob, ImportBatch, Product, Survey, now
+from surveyor.db import AIJob, ImportBatch, Indicator, Product, Survey, now
 from tests.test_codex_telegram import owner  # noqa: F401
 
 
@@ -141,6 +141,57 @@ def test_durable_comparison_review_report_and_stale_evidence(case):
     )
     assert client.get(f"/api/surveys/{survey['id']}/guidance").json()["reviews"][0]["stale"]
     assert client.get(f"/api/reports/{report['id']}").json()["snapshot"] == snapshot
+
+
+def test_comparison_with_large_public_catalogue_keeps_calculation_sources(case):
+    client, _, _, calls = case
+    with client.factory() as db:
+        for index in range(150):
+            db.add(
+                Indicator(
+                    channel_code="stat",
+                    data={
+                        "metric": f"reference_{index}",
+                        "value": "1",
+                        "region": "all",
+                        "class_code": "all",
+                        "observation_date": now().date().isoformat(),
+                        "stale_days": 365,
+                        "reference_only": True,
+                        "note": "Reference catalogue metadata. " * 30,
+                    },
+                )
+            )
+        used = Indicator(
+            channel_code="stat",
+            data={
+                "metric": "fictional_market_quote",
+                "value": "0.5",
+                "annual_market_rate": "0.5",
+                "region": "1726",
+                "class_code": "property",
+                "object_type": "housing",
+                "observation_date": now().date().isoformat(),
+                "stale_days": 365,
+                "source_url": "https://example.test/fictional-quote",
+            },
+        )
+        db.add(used)
+        db.commit()
+        used_id = used.id
+    job = run(case)
+    assert job["status"] == "completed", job
+    limit = ai_config.load().limits.max_text_chars
+    context = job["result"]["context"]
+    assert len(json.dumps(context, ensure_ascii=False)) > limit
+    assert len(json.dumps(calls[0], ensure_ascii=False)) < limit
+    sources = {row["id"]: row for row in calls[0]["sources"]}
+    sent_indicators = json.loads(sources["indicators"]["text"])
+    assert sent_indicators == context["calculation"]["indicators"]
+    assert any(row["id"] == used_id for row in sent_indicators)
+    assert not any(row.get("reference_only") for row in sent_indicators)
+    assert json.loads(sources["indicator_scope"]["text"])["available_count"] >= 150
+    assert len(context["indicators"]) >= 150
 
 
 def test_quote_grounding_rejects_fabricated_sources(case, monkeypatch):
