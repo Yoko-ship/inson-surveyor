@@ -66,3 +66,18 @@ Implement the outstanding workflow on page 11 of the supplied tariff-factor PDF:
 - The PDF supplies directions of influence, not numerical coefficients or an approved statistical method. Operational coefficients, representative factor-segmented experience and actuarial approval must come from the insurer. Only fictional data was used for validation.
 - Existing local templates were not switched or assigned invented coefficients. Configure a new factor version in Admin → Class templates → Configure factors, then obtain actuarial approval.
 - Permanent hosting, restricted-provider integrations, native Telegram client acceptance and real-document validation retain their previous status; this change does not claim those are complete.
+
+## 2026-10-02 — Public document search
+
+- User requested an internet search for documents to help close validation/calibration dependencies.
+- Searching official insurer/regulator sources for policy wording, contracts, claim/inspection forms and published experience. Checking applicability separately from availability; no operational tariff, coefficient or approval will be imported from search results.
+- Existing public-research records are being checked to avoid presenting previously found company-wide totals as factor-segmented experience.
+
+### Completed research and verification
+
+- Recorded six accessible primary-source documents/references in `docs/public-document-research-2026-10-02.json`: INSON property wording/application, Uzbek My Home wording, voluntary motor liability wording, construction-risk wording, CASdatasets motor experience documentation and CAS Basic Ratemaking.
+- Opened the four INSON PDFs and the two actuarial reference pages. Confirmed a blank property application on PDF page 17 through extracted text. A web PDF screenshot request failed; no visual table verification is claimed.
+- Construction wording is hosted on INSON's `apitestsite` subdomain; current production applicability remains unverified. Public wording and blank forms are candidates for extraction tests, not completed client-case validation.
+- French motor experience can support method benchmarking, but cannot establish INSON coefficients or be inserted into the current recent-year paid-loss calibration workflow without resolving incompatible fields and semantics.
+- No suitable public INSON factor-segmented claims history or completed inspection/valuation corpus was established. Insurer experience and actuarial approval remain dependencies.
+- No AI processing, private-document retrieval, database imports or operational pricing changes were performed.
