@@ -11,6 +11,16 @@ window.SurveyorI18n = (() => {
   const normalize = (s) => s.replace(/\s+/g, " ").trim();
   const patterns = [
     [
+      /^Подтвердите риски класса (.+) и выбранные признаки риска документами\.$/,
+      "$1 klass xatarlari va tanlangan belgilarni hujjatlar bilan tasdiqlang.",
+      "Support class $1 risks and selected risk features with documents.",
+    ],
+    [
+      /^Разрешите расхождение: (.+)\. Укажите выбранное значение и источник\.$/,
+      "Farqni bartaraf eting: $1. Tanlangan qiymat va manbani ko‘rsating.",
+      "Resolve the discrepancy: $1. Identify the chosen value and source.",
+    ],
+    [
       /^(.+) ставка · (\d+) дней · (.+)$/,
       "$1 stavka · $2 kun · $3",
       "$1 rate · $2 days · $3",

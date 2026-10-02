@@ -2,6 +2,16 @@
 
 # key: Russian, Uzbek, English
 TEXT = {
+    "inspection_guidance": (
+        "Вопросы и проверка осмотра",
+        "Ko‘rik savollari va tekshiruv",
+        "Inspection questions and review",
+    ),
+    "ai_review_stale": (
+        "Исходные данные изменились: эта проверка устарела и не обосновывает текущий расчёт",
+        "Asosiy ma’lumotlar o‘zgardi: tekshiruv eskirgan va joriy hisob uchun asos emas",
+        "Inputs changed: this review is stale and does not support the current calculation",
+    ),
     "ai_review": ("Проверка предложений ИИ", "AI takliflarini tekshirish", "AI proposal review"),
     "ai_config_revision": ("Версия настроек ИИ", "AI sozlamalari versiyasi", "AI configuration revision"),
     "ai_accepted": ("Принято", "Qabul qilindi", "Accepted"),

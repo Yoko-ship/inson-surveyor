@@ -3,6 +3,7 @@
 import json
 import os
 import shutil
+import signal
 import subprocess
 import tempfile
 from datetime import date
@@ -42,7 +43,7 @@ DISABLED_CODE_MODE_NOTICE = (
 def cli_path():
     if settings.codex_cli_path:
         path = Path(settings.codex_cli_path)
-        return path if path.is_file() else None
+        return path.resolve() if path.is_file() else None
     found = shutil.which("codex.exe" if os.name == "nt" else "codex")
     if found:
         return Path(found)
@@ -86,20 +87,39 @@ def run_process(args, *, cwd=None, prompt=None, timeout=10, login_status=False):
             encoding="utf-8",
             errors="replace",
             creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+            start_new_session=os.name != "nt",
         )
     except OSError:
         raise PilotError("Не удалось запустить Codex. Проверьте локальную установку.") from None
     try:
         stdout, stderr = process.communicate(prompt, timeout=timeout)
     except subprocess.TimeoutExpired:
-        process.kill()
-        process.communicate()
+        stop_process(process)
+        process.communicate(timeout=5)
         raise PilotError("Codex не ответил вовремя. Попробуйте позже.") from None
     if process.returncode:
         raise PilotError("Codex не завершил запрос. Проверьте вход, соединение и лимиты в Codex.")
     if login_status:
         return "chatgpt" if "Logged in using ChatGPT" in stdout + stderr else "unavailable"
     return stdout
+
+
+def stop_process(process):
+    """Terminate the CLI and wrapper descendants, which can otherwise keep pipes open."""
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=5,
+            check=False,
+        )
+        process.kill()
+    else:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
 
 
 def connection():

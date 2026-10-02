@@ -93,6 +93,8 @@ class PilotInput(Strict):
 
 @router.get("", dependencies=[Depends(access)])
 def status():
+    from surveyor.ai_jobs import worker_status
+
     config = ai_config.load()
     return {
         **ai_providers.connection(config),
@@ -102,6 +104,7 @@ def status():
         "limits": config.limits.model_dump(),
         "display_mode": config.display_mode,
         "documents_enabled": telegram_enabled(),
+        "jobs_ready": worker_status(),
         "sample_image": "data:image/png;base64," + base64.b64encode(scan_png()).decode("ascii"),
         "samples": [
             {"id": key, "title": sample["title"], "text": sample["text"]} for key, sample in SAMPLES.items()

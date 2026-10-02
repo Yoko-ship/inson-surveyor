@@ -79,3 +79,9 @@ Transient network/storage collection errors keep the source enabled, preserve sa
 ## Telegram development updates
 
 On macOS/Linux, the temporary tunnel runner watches the application Python directory and reloads the local Telegram listener when backend files change, preserving the current tunnel URL. On Windows, restart the runner after backend changes; it uses one listener process so cleanup also works after errors. Stopping the runner still removes only its own webhook. Static assets use no-cache responses. The regular local listener remains separate.
+
+## AI queue operations
+
+Run `uv run python scripts/run_ai_worker.py` when launching the HTTP app manually; normal local/Telegram launchers already start it. `data/ai-worker-status.json` is a heartbeat, and pending jobs live in the database. The assistant shows queued/running/completed/failed/stale/cancelled states and keeps results across navigation. Jobs are leased for 180 seconds, retry at most three times, and never publish after cancellation or loss of their lease. On restart, expired work is reclaimed. A provider call may repeat after a crash; do not assume exactly-once billing. Inspect the job's safe error, owner state and configuration revision before starting a new job.
+
+The hosting package is in [deploy/README.md](../deploy/README.md). Provisioning is intentionally deferred. PostgreSQL backups use the supplied maintenance-window script; stop all writers and keep the dump and upload archive together. Authenticate Codex separately on the chosen host rather than embedding its credentials in deployment files.

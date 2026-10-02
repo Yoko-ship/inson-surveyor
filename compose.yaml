@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:17-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: surveyor
       POSTGRES_USER: surveyor
@@ -20,7 +21,7 @@ services:
       STORAGE_DIR: /app/data/uploads
       PORT: 8000
     ports: ["127.0.0.1:8010:8000"]
-    volumes: ["uploads:/app/data"]
+    volumes: ["uploads:/app/data", "codex:/home/surveyor/.codex"]
     depends_on:
       db:
         condition: service_healthy
@@ -42,6 +43,19 @@ services:
       app:
         condition: service_healthy
     restart: unless-stopped
+  ai:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://surveyor:${POSTGRES_PASSWORD}@db:5432/surveyor
+      STORAGE_DIR: /app/data/uploads
+    volumes: ["uploads:/app/data", "codex:/home/surveyor/.codex"]
+    command: ["python", "scripts/run_ai_worker.py"]
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
 volumes:
   postgres:
   uploads:
+  codex:

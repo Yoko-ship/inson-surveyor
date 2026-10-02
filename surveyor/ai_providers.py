@@ -167,6 +167,19 @@ def generate(config, text, images, directory, *, locale="ru", sample=False):
         instructions += "\nReturn an object containing fields and a short summary."
     content = json.dumps({"document_text": text, "attached_pages": len(images)}, ensure_ascii=False)
     schema = codex_pilot.Extraction if sample else Analysis
+    return structured(config, instructions, content, images, directory, schema)
+
+
+def structured(config, instructions, content, images, directory, schema):
+    """Shared enforced boundary for extraction, inspection comparison and photo review."""
+    if not config.enabled:
+        raise codex_pilot.PilotError("ИИ приостановлен в настройках.")
+    reject_secrets(content)
+    reject_secrets(instructions)
+    if len(content) > config.limits.max_text_chars:
+        raise ValueError("Документы превышают настроенный лимит текста.")
+    if len(images) > config.limits.max_pages:
+        raise ValueError("Документы превышают настроенный лимит страниц.")
     result = PROVIDERS[config.provider].generate(config, instructions, content, images, directory, schema)
     # Provider implementations cannot bypass the common output contract.
     try:

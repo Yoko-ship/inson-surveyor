@@ -47,10 +47,23 @@ def main():
             stderr=log,
             creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
         )
+        ai_worker = subprocess.Popen(
+            [sys.executable, str(ROOT / "scripts" / "run_ai_worker.py")],
+            stdout=log,
+            stderr=log,
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+        )
         try:
             print(f"Open {settings.public_url} (Ctrl+C to stop). Worker log: {log_path}", flush=True)
             uvicorn.run("surveyor.main:app", host="127.0.0.1", port=port)
         finally:
+            if ai_worker.poll() is None:
+                ai_worker.terminate()
+                try:
+                    ai_worker.wait(timeout=100)
+                except subprocess.TimeoutExpired:
+                    ai_worker.kill()
+                    ai_worker.wait()
             if worker.poll() is None:
                 worker.terminate()
                 try:

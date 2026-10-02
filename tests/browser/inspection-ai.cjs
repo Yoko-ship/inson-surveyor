@@ -37,36 +37,43 @@ module.exports = async (page) => {
     `**/api/ai-pilot/documents/${documentId}/proposal`,
     (route) => route.fulfill({ json: proposal }),
   );
-  await page.route(
-    `**/api/ai-pilot/documents/${documentId}/analyze`,
-    (route) => {
-      const body = route.request().postDataJSON();
-      expect(body.cloud_consent).toBe(true);
-      expect(body.config_revision).toBe("test-config");
-      proposal = {
-        id: "test-proposal",
-        revision: body.revision,
-        stale: false,
-        display_mode: "formatted",
-        summary: "**Check the original**",
-        fields: [
-          {
-            field: "insured_sum",
-            value: "1000",
-            quote: "<img src=x onerror=alert(1)>",
-            quote_found_in_text: true,
-          },
-          {
-            field: "object_value",
-            value: "2000",
-            quote: "Value: 2000",
-            quote_found_in_text: false,
-          },
-        ],
-      };
-      return route.fulfill({ json: proposal });
-    },
-  );
+  await page.route("**/api/ai-pilot/surveys/*/jobs", (route) => {
+    if (route.request().method() === "GET") return route.fulfill({ json: [] });
+    const body = route.request().postDataJSON();
+    expect(body.cloud_consent).toBe(true);
+    expect(body.config_revision).toBe("test-config");
+    proposal = {
+      id: "test-proposal",
+      revision: body.revision,
+      stale: false,
+      display_mode: "formatted",
+      summary: "**Check the original**",
+      fields: [
+        {
+          field: "insured_sum",
+          value: "1000",
+          quote: "<img src=x onerror=alert(1)>",
+          quote_found_in_text: true,
+        },
+        {
+          field: "object_value",
+          value: "2000",
+          quote: "Value: 2000",
+          quote_found_in_text: false,
+        },
+      ],
+    };
+    return route.fulfill({
+      json: {
+        id: "test-job",
+        status: "completed",
+        attempts: 1,
+        kind: "document",
+        document_ids: [documentId],
+        result: proposal,
+      },
+    });
+  });
   await page.route(
     `**/api/ai-pilot/documents/${documentId}/proposals/*/review`,
     async (route) => {
@@ -154,7 +161,7 @@ module.exports = async (page) => {
   await expect(page.locator("#report-view")).toContainText("2100");
   await page.unroute("**/api/ai-pilot");
   await page.unroute(`**/api/ai-pilot/documents/${documentId}/proposal`);
-  await page.unroute(`**/api/ai-pilot/documents/${documentId}/analyze`);
+  await page.unroute("**/api/ai-pilot/surveys/*/jobs");
   await page.unroute(
     `**/api/ai-pilot/documents/${documentId}/proposals/*/review`,
   );

@@ -81,3 +81,7 @@ Only reviewed document fields enter the inspection form; copying over existing i
 - `maintenance.py` uses SQLite's consistent backup API, copies referenced immutable document files, verifies hashes/database integrity and restores only into a new directory. Restores invalidate old login sessions. The local worker schedules verified daily backups and prunes only valid backups beyond retention.
 
 Class templates now include object-scoped statistical adjustment rules and valuation policy. The calculation is `(observation / baseline - 1) × sensitivity`, bounded by the rule and template limits. Regional series take priority over the same national metric. No automatic statistical association is presented as an insurer-approved model.
+
+## Durable inspection assistance
+
+`assistant_api.py` provides guided answers, queued owner-only analysis and reviewed findings. `inspection_assistant.py` builds the grounded context and validates citations through the shared provider boundary. `ai_jobs.py` claims durable database jobs with expiring leases and publishes results atomically; `scripts/run_ai_worker.py` runs independently of the browser. `Survey.assistance` stores human answers and reviewed evidence separately from financial inputs. Both evidence and deterministic context fingerprints invalidate obsolete explanations. Migration `483bbb0a63a7` introduces these private records. See [assistant workflow](inspection-assistant.md) and [deployment](../deploy/README.md).

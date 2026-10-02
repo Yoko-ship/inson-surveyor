@@ -102,19 +102,7 @@ def analyze(document_id: str, body: Analyze, user=Depends(telegram_owner), db=De
         batch = ImportBatch(
             user_id=user.id,
             kind="ai_document",
-            data={
-                "document_id": document.id,
-                "sha256": fingerprint,
-                "revision": body.revision,
-                "config_revision": ai_config.digest(config),
-                "provider": config.provider,
-                "model": getattr(config, config.provider).model or "provider_default",
-                "created_at": now().isoformat() + "Z",
-                "cloud_consent": True,
-                "fields": result["fields"],
-                "summary": result.get("summary", ""),
-                "display_mode": config.display_mode,
-            },
+            data=proposal_data(document, body.revision, config, result),
         )
         db.add(batch)
         db.flush()
@@ -127,6 +115,22 @@ def analyze(document_id: str, body: Analyze, user=Depends(telegram_owner), db=De
         )
         db.commit()
         return {"id": batch.id, **batch.data, "stale": False}
+
+
+def proposal_data(document, revision, config, result):
+    return {
+        "document_id": document.id,
+        "sha256": document.sha256,
+        "revision": revision,
+        "config_revision": ai_config.digest(config),
+        "provider": config.provider,
+        "model": getattr(config, config.provider).model or "provider_default",
+        "created_at": now().isoformat() + "Z",
+        "cloud_consent": True,
+        "fields": result["fields"],
+        "summary": result.get("summary", ""),
+        "display_mode": config.display_mode,
+    }
 
 
 @router.post("/{document_id}/proposals/{proposal_id}/review")

@@ -20,6 +20,8 @@ class Prompts(StrictConfig):
     defensive: str = Field(min_length=20, max_length=4000)
     extraction: str = Field(min_length=20, max_length=4000)
     style: str = Field(min_length=10, max_length=2000)
+    inspection: str = Field(min_length=20, max_length=6000)
+    photo: str = Field(min_length=20, max_length=6000)
 
 
 class Limits(StrictConfig):
@@ -75,7 +77,7 @@ def defaults():
     return load()
 
 
-def trusted_instructions(config, locale="ru"):
+def trusted_instructions(config, locale="ru", task="extraction"):
     # Only version-controlled developer configuration belongs here. Never interpolate documents.
     prompts = config.prompts
     return "\n\n".join(
@@ -83,7 +85,7 @@ def trusted_instructions(config, locale="ru"):
             BASELINE_PATH.read_text(encoding="utf-8"),
             prompts.system,
             prompts.defensive,
-            prompts.extraction,
+            getattr(prompts, task),
             prompts.style,
             f"Write the summary in {locale}. Preserve source quotations verbatim.",
         ]

@@ -1,5 +1,6 @@
 import io
 import os
+import re
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -13,6 +14,15 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 from surveyor.config import settings
+
+
+def ai_plain(text):
+    """Format model prose for exports; never apply this to source quotations."""
+    for marker in ("**", "__", "`", "*"):
+        pattern = re.escape(marker) + r"([^\n]+?)" + re.escape(marker)
+        text = re.sub(pattern, r"\1", text)
+    return re.sub(r"(?m)^#{1,6}\s+", "", text)
+
 
 LABELS = {
     "ru": [
@@ -155,6 +165,28 @@ def sections(report):
                     object_lines.append(f"{tr('ai_quote')}: {row['quote']}")
                     if not row.get("quote_found_in_text"):
                         object_lines.append(tr("ai_quote_visual"))
+    assistance = s.get("assistance", {})
+    if assistance.get("answers") or assistance.get("reviews"):
+        object_lines.append(tr("inspection_guidance"))
+    for key, answer in assistance.get("answers", {}).items():
+        object_lines.append(f"{assistance.get('question_labels', {}).get(key, tr(key))}: {answer}")
+    for review in assistance.get("reviews", []):
+        object_lines.append(
+            f"{tr('ai_review')}: {review['reviewer_name']} · {review['reviewed_at']} · {review['provider']} · {review['config_revision']}"
+        )
+        object_lines.append(f"{tr('reason')}: {review['reason']}")
+        if review.get("context", {}).get("product"):
+            object_lines.append(f"{tr('product')}: {review['context']['product']['version_id']}")
+        if review["stale"]:
+            object_lines.append(tr("ai_review_stale"))
+        for row in review["fields"]:
+            object_lines.append(f"{tr('ai_' + row['decision'])}: {ai_plain(row['text'])}")
+            if row.get("reviewed_text"):
+                object_lines.append(f"{tr('corrections')}: {ai_plain(row['reviewed_text'])}")
+            for cite in row["citations"]:
+                object_lines.append(f"{cite.get('filename') or cite['source_id']}: {cite['quote']}")
+                if not cite["quote_found_in_text"]:
+                    object_lines.append(tr("ai_quote_visual"))
     object_lines.append(tr("corrections"))
     object_lines += [f"{tr(k)}: {v}" for k, v in inputs.get("overrides", {}).items()] or [tr("none")]
     object_lines.append(tr("reason") + ": " + value(inputs.get("override_reason")))

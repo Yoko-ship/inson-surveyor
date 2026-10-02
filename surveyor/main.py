@@ -11,6 +11,7 @@ from sqlalchemy.exc import IntegrityError
 
 from surveyor import ai_config
 from surveyor.api import router
+from surveyor.assistant_api import router as assistant_router
 from surveyor.bootstrap import bootstrap
 from surveyor.config import settings
 from surveyor.db import engine
@@ -42,6 +43,7 @@ app = FastAPI(
     redoc_url=None,
 )
 app.include_router(router)
+app.include_router(assistant_router)
 
 app.include_router(source_router)
 app.include_router(document_router)

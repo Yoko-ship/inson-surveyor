@@ -175,7 +175,7 @@ function bindForm(id, handler) {
     const btn = $("button[type=submit]", form);
     if (btn) btn.disabled = true;
     try {
-      await handler(Object.fromEntries(new FormData(form)), form);
+      await handler(Object.fromEntries(new FormData(form)), form, e);
     } catch (err) {
       toast(err.message, true);
       const error = $(".form-error", form);
@@ -367,6 +367,7 @@ function surveyFrame(step) {
     ) +
     `<div class="steps">${[
       ["files", "Фото и документы"],
+      ["assistant", "Помощник"],
       ["review", "Проверить"],
       ["report", "Акт"],
     ]
@@ -382,6 +383,10 @@ function renderSurvey(step) {
   $("#back-surveys").onclick = () => navigate("surveys");
   action("[data-step]", (el) => renderSurvey(el.dataset.step));
   if (step === "files") renderFiles();
+  if (step === "assistant")
+    window.SurveyorAssistant.page().catch((error) =>
+      toast(error.message, true),
+    );
   if (step === "review") renderReview();
   if (step === "report") renderReportList();
 }
@@ -512,7 +517,7 @@ function renderReview() {
         ["en", "English"],
       ],
       d.language || state.locale,
-    )}<p class="form-hint">Тексты источников и оговорок сохраняются на исходном языке.</p><label class="check"><input name="manual_review_confirmed" type="checkbox" required ${d.manual_review_confirmed ? "checked" : ""}>Я проверил(а) документы, суммы, сроки и фотографии.</label><button type="submit" class="primary full" ${s.owner_id !== state.user.id ? "disabled" : ""}>Сохранить и сформировать →</button><p class="form-error"></p></section><div class="notice">Страховой балл не является кредитным скорингом. Окончательное решение принимает андеррайтер.</div></aside></div></form>`;
+    )}<p class="form-hint">Тексты источников и оговорок сохраняются на исходном языке.</p><label class="check"><input name="manual_review_confirmed" type="checkbox" required ${d.manual_review_confirmed ? "checked" : ""}>Я проверил(а) документы, суммы, сроки и фотографии.</label><button type="button" id="save-draft" class="secondary full">Сохранить черновик → помощник</button><button type="submit" class="primary full" ${s.owner_id !== state.user.id ? "disabled" : ""}>Сохранить и сформировать →</button><p class="form-error"></p></section><div class="notice">Страховой балл не является кредитным скорингом. Окончательное решение принимает андеррайтер.</div></aside></div></form>`;
   $("#review-form .two-col > div").insertAdjacentHTML(
     "beforeend",
     `<section class="panel"><details><summary>Учётная группа РНП (необязательно)</summary>${window.SurveyorPolicy.rnpFields(d.rnp_context || {})}</details></section>`,
@@ -556,7 +561,16 @@ function renderReview() {
   $("[name=product_code]").onchange = renderFeatures;
   for (const c of d.comparables || []) addComparable(c);
   $("#add-comparable").onclick = () => addComparable();
+  $("#save-draft").onclick = () => {
+    const form = $("#review-form");
+    form.dataset.draft = "true";
+    form.noValidate = true;
+    form.requestSubmit();
+  };
   bindForm("#review-form", async (values, form) => {
+    const draft = form.dataset.draft === "true";
+    delete form.dataset.draft;
+    form.noValidate = false;
     const body = surveyBody(values);
     body.rnp_context = window.SurveyorPolicy.readRnp(values);
     body.revision = s.revision;
@@ -569,7 +583,7 @@ function renderReview() {
         ),
       ]),
     ];
-    body.manual_review_confirmed = true;
+    body.manual_review_confirmed = !draft;
     body.borrower = null;
     if ($("[name=borrower_enabled]", form).checked) {
       body.borrower = {};
@@ -607,6 +621,10 @@ function renderReview() {
       body: JSON.stringify(body),
     });
     s.revision = result.revision;
+    if (draft) {
+      await openSurvey(s.id, "assistant");
+      return;
+    }
     const report = await post(`/surveys/${s.id}/reports`);
     state.survey = await api(`/surveys/${s.id}`);
     renderSurvey("report");

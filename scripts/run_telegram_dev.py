@@ -102,6 +102,14 @@ def run_session():
                     stderr=app_log,
                 )
                 processes.append(app)
+                processes.append(
+                    subprocess.Popen(
+                        [sys.executable, str(ROOT / "scripts" / "run_ai_worker.py")],
+                        env=env,
+                        stdout=app_log,
+                        stderr=app_log,
+                    )
+                )
                 with httpx.Client(timeout=5) as client:
                     last_error = "not ready"
                     for attempt in range(120):

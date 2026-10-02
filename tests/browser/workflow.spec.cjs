@@ -227,5 +227,6 @@ test("local browser: first login, documents, fixed premium, exports, admin and m
   await require("./policy.cjs")(page);
   await require("./codex-pilot.cjs")(page);
   await require("./inspection-ai.cjs")(page);
+  await require("./assistant.cjs")(page);
   expect(errors).toEqual([]);
 });

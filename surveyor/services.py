@@ -148,6 +148,7 @@ def build_report(db, survey, user):
         "calculation": calc,
         "valuation": valuation(inputs, exchange=fx, policy=template),
         "documents": documents,
+        "assistance": assistance_snapshot(db, survey),
         "conflicts": conflicts,
         "indicators": [i for i in indicators if i.get("subject", "market") in {"market", '"INSON" AJ'}],
         "losses": losses,
@@ -175,3 +176,21 @@ def build_report(db, survey, user):
     audit(db, user, "report.created", report.id, {"survey_id": survey.id, "revision": survey.revision})
     db.commit()
     return report
+
+
+def assistance_snapshot(db, survey):
+    from surveyor.inspection_assistant import guidance
+
+    guide = guidance(db, survey)
+    return {
+        "answers": (survey.assistance or {}).get("answers", {}),
+        "question_labels": (survey.assistance or {}).get("question_labels", {}),
+        "reviews": [
+            {
+                **r,
+                "stale": r["basis_hash"] != guide["basis_hash"]
+                or r.get("context_hash") != guide["context_hash"],
+            }
+            for r in (survey.assistance or {}).get("reviews", [])
+        ],
+    }

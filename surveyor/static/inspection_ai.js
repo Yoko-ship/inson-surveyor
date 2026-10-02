@@ -11,27 +11,43 @@ window.SurveyorInspectionAI = (() => {
   async function open(doc) {
     const survey = state.survey;
     const path = `/ai-pilot/documents/${doc.id}`;
-    const [info, pending] = await Promise.all([
+    const [info, pending, jobs] = await Promise.all([
       api("/ai-pilot"),
       api(`${path}/proposal`),
+      api(`/ai-pilot/surveys/${survey.id}/jobs`),
     ]);
     modal(
-      `<h2>ИИ · проверка документа</h2><p><a href="/api/documents/${doc.id}/download" target="_blank" rel="noopener" data-no-translate>${esc(doc.filename)} ↗</a></p><form id="inspection-ai-analyze"><label class="check"><input type="checkbox" name="consent" required>${info.provider === "ollama" ? "Обработать выбранный документ локальной моделью Ollama." : "Отправить выбранный документ в OpenAI для анализа через мою подписку Codex."}</label><button class="secondary" type="submit" ${info.ready ? "" : "disabled"}>Анализировать документ</button><p role="status"></p><p class="form-error"></p></form><div id="inspection-ai-result"></div>`,
+      `<h2>ИИ · проверка документа</h2>${info.jobs_ready === false ? `<p class="notice">Фоновый обработчик недоступен. Задание начнётся после его запуска.</p>` : ""}<p><a href="/api/documents/${doc.id}/download" target="_blank" rel="noopener" data-no-translate>${esc(doc.filename)} ↗</a></p><form id="inspection-ai-analyze"><label class="check"><input type="checkbox" name="consent" required>${info.provider === "ollama" ? "Обработать выбранный документ локальной моделью Ollama." : "Отправить выбранный документ в OpenAI для анализа через мою подписку Codex."}</label><button class="secondary" type="submit" ${info.ready ? "" : "disabled"}>Анализировать документ</button><p role="status"></p><p class="form-error"></p></form><div id="inspection-ai-result"></div>`,
     );
     const form = $("#inspection-ai-analyze");
     const output = $("#inspection-ai-result");
     if (pending) show(pending, doc, survey, output);
+    const active = jobs.find(
+      (job) =>
+        job.kind === "document" &&
+        job.document_ids.includes(doc.id) &&
+        ["queued", "running"].includes(job.status),
+    );
+    if (active)
+      window.SurveyorAssistant.watch(active, output, (job) =>
+        show(job.result, doc, survey, output),
+      );
     bindForm("#inspection-ai-analyze", async () => {
       $("[role=status]", form).textContent =
         "ИИ читает документ. Это может занять до полутора минут…";
       try {
-        const proposal = await post(`${path}/analyze`, {
+        const job = await post(`/ai-pilot/surveys/${survey.id}/jobs`, {
+          kind: "document",
+          document_ids: [doc.id],
           revision: survey.revision,
           config_revision: info.config_revision,
           cloud_consent: true,
           locale: state.locale,
         });
-        if (output.isConnected) show(proposal, doc, survey, output);
+        if (output.isConnected)
+          window.SurveyorAssistant.watch(job, output, (done) =>
+            show(done.result, doc, survey, output),
+          );
       } finally {
         $("[role=status]", form).textContent = "";
       }

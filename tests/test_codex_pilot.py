@@ -168,6 +168,7 @@ def test_timeout_terminates_process_and_redacts_stderr(monkeypatch):
 
     process = Process()
     monkeypatch.setattr(pilot.subprocess, "Popen", lambda *args, **kwargs: process)
+    monkeypatch.setattr(pilot, "stop_process", lambda child: child.kill())
     with pytest.raises(pilot.PilotError) as error:
         pilot.run_process(["codex"])
     assert process.killed and "private" not in str(error.value)
@@ -200,3 +201,18 @@ def test_scan_is_rendered_image_without_text_in_prompt(monkeypatch, tmp_path):
     result = pilot.recognize("scan")
     assert all(row["matches"] for row in result["fields"])
     assert "60000000" not in seen[0] and "Sample Workshop" not in seen[0]
+
+
+@pytest.mark.skipif(__import__("os").name == "nt", reason="POSIX process-group regression")
+def test_timeout_terminates_wrapper_children_without_waiting_for_open_pipes(tmp_path):
+    import sys
+    import time
+
+    script = tmp_path / "wrapper.py"
+    script.write_text(
+        'import subprocess, sys, time\nsubprocess.Popen([sys.executable, "-c", "import time; time.sleep(60)"])\ntime.sleep(60)\n'
+    )
+    started = time.monotonic()
+    with pytest.raises(pilot.PilotError):
+        pilot.run_process([sys.executable, str(script)], timeout=0.5)
+    assert time.monotonic() - started < 5

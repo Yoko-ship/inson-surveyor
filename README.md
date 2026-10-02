@@ -97,6 +97,12 @@ The ordinary browser app at port 8010 remains available. The Telegram listener u
 
 Runtime status and logs are in ignored `data/telegram-dev/`. No bot token is written to status output, logs, GitHub Actions or repository files. See [environment profiles](docs/environments.md).
 
+### Inspection assistant and background analysis
+
+The inspection's **Assistant / Помощник** step provides cross-document comparison, guided evidence questions, visible photo-condition suggestions and explanations grounded in the deterministic calculation. Save basic inputs with **Save draft → assistant**, choose materials and consent to analysis, then review findings before including them in a report. Document extraction also runs as a resumable background job; closing Telegram does not lose the request. Local launchers start the AI worker automatically. See [inspection assistant and validation](docs/inspection-assistant.md).
+
+[Always-on deployment](deploy/README.md) is prepared with PostgreSQL, HTTPS, persistent uploads/authentication and separate workers. Hosting selection and provisioning are deferred by the user; the current local setup still needs the Mac online. Validation uses fictional documents only.
+
 ### Personal Codex connection in Telegram
 
 AI prompts, models, guardrails and response formatting are configured only in code (`surveyor/ai/defaults.json` and `surveyor/ai/guardrails.txt`). Users have no settings editor or configuration API. Git preserves the configuration across machines and provider changes. See [AI configuration and provider changes](docs/ai-configuration.md).
