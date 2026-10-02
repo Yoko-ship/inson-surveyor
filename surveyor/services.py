@@ -39,8 +39,20 @@ def context_for(db, inputs):
         .order_by(ClassTemplate.created_at.desc())
     )
     template_data = (
-        {**template.data, "id": template.id, "approved_by": template.approved_by} if template else None
+        {
+            **template.data,
+            "id": template.id,
+            "approved_by": template.approved_by,
+            "approved_at": template.approved_at.isoformat() if template.approved_at else None,
+        }
+        if template
+        else None
     )
+    from surveyor.factor_pricing import calibration_stale, validate_answers
+
+    if template_data:
+        template_data["factor_calibration_stale"] = calibration_stale(db, template_data)
+    validate_answers(inputs, template_data)
     indicators = latest_indicators(db, inputs["region"], product.data["class_code"])
     calibration = db.scalar(
         select(Calibration)

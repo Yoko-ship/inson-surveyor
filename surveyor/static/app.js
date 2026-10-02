@@ -76,6 +76,7 @@ const translations = {
 };
 const t = (key) => translations[state.locale][key] || key;
 const names = {
+  factor_multiplier: "Произведение коэффициентов факторов",
   draft: "Черновик",
   review: "На проверке",
   official_file: "Открытый файл",
@@ -283,9 +284,11 @@ async function enter(data) {
   if (state.user.must_change_password) {
     return changePassword();
   }
+  state.calculatorDraft = null;
   state.regions = await api("/regions");
   state.products = await api("/products");
   state.templates = await api("/templates");
+  await window.SurveyorFactorPricing.load();
   await navigate("surveys");
 }
 async function navigate(page) {
@@ -515,7 +518,7 @@ function renderReview() {
       if (item.value && !extracted[key]) extracted[key] = item.value;
   const inputs = { ...extracted, ...d };
   $("#survey-body").innerHTML =
-    `<form id="review-form"><div class="two-col"><div><section class="panel"><div class="panel-head"><h3>Объект и условия</h3><span class="badge">Ручная проверка</span></div><div class="form-grid">${basicFields(inputs)}${field("contract_start", "Дата начала договора", inputs.contract_start || "", "date")}${field("contract_end", "Дата окончания договора", inputs.contract_end || "", "date")}<p class="form-hint span-2">При изменении дат срок считается без даты окончания. Если договор использует другой подсчёт, измените срок и укажите причину.</p><label class="span-2">Описание объекта<textarea name="object_description" maxlength="2000">${esc(inputs.object_description || "")}</textarea></label></div><p class="form-hint">Четыре основных поля: продукт, страховая сумма, стоимость, регион. Срок нужен для годовой ставки и сравнения с рынком.</p><h3>Признаки риска</h3><div class="feature-list" id="features"></div><h3>Нормы и материалы источников</h3><div class="feature-list">${state.references.map((r) => `<label><input type="checkbox" name="reference" value="${r.id}" ${(d.reference_ids || []).includes(r.id) ? "checked" : ""}>${esc(r.title)} · ${dateText(r.observation_date)}${r.stale ? " · Устарели" : ""}</label>`).join("") || `<p class="muted">Данные недоступны</p>`}</div></section><section class="panel"><h3>Сверка документов</h3><div class="form-grid">${field("declared_rate", "Тариф из запроса / договора, %", inputs.declared_rate || "", "number", 'min="0" max="100" step="0.000001"')}${field("declared_premium", "Премия из запроса / договора, UZS", inputs.declared_premium || "", "number", 'min="0" step="0.01"')}</div>${
+    `<form id="review-form"><div class="two-col"><div><section class="panel"><div class="panel-head"><h3>Объект и условия</h3><span class="badge">Ручная проверка</span></div><div class="form-grid">${basicFields(inputs)}${field("contract_start", "Дата начала договора", inputs.contract_start || "", "date")}${field("contract_end", "Дата окончания договора", inputs.contract_end || "", "date")}<p class="form-hint span-2">При изменении дат срок считается без даты окончания. Если договор использует другой подсчёт, измените срок и укажите причину.</p><label class="span-2">Описание объекта<textarea name="object_description" maxlength="2000">${esc(inputs.object_description || "")}</textarea></label></div><p class="form-hint">Четыре основных поля: продукт, страховая сумма, стоимость, регион. Срок нужен для годовой ставки и сравнения с рынком.</p><h3>Признаки риска</h3><div class="feature-list" id="features"></div><div id="inspection-factors"></div><h3>Нормы и материалы источников</h3><div class="feature-list">${state.references.map((r) => `<label><input type="checkbox" name="reference" value="${r.id}" ${(d.reference_ids || []).includes(r.id) ? "checked" : ""}>${esc(r.title)} · ${dateText(r.observation_date)}${r.stale ? " · Устарели" : ""}</label>`).join("") || `<p class="muted">Данные недоступны</p>`}</div></section><section class="panel"><h3>Сверка документов</h3><div class="form-grid">${field("declared_rate", "Тариф из запроса / договора, %", inputs.declared_rate || "", "number", 'min="0" max="100" step="0.000001"')}${field("declared_premium", "Премия из запроса / договора, UZS", inputs.declared_premium || "", "number", 'min="0" step="0.01"')}</div>${
       Object.keys(extracted).length
         ? `<p class="form-hint">Из документа: ${Object.entries(extracted)
             .map(([k, v]) => `${esc(named(k))} = ${esc(v)}`)
@@ -536,20 +539,30 @@ function renderReview() {
     `<section class="panel"><details><summary>Учётная группа РНП (необязательно)</summary>${window.SurveyorPolicy.rnpFields(d.rnp_context || {})}</details></section>`,
   );
   window.SurveyorInspectionAI.bindTransfer();
+  let currentFactorAnswers = d.factor_answers || {};
   const renderFeatures = () => {
     const code = $("[name=product_code]").value;
     const p = state.products.find((p) => p.code === code);
     const template = state.templates.find(
       (t) => t.class_code === p?.class_code,
     );
+    window.SurveyorFactorPricing.renderAnswers(
+      $("#inspection-factors"),
+      template,
+      currentFactorAnswers,
+    );
     $("#features").innerHTML =
-      Object.keys(template?.feature_weights || {})
+      Object.keys(
+        template?.factor_policy ? {} : template?.feature_weights || {},
+      )
         .map(
           (k) =>
             `<label><input type="checkbox" name="feature" value="${esc(k)}" ${(d.features || []).includes(k) ? "checked" : ""}>${esc(named(k))}</label>`,
         )
         .join("") ||
-      '<p class="muted small">Для класса пока нет шаблона риска.</p>';
+      (template?.factor_policy
+        ? ""
+        : '<p class="muted small">Для класса пока нет шаблона риска.</p>');
   };
   renderFeatures();
   for (const key of ["contract_start", "contract_end"])
@@ -571,7 +584,10 @@ function renderReview() {
   };
   $("[name=borrower_enabled]").onchange = toggleBorrower;
   toggleBorrower();
-  $("[name=product_code]").onchange = renderFeatures;
+  $("[name=product_code]").onchange = () => {
+    currentFactorAnswers = window.SurveyorFactorPricing.readAnswers();
+    renderFeatures();
+  };
   for (const c of d.comparables || []) addComparable(c);
   $("#add-comparable").onclick = () => addComparable();
   $("#save-draft").onclick = () => {
@@ -588,6 +604,7 @@ function renderReview() {
     body.rnp_context = window.SurveyorPolicy.readRnp(values);
     body.revision = s.revision;
     body.features = $$("input[name=feature]:checked", form).map((x) => x.value);
+    body.factor_answers = window.SurveyorFactorPricing.readAnswers();
     body.reference_ids = [
       ...new Set([
         ...$$("input[name=reference]:checked", form).map((x) => x.value),
@@ -726,7 +743,7 @@ function renderReportList() {
 function calculationView(c) {
   if (c.status !== "calculated")
     return `<div class="notice">${esc(c.reason)}</div>`;
-  return `<div class="result-card"><span class="eyebrow">РАСЧЁТНАЯ СТРАХОВАЯ ПРЕМИЯ</span><div class="result-value">${money(c.premium)} <small>UZS</small></div><small>${esc(named(c.rate_type))} ставка · ${c.term_days} дней · ${esc(c.formula)}</small><div class="result-grid"><div><small>Минимальная</small><strong>${c.minimum_rate}%</strong></div><div><small>Рекомендуемая</small><strong>${c.recommended_rate}%</strong></div><div><small>Рыночная, годовая</small><strong>${c.annual_market_rate === null ? "—" : c.annual_market_rate + "%"}</strong></div></div></div><p class="report-note">Годовой эквивалент рекомендации: ${c.annualized_rate}%. Рыночная ставка всегда сравнивается в годовом выражении.</p>${c.warnings.map((w) => `<div class="notice">${esc(w)}</div>`).join("")}`;
+  return `<div class="result-card"><span class="eyebrow">РАСЧЁТНАЯ СТРАХОВАЯ ПРЕМИЯ</span><div class="result-value">${money(c.premium)} <small>UZS</small></div><small>${esc(named(c.rate_type))} ставка · ${c.term_days} дней · ${esc(c.formula)}</small><div class="result-grid"><div><small>Минимальная</small><strong>${c.minimum_rate}%</strong></div><div><small>Рекомендуемая</small><strong>${c.recommended_rate}%</strong></div><div><small>Рыночная, годовая</small><strong>${c.annual_market_rate === null ? "—" : c.annual_market_rate + "%"}</strong></div></div></div><p class="report-note">Годовой эквивалент рекомендации: ${c.annualized_rate}%. Рыночная ставка всегда сравнивается в годовом выражении.</p>${c.warnings.map((w) => `<div class="notice">${esc(w)}</div>`).join("")}${c.factor_pricing ? `<p>Произведение коэффициентов факторов: <span data-no-translate>${esc(c.factor_pricing.multiplier)}</span></p><details><summary>Уточнить факторы</summary>${c.factor_pricing.clarify.map((r) => `<p data-no-translate>${esc(r.label)}</p>`).join("") || "—"}</details>` : ""}`;
 }
 async function showReport(id) {
   const report = await api(`/reports/${id}`),
@@ -785,15 +802,41 @@ async function showReport(id) {
     });
 }
 async function calculator() {
+  const draft = state.calculatorDraft || {};
   $("#content").innerHTML =
     heading(
       t("calculator"),
       "Проверка премии по действующей тарифной политике.",
     ) +
-    `<div class="two-col"><section class="panel"><h3>Параметры расчёта</h3><form id="calculator-form"><div class="form-grid">${basicFields()}</div><button type="submit" class="primary">Рассчитать премию →</button></form></section><aside id="calculator-result"><section class="panel"><h3>Срок имеет значение</h3><p class="small muted">Годовая ставка: сумма × ставка × дни / 365.<br>Фиксированная: сумма × ставка.</p><p class="small muted">Для ОСГОР используйте продукт с типом «По нормативному акту». Тариф и источник задаёт администратор.</p></section></aside></div>`;
+    `<div class="two-col"><section class="panel"><h3>Параметры расчёта</h3><form id="calculator-form"><div class="form-grid">${basicFields(draft)}</div><div id="calculator-factors"></div><button type="submit" class="primary">Рассчитать премию →</button></form></section><aside id="calculator-result"><section class="panel"><h3>Срок имеет значение</h3><p class="small muted">Годовая ставка: сумма × ставка × дни / 365.<br>Фиксированная: сумма × ставка.</p><p class="small muted">Для ОСГОР используйте продукт с типом «По нормативному акту». Тариф и источник задаёт администратор.</p></section></aside></div>`;
+  const renderFactors = (initial = false) => {
+    const p = state.products.find(
+      (p) => p.code === $("#calculator-form [name=product_code]").value,
+    );
+    window.SurveyorFactorPricing.renderAnswers(
+      $("#calculator-factors"),
+      state.templates.find((t) => t.class_code === p?.class_code),
+      initial
+        ? draft.factor_answers || {}
+        : window.SurveyorFactorPricing.readAnswers(),
+    );
+  };
+  renderFactors(true);
+  $("#calculator-form [name=product_code]").onchange = () => renderFactors();
+  const remember = () => {
+    state.calculatorDraft = {
+      ...surveyBody(Object.fromEntries(new FormData($("#calculator-form")))),
+      factor_answers: window.SurveyorFactorPricing.readAnswers(),
+    };
+  };
+  $("#calculator-form").addEventListener("input", remember);
+  $("#calculator-form").addEventListener("change", remember);
   bindForm("#calculator-form", async (d) => {
     $("#calculator-result").innerHTML = calculationView(
-      await post("/calculate", surveyBody(d)),
+      await post("/calculate", {
+        ...surveyBody(d),
+        factor_answers: window.SurveyorFactorPricing.readAnswers(),
+      }),
     );
   });
 }
@@ -1279,6 +1322,7 @@ async function editTemplate(r) {
   bindForm("#template-form", async (values) => {
     const body = {
       class_code: values.class_code,
+      factor_policy: d.factor_policy || null,
       name: values.name,
       moderate_threshold: Number(values.moderate_threshold),
       high_threshold: Number(values.high_threshold),
@@ -1340,7 +1384,7 @@ async function adminTemplates() {
     api("/admin/source-coverage"),
   ]);
   $("#admin-content").innerHTML =
-    `<section class="panel"><div class="panel-head"><h3>Шаблоны страховых классов</h3><button class="primary" id="new-template">＋ Новый шаблон</button></div>${rows.map((r) => `<div class="file-card"><h3>${esc(r.name)} <small>${esc(r.class_code)}</small></h3><span class="badge ${r.approved_by ? "green" : "amber"}">${r.approved_by ? "Утверждён актуарием" : "Экспертный, не утверждён"}</span>${jsonDetails(r)}<div class="actions"><button class="secondary" data-edit-template="${r.id}">Новая версия</button>${state.user.role === "actuary" && !r.approved_by ? `<button class="primary" data-approve-template="${r.id}">Утвердить</button>` : ""}</div></div>`).join("")}</section>`;
+    `<section class="panel"><div class="panel-head"><h3>Шаблоны страховых классов</h3><button class="primary" id="new-template">＋ Новый шаблон</button></div>${rows.map((r) => `<div class="file-card"><h3>${esc(r.name)} <small>${esc(r.class_code)}</small></h3><span class="badge ${r.approved_by ? "green" : "amber"}">${r.approved_by ? "Утверждён актуарием" : "Экспертный, не утверждён"}</span>${jsonDetails(r)}<div class="actions"><button class="secondary" data-edit-template="${r.id}">Новая версия</button><button class="secondary" data-factor-policy="${r.id}">Настроить факторы</button>${r.factor_policy ? `<button class="secondary" data-factor-experience="${r.id}">Статистика факторов</button><span class="badge">${r.factor_calibration_stale ? "Статистика изменилась" : r.factor_calibration ? "Статистическое предложение" : "Не калибровано"}</span>` : ""}${state.user.role === "actuary" && !r.approved_by ? `<button class="primary" data-approve-template="${r.id}">Утвердить</button>` : ""}</div></div>`).join("")}</section>`;
   $("#admin-content").insertAdjacentHTML(
     "beforeend",
     sourceCoveragePanel(coverage),
@@ -1363,8 +1407,19 @@ async function adminTemplates() {
   action("[data-edit-template]", (el) =>
     edit(rows.find((r) => r.id === el.dataset.editTemplate)),
   );
+  action("[data-factor-policy]", (el) =>
+    window.SurveyorFactorPricing.edit(
+      rows.find((r) => r.id === el.dataset.factorPolicy),
+    ),
+  );
+  action("[data-factor-experience]", (el) =>
+    window.SurveyorFactorPricing.experience(
+      rows.find((r) => r.id === el.dataset.factorExperience),
+    ),
+  );
   action("[data-approve-template]", async (el) => {
     await post(`/admin/templates/${el.dataset.approveTemplate}/approve`);
+    state.templates = await api("/templates");
     await adminTemplates();
   });
 }

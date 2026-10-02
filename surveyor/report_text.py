@@ -2,6 +2,55 @@
 
 # key: Russian, Uzbek, English
 TEXT = {
+    "factor_pricing": ("Расчёт по факторам", "Omillar bo‘yicha hisob", "Factor-based pricing"),
+    "factor_status": ("Статус коэффициентов", "Koeffitsiyentlar holati", "Coefficient status"),
+    "factor_approved": ("Утверждены актуарием", "Aktuariy tasdiqlagan", "Actuary approved"),
+    "factor_unapproved": (
+        "Не утверждены; не применены",
+        "Tasdiqlanmagan; qo‘llanilmagan",
+        "Unapproved; not applied",
+    ),
+    "factor_stale": (
+        "Статистика изменилась; не применены",
+        "Statistika o‘zgargan; qo‘llanilmagan",
+        "Experience changed; not applied",
+    ),
+    "factor_statutory": (
+        "Нормативный тариф; коэффициенты не применены",
+        "Normativ tarif; koeffitsiyentlar qo‘llanilmagan",
+        "Statutory tariff; factors not applied",
+    ),
+    "factor_multiplier": ("Применённое произведение", "Qo‘llangan ko‘paytma", "Applied factor product"),
+    "factor_proposal": ("Предлагаемое произведение", "Taklif etilgan ko‘paytma", "Proposed factor product"),
+    "factor_coefficient": ("Коэффициент", "Koeffitsiyent", "Coefficient"),
+    "factor_applied": ("Применено", "Qo‘llangan", "Applied"),
+    "factor_page": ("Страница PDF", "PDF sahifasi", "PDF page"),
+    "factor_raises": ("Повышает", "Oshiradi", "Raises"),
+    "factor_lowers": ("Понижает", "Pasaytiradi", "Lowers"),
+    "factor_neutral": ("Нейтрально", "Neytral", "Neutral"),
+    "factor_not_applicable": ("Не применимо", "Qo‘llanilmaydi", "Not applicable"),
+    "factor_unanswered": ("Не заполнено", "To‘ldirilmagan", "Unanswered"),
+    "factor_coefficient_missing": (
+        "Коэффициент не задан",
+        "Koeffitsiyent belgilanmagan",
+        "Coefficient missing",
+    ),
+    "factor_clarify": ("Уточнить факторы", "Omillarni aniqlashtiring", "Clarify factors"),
+    "factor_uncalibrated": (
+        "Не калибровано: экспертные коэффициенты",
+        "Kalibrlanmagan: ekspert koeffitsiyentlari",
+        "Uncalibrated: expert coefficients",
+    ),
+    "factor_formula": (
+        "Ставка = max(минимум, ставка продукта × произведение коэффициентов). Старые множители риска, региона и убытков повторно не применяются.",
+        "Stavka = max(minimum, mahsulot stavkasi × koeffitsiyentlar ko‘paytmasi). Eski xatar, hudud va zarar tuzatishlari qayta qo‘llanilmaydi.",
+        "Rate = max(minimum, product rate × factor product). Legacy risk, regional and loss adjustments are not applied again.",
+    ),
+    "factor_method_note": (
+        "Статистика: отношение выплат на страховой год к нейтральному сегменту. Только перечисленные оценки рассчитаны по статистике; остальные коэффициенты экспертные. Корреляция факторов и развитие убытков требуют проверки актуарием.",
+        "Statistika: sug‘urta yiliga to‘lovlarning neytral segmentga nisbati. Faqat sanalgan baholar statistik; qolganlari ekspert baholari. Korrelyatsiya va zarar rivojini aktuariy tekshiradi.",
+        "Experience: paid loss per insured-year relative to the neutral segment. Only listed estimates are statistical; other coefficients remain expert estimates. Correlation and loss development require actuarial review.",
+    ),
     "inspection_guidance": (
         "Вопросы и проверка осмотра",
         "Ko‘rik savollari va tekshiruv",
@@ -365,6 +414,18 @@ TEXT = {
     ),
 }
 WARNINGS = {
+    "Коэффициенты факторов не применены: требуется актуальное утверждение актуария": (
+        "Omil koeffitsiyentlari qo‘llanilmadi: aktuariy tasdig‘i kerak",
+        "Factor coefficients not applied: current actuarial approval required",
+    ),
+    "Незаполненные факторы и отсутствующие коэффициенты перечислены в разделе «Уточнить»": (
+        "Yetishmayotgan omillar va koeffitsiyentlar aniqlashtirish bo‘limida",
+        "Unanswered factors and missing coefficients are listed under Clarify factors",
+    ),
+    "Коэффициенты факторов экспертные: не калибровано по статистике": (
+        "Omil koeffitsiyentlari ekspert baholari: statistik kalibrlanmagan",
+        "Factor coefficients are expert estimates, not statistically calibrated",
+    ),
     "Поправки риска не применены: шаблон не утверждён страховщиком": (
         "Xatar tuzatishlari qo‘llanilmadi: shablon sug‘urtalovchi tomonidan tasdiqlanmagan",
         "Risk adjustments were not applied: the template lacks insurer approval",

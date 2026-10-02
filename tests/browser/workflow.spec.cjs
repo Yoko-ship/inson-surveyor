@@ -229,5 +229,6 @@ test("local browser: first login, documents, fixed premium, exports, admin and m
   await require("./inspection-ai.cjs")(page);
   await require("./assistant.cjs")(page);
   await require("./telegram-downloads.cjs")(page);
+  await require("./factor-pricing.cjs")(page);
   expect(errors).toEqual([]);
 });

@@ -1,5 +1,6 @@
 """Grounded comparison, guided questions and human-reviewed photo observations."""
 
+import copy
 import hashlib
 import json
 import tempfile
@@ -138,6 +139,15 @@ def guidance(db, survey):
                     "warnings",
                 }
             ]
+            if calc.get("factor_pricing"):
+                factors = calc["factor_pricing"]
+                explanation.append(
+                    {"field": "factor_multiplier", "value": factors["multiplier"], "source": "calculation"}
+                )
+                questions += [
+                    {"id": "factor_" + r["id"], "text": "Уточните фактор: " + r["label"], "kind": "evidence"}
+                    for r in factors["clarify"]
+                ]
             questions.append(
                 {
                     "id": "class_evidence",
@@ -226,7 +236,7 @@ def analyze(db, survey, selected_ids, kind, config, locale):
             )
             images.extend(pages)
         if kind == "inspection":
-            context = dict(guide["context"])
+            context = copy.deepcopy(guide["context"])
             if "indicators" in context:
                 # The public catalogue can dwarf the uploaded documents. Explain
                 # only the observations actually selected by the calculation;
@@ -238,6 +248,14 @@ def analyze(db, survey, selected_ids, kind, config, locale):
                     "available_count": available,
                     "included_count": len(context["indicators"]),
                 }
+            # Aggregate experience stays in the immutable review, not in model input.
+            # Coefficient estimates, method and hashes are sufficient to explain pricing.
+            for calibration in [
+                (context.get("template") or {}).get("factor_calibration"),
+                (context.get("calculation", {}).get("factor_pricing") or {}).get("calibration"),
+            ]:
+                if calibration and "rows" in calibration:
+                    calibration["experience_rows_omitted"] = len(calibration.pop("rows", []))
             for key, value in {
                 "inputs": survey.inputs,
                 "answers": guide["answers"],

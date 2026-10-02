@@ -16,6 +16,7 @@ from surveyor.bootstrap import bootstrap
 from surveyor.config import settings
 from surveyor.db import engine
 from surveyor.document_api import router as document_router
+from surveyor.factor_api import router as factor_router
 from surveyor.inspection_ai import router as inspection_ai_router
 from surveyor.pilot_api import enabled as pilot_enabled
 from surveyor.pilot_api import router as pilot_router
@@ -46,6 +47,7 @@ app = FastAPI(
     redoc_url=None,
 )
 app.include_router(router)
+app.include_router(factor_router)
 app.include_router(assistant_router)
 app.include_router(download_router)
 

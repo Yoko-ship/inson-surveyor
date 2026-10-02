@@ -244,7 +244,16 @@ def templates(user=Depends(current_user), db=Depends(get_db)):
     seen, result = set(), []
     for row in rows:
         if row.class_code not in seen:
-            result.append({**row.data, "id": row.id, "approved_by": row.approved_by})
+            from surveyor.factor_pricing import calibration_stale
+
+            result.append(
+                {
+                    **row.data,
+                    "id": row.id,
+                    "approved_by": row.approved_by,
+                    "factor_calibration_stale": calibration_stale(db, row.data),
+                }
+            )
             seen.add(row.class_code)
     return result
 
@@ -264,6 +273,10 @@ def approve_template(template_id: str, user=Depends(actuary), db=Depends(get_db)
     row = db.get(ClassTemplate, template_id)
     if not row:
         raise HTTPException(404, "Шаблон не найден")
+    from surveyor.factor_pricing import calibration_stale
+
+    if calibration_stale(db, row.data):
+        raise HTTPException(409, "Статистика факторов изменилась; пересчитайте предложение")
     row.approved_by, row.approved_at = user.id, now()
     audit(db, user, "template.approved", row.id)
     db.commit()
@@ -317,6 +330,8 @@ def update_survey(survey_id: str, body: SurveyInput, user=Depends(current_user),
     before = row.inputs
     data = body.model_dump(mode="json", exclude={"revision"})
     validate_borrower_document(db, row.id, data)
+    if data.get("factor_answers"):
+        context_for(db, data)  # Validate factor/class scope before persisting answers.
     changed = db.execute(
         update(Survey)
         .where(Survey.id == row.id, Survey.revision == body.revision)
@@ -447,6 +462,11 @@ def decision(report_id: str, body: Underwriting, user=Depends(roles("underwriter
         raise HTTPException(409, "Осмотр изменился после акта. Сформируйте новый акт")
     if body.decision == "approved" and report.snapshot["calculation"]["status"] != "calculated":
         raise HTTPException(422, "Нельзя утвердить акт без определённой ставки")
+    if body.decision == "approved" and report.snapshot["calculation"].get("factor_pricing"):
+        factors = report.snapshot["calculation"]["factor_pricing"]
+        *_, current = context_for(db, report.snapshot["inputs"])
+        if not factors["ready_for_underwriting"] or current.get("factor_pricing") != factors:
+            raise HTTPException(409, "Проверьте факторы и актуальность утверждения; сформируйте новый акт")
     db.add(Decision(report_id=report.id, user_id=user.id, data=body.model_dump()))
     survey.status = body.decision
     audit(db, user, "underwriting.decision", report.id, body.model_dump())

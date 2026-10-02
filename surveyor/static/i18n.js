@@ -10,6 +10,15 @@ window.SurveyorI18n = (() => {
   const records = new WeakMap();
   const normalize = (s) => s.replace(/\s+/g, " ").trim();
   const patterns = [
+    [/^Повышает · (.+)$/, "Oshiradi · $1", "Raises · $1"],
+    [/^Понижает · (.+)$/, "Pasaytiradi · $1", "Lowers · $1"],
+    [/^Нейтрально · (.+)$/, "Neytral · $1", "Neutral · $1"],
+    [/^Не применимо · (.+)$/, "Qo‘llanilmaydi · $1", "Not applicable · $1"],
+    [
+      /^Уточните фактор: (.+)$/,
+      "Omilni aniqlashtiring: $1",
+      "Clarify factor: $1",
+    ],
     [
       /^Подтвердите риски класса (.+) и выбранные признаки риска документами\.$/,
       "$1 klass xatarlari va tanlangan belgilarni hujjatlar bilan tasdiqlang.",

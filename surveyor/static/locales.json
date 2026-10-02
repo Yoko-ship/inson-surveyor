@@ -393,7 +393,7 @@
   },
   "Не заполнено": {
     "uz": "To‘ldirilmagan",
-    "en": "Blank"
+    "en": "Unanswered"
   },
   "Нужна проверка": {
     "uz": "Tekshirish kerak",
@@ -3298,5 +3298,157 @@
   "Для загрузки через Telegram требуется HTTPS": {
     "uz": "Telegram orqali yuklab olish uchun HTTPS kerak",
     "en": "Telegram downloads require HTTPS"
+  },
+  "Факторы тарифа": {
+    "uz": "Tarif omillari",
+    "en": "Tariff factors"
+  },
+  "Настроить факторы": {
+    "uz": "Omillarni sozlash",
+    "en": "Configure factors"
+  },
+  "Статистика факторов": {
+    "uz": "Omillar statistikasi",
+    "en": "Factor experience"
+  },
+  "Не калибровано": {
+    "uz": "Kalibrlanmagan",
+    "en": "Uncalibrated"
+  },
+  "Статистика изменилась": {
+    "uz": "Statistika o‘zgargan",
+    "en": "Experience changed"
+  },
+  "Статистическое предложение": {
+    "uz": "Statistik taklif",
+    "en": "Statistical proposal"
+  },
+  "Коэффициенты утверждены актуарием": {
+    "uz": "Koeffitsiyentlar aktuariy tomonidan tasdiqlangan",
+    "en": "Coefficients approved by an actuary"
+  },
+  "Коэффициенты не применяются до актуального утверждения актуария": {
+    "uz": "Aktuariyning dolzarb tasdig‘igacha koeffitsiyentlar qo‘llanilmaydi",
+    "en": "Coefficients are not applied until current actuarial approval"
+  },
+  "Состояние фактора": {
+    "uz": "Omil holati",
+    "en": "Factor state"
+  },
+  "Основание / источник": {
+    "uz": "Asos / manba",
+    "en": "Evidence / source"
+  },
+  "Факторы тарифа: новая версия": {
+    "uz": "Tarif omillari: yangi versiya",
+    "en": "Tariff factors: new version"
+  },
+  "Обоснование коэффициентов и применимости": {
+    "uz": "Koeffitsiyentlar va qo‘llanish asoslari",
+    "en": "Coefficient and applicability rationale"
+  },
+  "Повышающий коэффициент (>1)": {
+    "uz": "Oshiruvchi koeffitsiyent (>1)",
+    "en": "Increasing coefficient (>1)"
+  },
+  "Понижающий коэффициент (<1)": {
+    "uz": "Pasaytiruvchi koeffitsiyent (<1)",
+    "en": "Decreasing coefficient (<1)"
+  },
+  "Сохранить факторную версию": {
+    "uz": "Omillar versiyasini saqlash",
+    "en": "Save factor version"
+  },
+  "Шаблон CSV": {
+    "uz": "CSV shabloni",
+    "en": "CSV template"
+  },
+  "Предпросмотр статистики": {
+    "uz": "Statistikani ko‘rish",
+    "en": "Preview experience"
+  },
+  "Подтвердить замену статистики": {
+    "uz": "Statistika almashtirilishini tasdiqlash",
+    "en": "Confirm experience replacement"
+  },
+  "Статистика не загружена": {
+    "uz": "Statistika yuklanmagan",
+    "en": "No experience uploaded"
+  },
+  "Предложить калибровку": {
+    "uz": "Kalibrlash taklifi",
+    "en": "Propose calibration"
+  },
+  "Минимум страховых лет на сегмент": {
+    "uz": "Segment uchun minimal sug‘urta yillari",
+    "en": "Minimum insured-years per segment"
+  },
+  "Максимальное отклонение от 1 (0.2 = 20%)": {
+    "uz": "1 dan maksimal og‘ish (0.2 = 20%)",
+    "en": "Maximum deviation from 1 (0.2 = 20%)"
+  },
+  "Обоснование метода и ограничений": {
+    "uz": "Usul va cheklovlar asosi",
+    "en": "Method and limits rationale"
+  },
+  "Метод и сопоставимость сегментов проверены актуарием": {
+    "uz": "Usul va segmentlar taqqoslanuvchanligi aktuariy tomonidan tekshirilgan",
+    "en": "Method and segment comparability reviewed by an actuary"
+  },
+  "Рассчитать новую версию для утверждения": {
+    "uz": "Tasdiqlash uchun yangi versiyani hisoblash",
+    "en": "Calculate a new version for approval"
+  },
+  "Уточнить факторы": {
+    "uz": "Omillarni aniqlashtirish",
+    "en": "Clarify factors"
+  },
+  "Произведение коэффициентов факторов": {
+    "uz": "Omil koeffitsiyentlari ko‘paytmasi",
+    "en": "Factor coefficient product"
+  },
+  "Произведение коэффициентов факторов:": {
+    "uz": "Omil koeffitsiyentlari ko‘paytmasi:",
+    "en": "Factor coefficient product:"
+  },
+  "Выберите состояние каждого фактора и укажите основание. Незаполненные факторы не меняют ставку и попадут в «Уточнить». Для остальных подгрупп выберите «Не применимо». Старые множители риска повторно не применяются.": {
+    "uz": "Har bir omil holati va asosini ko‘rsating. To‘ldirilmagan omillar stavkani o‘zgartirmaydi va aniqlashtirishga kiritiladi. Boshqa kichik guruhlar uchun «Qo‘llanilmaydi»ni tanlang. Eski xatar koeffitsiyentlari qayta qo‘llanilmaydi.",
+    "en": "Select each factor state and provide evidence. Unanswered factors leave the rate unchanged and appear under Clarify. Mark other subgroups Not applicable. Legacy risk multipliers are not applied again."
+  },
+  "Числовых коэффициентов в PDF нет. Пустое поле означает «не задано». Любое изменение требует нового утверждения актуарием.": {
+    "uz": "PDFda raqamli koeffitsiyentlar yo‘q. Bo‘sh maydon belgilanmagan qiymatni bildiradi. Har bir o‘zgarish aktuariyning yangi tasdig‘ini talab qiladi.",
+    "en": "The PDF supplies no numerical coefficients. An empty field means unspecified. Every change requires fresh actuarial approval."
+  },
+  "Новая загрузка целиком заменяет текущий набор для класса и отменяет применение прежней статистической калибровки. История и старые акты сохраняются.": {
+    "uz": "Yangi yuklama klassning joriy to‘plamini to‘liq almashtiradi va oldingi statistik kalibrlash qo‘llanishini bekor qiladi. Tarix va eski dalolatnomalar saqlanadi.",
+    "en": "Each upload replaces the current class dataset and stops application of its previous statistical calibration. History and old reports are preserved."
+  },
+  "Загрузите агрегированные данные без персональных сведений: factor_id, choice (raises / lowers / neutral), year, exposure (страховые годы), claims, payments (UZS). Каждый сегмент должен включать одинаковые последние 3–5 полных лет. Суммы выплат должны относиться к тем же экспозициям и сопоставимому покрытию.": {
+    "uz": "Shaxsiy ma’lumotlarsiz agregat ma’lumotlarni yuklang: factor_id, choice (raises / lowers / neutral), year, exposure (sug‘urta yillari), claims, payments (UZS). Segmentlar bir xil oxirgi 3–5 to‘liq yilni qamrashi kerak. To‘lovlar shu ekspozitsiya va taqqoslanadigan qoplamaga tegishli bo‘lsin.",
+    "en": "Upload aggregate data without personal information: factor_id, choice (raises / lowers / neutral), year, exposure (insured-years), claims, payments (UZS). Each segment must cover the same most recent 3–5 complete years. Payments must correspond to those exposures and comparable coverage."
+  },
+  "Метод: выплаты / страховые годы сегмента, делённые на значение нейтрального сегмента. Отношение ограничивается выбранным отклонением от 1. Это однофакторная оценка; корреляция, достаточность данных и развитие убытков требуют проверки актуарием.": {
+    "uz": "Usul: segment to‘lovlari / sug‘urta yillari neytral segment qiymatiga bo‘linadi. Nisbat 1 dan tanlangan og‘ish bilan chegaralanadi. Bu bir omilli baho; korrelyatsiya, ma’lumot yetarliligi va zarar rivojini aktuariy tekshiradi.",
+    "en": "Method: segment paid losses / insured-years, divided by the neutral segment value. The ratio is bounded by the chosen deviation from 1. This is a univariate estimate; correlation, data sufficiency and loss development require actuarial review."
+  },
+  "Этот справочник сохраняет исходный документ. Факторный расчёт настраивается в шаблонах классов и требует утверждения актуарием.": {
+    "uz": "Bu katalog asl hujjatni saqlaydi. Omil hisobi klass shablonlarida sozlanadi va aktuariy tasdig‘ini talab qiladi.",
+    "en": "This catalogue preserves the original document. Factor pricing is configured in class templates and requires actuarial approval."
+  },
+  "Коэффициенты факторов не применены: требуется актуальное утверждение актуария": {
+    "uz": "Omil koeffitsiyentlari qo‘llanilmadi: aktuariy tasdig‘i kerak",
+    "en": "Factor coefficients not applied: current actuarial approval required"
+  },
+  "Незаполненные факторы и отсутствующие коэффициенты перечислены в разделе «Уточнить»": {
+    "uz": "Yetishmayotgan omillar va koeffitsiyentlar aniqlashtirish bo‘limida",
+    "en": "Unanswered factors and missing coefficients are listed under Clarify factors"
+  },
+  "Коэффициенты факторов экспертные: не калибровано по статистике": {
+    "uz": "Omil koeffitsiyentlari ekspert baholari: statistik kalibrlanmagan",
+    "en": "Factor coefficients are expert estimates, not statistically calibrated"
+  },
+  "Формат CSV и коды факторов": {
+    "uz": "CSV formati va omil kodlari",
+    "en": "CSV format and factor codes"
   }
 }

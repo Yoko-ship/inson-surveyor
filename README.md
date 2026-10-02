@@ -166,3 +166,10 @@ For Compose, add a strong URL-safe `POSTGRES_PASSWORD` to `.env`, then run `dock
 ## Scope and acceptance
 
 See [architecture](docs/architecture.md), [requirement coverage](docs/requirements.md) and [operations](docs/operations.md). Photos/scans support manual review and, for the configured Telegram owner, AI-assisted extraction. The interface and generated report sections support RU/UZ/EN; original source quotations and insurer-authored clauses remain verbatim, with per-language clause fields available. Actual tariffs, normative sources, company claims, approvals, restricted-provider access, production hosting and native Telegram acceptance remain external inputs/acceptance steps, not fabricated demo values.
+
+
+### Factor pricing and work history
+
+[WORK_LOG.md](WORK_LOG.md) records current work, meaningful changes, checks and remaining dependencies. Repository instructions require it to be maintained during future changes.
+
+Class templates now support the full tariff-factor workflow: 179 source-linked factors, versioned coefficients, evidence-backed answers, minimum-protected multiplicative pricing, clarification lists, private segmented experience import and actuarial recalculation/approval. Existing templates retain their previous pricing until explicitly configured. See [factor workflow and calibration assumptions](docs/requirements.md#full-factor-pricing-workflow--2-october-2026). No schema migration or additional credentials are required; private calibration data is excluded from the GitHub public database snapshot.

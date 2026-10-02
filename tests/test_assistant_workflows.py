@@ -378,3 +378,45 @@ def test_changed_tariff_context_invalidates_old_explanation(case):
         },
     )
     assert result.status_code == 409
+
+
+def test_factor_experience_is_preserved_but_not_repeated_in_model_input(case):
+    from surveyor.db import ClassTemplate
+
+    client, survey, _, calls = case
+    rows = [{"year": 2025, "payments": "1000", "exposure": "100", "note": "fictional" * 50}] * 1000
+    with client.factory() as db:
+        template = db.scalar(select(ClassTemplate).where(ClassTemplate.class_code == "property"))
+        template.data = {
+            **template.data,
+            "factor_policy": {
+                "insurance_class": 9,
+                "coefficients": {},
+                "rationale": "Fictional factor context",
+            },
+            "factor_calibration": {
+                "data_sha256": "a" * 64,
+                "method": "segmented-pure-premium-v1",
+                "rows": rows,
+            },
+        }
+        db.commit()
+    guide = client.get(f"/api/surveys/{survey['id']}/guidance").json()
+    assert any(q["id"] == "factor_factor_001" for q in guide["questions"])
+    job = run(case)
+    assert job["status"] == "completed", job
+    sources = {
+        row["id"]: json.loads(row["text"])
+        for row in calls[0]["sources"]
+        if row["id"] in {"template", "calculation"}
+    }
+    for cal in [
+        sources["template"]["factor_calibration"],
+        sources["calculation"]["factor_pricing"]["calibration"],
+    ]:
+        assert "rows" not in cal
+        assert cal["experience_rows_omitted"] == 1000
+    original = job["result"]["context"]
+    assert original["template"]["factor_calibration"]["rows"] == rows
+    assert original["calculation"]["factor_pricing"]["calibration"]["rows"] == rows
+    assert len(json.dumps(calls[0], ensure_ascii=False)) < ai_config.load().limits.max_text_chars

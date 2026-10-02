@@ -25,7 +25,10 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
     rate = D(product["rate"])
     minimum = D(product["min_rate"])
     warnings = []
-    if product.get("tariff_policy") and template and not template.get("approved_by"):
+    from surveyor.factor_pricing import factor_result
+
+    factors = factor_result(inputs, template, kind == "normative")
+    if not factors and product.get("tariff_policy") and template and not template.get("approved_by"):
         template = None
         warnings.append("Поправки риска не применены: шаблон не утверждён страховщиком")
     if product.get("tariff_policy", {}).get("amount_basis") == "limit":
@@ -142,7 +145,23 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
         warnings.append(
             "Рыночная годовая ставка недоступна: требуется сопоставимая котировка с источником и датой"
         )
+    if factors:
+        # The complete factor product replaces legacy score/regional/loss multipliers.
+        # Their evidence remains available, but applying both would count risks twice.
+        multiplier = D(factors["multiplier"])
+        regional, loss_adj = D(0), D(0)
+        score, level = None, "unavailable"
+        if factors["status"] in {"unapproved", "stale"}:
+            warnings.append("Коэффициенты факторов не применены: требуется актуальное утверждение актуария")
+        if factors["clarify"]:
+            warnings.append(
+                "Незаполненные факторы и отсутствующие коэффициенты перечислены в разделе «Уточнить»"
+            )
+        if factors["calibration_status"] == "uncalibrated":
+            warnings.append("Коэффициенты факторов экспертные: не калибровано по статистике")
     recommended = max(minimum, rate * multiplier * (1 + regional) * (1 + loss_adj))
+    if factors and recommended > 100:
+        raise ValueError("Ставка по факторам превышает 100%; проверьте коэффициенты и ответы")
     time_factor = D(days) / 365 if basis == "annual" else D(1)
     annual_factor = D(365) / days if basis == "fixed" else D(1)
     annual_rate = recommended * annual_factor
@@ -188,8 +207,9 @@ def calculate(product, inputs, template=None, indicators=(), calibration=None):
         "premium_discrepancy": money(discrepancy) if discrepancy is not None else None,
         "formula": "sum × rate / 100 × days / 365" if basis == "annual" else "sum × rate / 100",
         "warnings": list(dict.fromkeys(warnings)),
+        "factor_pricing": factors,
         "indicators": used,
-        "applied_metrics": sorted(applied_metrics) if kind != "normative" else [],
+        "applied_metrics": sorted(applied_metrics) if kind != "normative" and not factors else [],
     }
 
 

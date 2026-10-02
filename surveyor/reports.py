@@ -288,6 +288,44 @@ def sections(report):
         rate_lines += [rnp["reason"], rnp["source_url"], rnp["rule_version"], tr("rnp_scope")]
     if c.get("reason"):
         rate_lines.append(warning(c["reason"], lang))
+    factors = c.get("factor_pricing")
+    if factors:
+        rate_lines += [
+            tr("factor_pricing"),
+            f"{tr('template')}: {factors['template_id']}",
+            f"{tr('source')}: {factors['source_id']} · SHA256 {factors['source_sha256']}",
+            f"{tr('factor_status')}: {tr('factor_' + factors['status'])}",
+            f"{tr('approved_by')}: {value(factors['approved_by'])} · {value(factors['approved_at'])}",
+            f"{tr('factor_multiplier')}: {factors['multiplier']}",
+            f"{tr('factor_proposal')}: {factors['proposed_multiplier']}",
+            tr("factor_formula"),
+            factors["rationale"],
+        ]
+        for row in factors["rows"]:
+            if row["choice"] == "unanswered":
+                continue
+            rate_lines.append(
+                f"{row['label']} · {tr('factor_' + row['choice'])} · "
+                f"{tr('factor_coefficient')}: {value(row['coefficient'])} · "
+                f"{tr('factor_applied')}: {row['applied_coefficient']} · {tr('factor_page')}: {row['page']}"
+            )
+            if row["source_condition"]:
+                rate_lines.append(row["source_condition"])
+            rate_lines.append(row["evidence"])
+        if factors.get("calibration"):
+            cal = factors["calibration"]
+            rate_lines += [
+                f"{tr('calibration')}: {cal['method']} · {cal['data_id']} · SHA256 {cal['data_sha256']}",
+                tr("factor_method_note"),
+                cal["rationale"],
+            ]
+            for estimate in cal["estimates"]:
+                rate_lines.append(
+                    f"{estimate['factor_id']} · {tr('factor_' + estimate['choice'])}: "
+                    f"{estimate['raw']} → {estimate['coefficient']} · {estimate['years']}"
+                )
+        else:
+            rate_lines.append(tr("factor_uncalibrated"))
     risk_lines = pairs(
         c, ["risk_score", "risk_level", "risk_multiplier", "regional_adjustment", "loss_adjustment"]
     )
@@ -360,6 +398,9 @@ def sections(report):
     ]
     if s["clauses"]:
         conclusion += [tr("original_language")] + s["clauses"]
+    if factors and factors["clarify"]:
+        conclusion.append(tr("factor_clarify"))
+        conclusion += [f"{row['label']}: {tr('factor_' + row['reason'])}" for row in factors["clarify"]]
     return labels, [
         (labels[1], object_lines),
         (labels[2], value_lines),

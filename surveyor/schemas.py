@@ -118,6 +118,7 @@ class SurveyInput(Strict):
     object_description: str = Field(default="", max_length=2000)
     reference_ids: list[str] = Field(default_factory=list, max_length=30)
     features: list[str] = Field(default_factory=list, max_length=100)
+    factor_answers: dict[str, "FactorAnswer"] = Field(default_factory=dict, max_length=200)
     program: str | None = Field(default=None, max_length=100)
     declared_rate: Rate | None = None
     declared_premium: Money | None = None
@@ -171,7 +172,34 @@ class IndicatorRule(Strict):
     )
 
 
+class FactorAnswer(Strict):
+    choice: Literal["raises", "lowers", "neutral", "not_applicable"]
+    evidence: str = Field(min_length=3, max_length=1000)
+
+
+class FactorCoefficients(Strict):
+    raises: Annotated[Decimal, Field(gt=1, le=10, decimal_places=8)] | None = None
+    lowers: Annotated[Decimal, Field(ge=Decimal("0.1"), lt=1, decimal_places=8)] | None = None
+
+
+class FactorPolicy(Strict):
+    insurance_class: int = Field(ge=1, le=18)
+    coefficients: dict[str, FactorCoefficients] = Field(default_factory=dict, max_length=200)
+    rationale: str = Field(min_length=10, max_length=3000)
+
+    @model_validator(mode="after")
+    def catalogue_scope(self):
+        from surveyor.factor_pricing import validate_policy
+
+        validate_policy(self)
+        return self
+
+
+SurveyInput.model_rebuild()
+
+
 class TemplateInput(Strict):
+    factor_policy: FactorPolicy | None = None
     class_code: str = Field(min_length=1, max_length=50)
     name: str = Field(min_length=1, max_length=200)
     feature_weights: dict[str, Annotated[int, Field(ge=0, le=100)]] = Field(
@@ -193,6 +221,10 @@ class TemplateInput(Strict):
 
     @model_validator(mode="after")
     def thresholds(self):
+        if self.factor_policy:
+            from surveyor.factor_pricing import validate_class
+
+            validate_class(self.class_code, self.factor_policy.insurance_class)
         if self.high_threshold <= self.moderate_threshold:
             raise ValueError("Порог высокого риска должен быть выше умеренного")
         if set(self.multipliers) != {"low", "moderate", "high"}:

@@ -25,6 +25,7 @@ jobs:
       - run: node --check surveyor/static/app.js
       - run: node --check surveyor/static/i18n.js
       - run: node --check surveyor/static/source_setup.js
+      - run: node --check surveyor/static/factor_pricing.js
       - run: node --check surveyor/static/factors.js
       - run: node --check surveyor/static/tariff_policy.js
       - run: node --check surveyor/static/codex_pilot.js
