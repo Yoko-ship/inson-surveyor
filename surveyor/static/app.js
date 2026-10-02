@@ -388,10 +388,10 @@ function renderSurvey(step) {
 function renderFiles() {
   const s = state.survey;
   $("#survey-body").innerHTML =
-    `<div class="two-col"><section class="panel"><div class="panel-head"><h3>Материалы осмотра</h3><span class="muted small">${s.documents.length} / 20 файлов</span></div>${s.owner_id === state.user.id ? `<form id="upload-form"><div class="upload-zone"><span class="empty-symbol">↑</span><strong>Добавьте фото, договор или запрос филиала</strong><p class="muted small">PDF, Word, Excel, TXT, CSV, JPG, PNG, WEBP<br>До 15 МБ на файл · PDF до 50 страниц</p><input type="file" name="file" multiple required accept=".pdf,.docx,.xlsx,.txt,.csv,.jpg,.jpeg,.png,.webp"></div><button type="submit" class="secondary">Загрузить выбранные файлы</button></form>` : ""}<div class="notice">Фото и сканы не распознаются автоматически: ИИ отключён. После загрузки проверьте их вручную.</div>${s.documents
+    `<div class="two-col"><section class="panel"><div class="panel-head"><h3>Материалы осмотра</h3><span class="muted small">${s.documents.length} / 20 файлов</span></div>${s.owner_id === state.user.id ? `<form id="upload-form"><div class="upload-zone"><span class="empty-symbol">↑</span><strong>Добавьте фото, договор или запрос филиала</strong><p class="muted small">PDF, Word, Excel, TXT, CSV, JPG, PNG, WEBP<br>До 15 МБ на файл · PDF до 50 страниц</p><input type="file" name="file" multiple required accept=".pdf,.docx,.xlsx,.txt,.csv,.jpg,.jpeg,.png,.webp"></div><button type="submit" class="secondary">Загрузить выбранные файлы</button></form>` : ""}<div class="notice">Проверьте документы вручную. Если доступен ИИ, его предложения требуют вашей проверки.</div>${s.documents
       .map(
         (d) =>
-          `<div class="file-card"><h4><a href="/api/documents/${d.id}/download">${esc(d.filename)} ↗</a></h4>${badge(d.extracted.mode)}${s.owner_id === state.user.id ? `<button type="button" class="text-button" data-review-document="${d.id}">Проверить / исправить поля</button>` : ""}<p class="small muted">${esc(d.extracted.notice)}</p><div>${Object.entries(
+          `<div class="file-card"><h4><a href="/api/documents/${d.id}/download">${esc(d.filename)} ↗</a></h4>${badge(d.extracted.mode)}${s.owner_id === state.user.id && state.codexDocuments ? `<button type="button" class="secondary" data-ai-document="${d.id}">ИИ · проверить документ</button>` : ""}${s.owner_id === state.user.id ? `<button type="button" class="text-button" data-review-document="${d.id}">Проверить / исправить поля</button>` : ""}<p class="small muted">${esc(d.extracted.notice)}</p><div>${Object.entries(
             d.extracted.fields,
           )
             .map(
@@ -416,6 +416,11 @@ function renderFiles() {
     });
   action("[data-review-document]", (el) =>
     reviewDocument(s.documents.find((d) => d.id === el.dataset.reviewDocument)),
+  );
+  action("[data-ai-document]", (el) =>
+    window.SurveyorInspectionAI.open(
+      s.documents.find((d) => d.id === el.dataset.aiDocument),
+    ),
   );
   $("#to-review").onclick = () => renderSurvey("review");
 }
@@ -512,6 +517,7 @@ function renderReview() {
     "beforeend",
     `<section class="panel"><details><summary>Учётная группа РНП (необязательно)</summary>${window.SurveyorPolicy.rnpFields(d.rnp_context || {})}</details></section>`,
   );
+  window.SurveyorInspectionAI.bindTransfer();
   const renderFeatures = () => {
     const code = $("[name=product_code]").value;
     const p = state.products.find((p) => p.code === code);

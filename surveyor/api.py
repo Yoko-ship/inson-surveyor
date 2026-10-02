@@ -587,7 +587,7 @@ async def preview_import(
 @router.post("/admin/imports/{batch_id}/confirm")
 def confirm_import(batch_id: str, user=Depends(admin), db=Depends(get_db)):
     batch = db.get(ImportBatch, batch_id)
-    if not batch or batch.user_id != user.id:
+    if not batch or batch.user_id != user.id or batch.kind not in {"products", "losses"}:
         raise HTTPException(404, "Импорт не найден")
     if batch.consumed or batch.created_at < now() - timedelta(hours=1):
         raise HTTPException(409, "Импорт уже сохранён или устарел")

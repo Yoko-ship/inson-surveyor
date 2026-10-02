@@ -2958,5 +2958,57 @@
   "Личный анализ документов. Учебные тарифы не утверждены страховщиком.": {
     "uz": "Shaxsiy hujjat tahlili. O‘quv tariflari sug‘urtalovchi tomonidan tasdiqlanmagan.",
     "en": "Personal document analysis. Demo tariffs are not insurer-approved."
+  },
+  "Проверьте документы вручную. Если доступен ИИ, его предложения требуют вашей проверки.": {
+    "uz": "Hujjatlarni qo‘lda tekshiring. AI takliflarini ham tekshirish kerak.",
+    "en": "Review the documents manually. AI suggestions also require your review."
+  },
+  "Фото/скан сохранён: изучите файл и проверьте значения по оригиналу.": {
+    "uz": "Foto/skan saqlandi: faylni o‘rganing va qiymatlarni asl hujjat bilan solishtiring.",
+    "en": "Photo/scan saved: examine the file and check values against the original."
+  },
+  "ИИ · проверить документ": {
+    "uz": "AI · hujjatni tekshirish",
+    "en": "AI · review document"
+  },
+  "ИИ · проверка документа": {
+    "uz": "AI · hujjat tekshiruvi",
+    "en": "AI · document review"
+  },
+  "Осмотр изменился. Повторите анализ для проверки предложений.": {
+    "uz": "Ko‘rik o‘zgardi. Takliflarni tekshirish uchun tahlilni takrorlang.",
+    "en": "The inspection changed. Analyze again to review suggestions."
+  },
+  "Выберите поля для сохранения и исправьте значения при необходимости. Остальные предложения будут отклонены.": {
+    "uz": "Saqlash uchun maydonlarni tanlang va zarur bo‘lsa qiymatlarni tuzating. Qolgan takliflar rad etiladi.",
+    "en": "Select fields to save and correct values as needed. Other suggestions will be rejected."
+  },
+  "Текущее значение": {
+    "uz": "Joriy qiymat",
+    "en": "Current value"
+  },
+  "Цитата найдена в тексте. Проверьте контекст.": {
+    "uz": "Iqtibos matndan topildi. Kontekstni tekshiring.",
+    "en": "Quote found in the text. Check the context."
+  },
+  "Цитата не проверена автоматически. Сверьте с оригиналом.": {
+    "uz": "Iqtibos avtomatik tekshirilmagan. Asl hujjat bilan solishtiring.",
+    "en": "Quote not verified automatically. Compare with the original."
+  },
+  "Проверенное значение": {
+    "uz": "Tekshirilgan qiymat",
+    "en": "Reviewed value"
+  },
+  "Я сверил(а) выбранные значения и цитаты с оригиналом.": {
+    "uz": "Tanlangan qiymat va iqtiboslarni asl hujjat bilan solishtirdim.",
+    "en": "I compared the selected values and quotes with the original."
+  },
+  "Проверенные поля документов": {
+    "uz": "Hujjatlarning tekshirilgan maydonlari",
+    "en": "Reviewed document fields"
+  },
+  "Перенесите значения выбранного документа в форму, затем проверьте и сохраните осмотр.": {
+    "uz": "Tanlangan hujjat qiymatlarini shaklga o‘tkazing, so‘ng tekshiring va ko‘rikni saqlang.",
+    "en": "Copy values from the selected document into the form, then review and save the inspection."
   }
 }

@@ -2,6 +2,17 @@
 
 # key: Russian, Uzbek, English
 TEXT = {
+    "ai_review": ("Проверка предложений ИИ", "AI takliflarini tekshirish", "AI proposal review"),
+    "ai_config_revision": ("Версия настроек ИИ", "AI sozlamalari versiyasi", "AI configuration revision"),
+    "ai_accepted": ("Принято", "Qabul qilindi", "Accepted"),
+    "ai_corrected": ("Исправлено", "Tuzatildi", "Corrected"),
+    "ai_rejected": ("Отклонено", "Rad etildi", "Rejected"),
+    "ai_quote": ("Цитата, предложенная ИИ", "AI taklif qilgan iqtibos", "AI-proposed source quote"),
+    "ai_quote_visual": (
+        "Цитата не проверена автоматически; требуется сверка с оригиналом",
+        "Iqtibos avtomatik tekshirilmagan; asl hujjat bilan solishtirish kerak",
+        "Quote not verified automatically; compare with the original",
+    ),
     "registered_thefts": ("Зарегистрированные кражи", "Ro‘yxatga olingan o‘g‘riliklar", "Registered thefts"),
     "registered_robberies": ("Грабежи и разбои", "Talonchilik va bosqinchilik", "Muggings and robberies"),
     "mortality_per_mille": (
@@ -311,10 +322,10 @@ TEXT = {
         "Subject to underwriter confirmation",
     ),
     "not_credit": ("Не является кредитным скорингом", "Kredit skoringi emas", "Not a credit score"),
-    "no_ai": (
-        "ИИ отключён; фото и сканы проверяются сотрудником вручную",
-        "SI o‘chirilgan; foto va skanlarni xodim qo‘lda tekshiradi",
-        "AI disabled; photos and scans require employee review",
+    "human_review": (
+        "Значения документов проверяются сотрудником; предложения ИИ требуют ручного подтверждения",
+        "Hujjat qiymatlarini xodim tekshiradi; AI takliflari qo‘lda tasdiqlanadi",
+        "Document values are reviewed by staff; AI suggestions require human confirmation",
     ),
     "check_values": (
         "Проверить суммы, сроки и источники",

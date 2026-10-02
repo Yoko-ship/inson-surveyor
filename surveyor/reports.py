@@ -138,6 +138,23 @@ def sections(report):
                 object_lines.append(
                     f"{tr('corrections')}: {value(item['original'])} → {value(item.get('value'))}"
                 )
+        for review in doc["extracted"].get("ai_reviews", []):
+            object_lines.append(
+                f"{tr('ai_review')}: {review['reviewer_name']} ({review['reviewed_by']}) · {review['reviewed_at']}"
+            )
+            object_lines.append(
+                f"{review['provider']} · {review['model']} · {tr('ai_config_revision')}: {review['config_revision']}"
+            )
+            object_lines.append(f"{tr('reason')}: {review['reason']}")
+            for row in review["fields"]:
+                object_lines.append(
+                    f"{tr(row['field'])} · {tr('ai_' + row['decision'])}: "
+                    f"{value(row['value'])} → {value(row['reviewed_value'])}"
+                )
+                if row.get("quote"):
+                    object_lines.append(f"{tr('ai_quote')}: {row['quote']}")
+                    if not row.get("quote_found_in_text"):
+                        object_lines.append(tr("ai_quote_visual"))
     object_lines.append(tr("corrections"))
     object_lines += [f"{tr(k)}: {v}" for k, v in inputs.get("overrides", {}).items()] or [tr("none")]
     object_lines.append(tr("reason") + ": " + value(inputs.get("override_reason")))
@@ -301,7 +318,7 @@ def sections(report):
         for k in [
             "underwriter",
             "not_credit",
-            "no_ai",
+            "human_review",
             "check_values",
             "check_conflicts",
             "check_value",

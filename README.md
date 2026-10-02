@@ -2,7 +2,7 @@
 
 [Public repository](https://github.com/Yoko-ship/inson-surveyor) · [Telegram bot](https://t.me/analyzing12_bot)
 
-Local-first insurance surveying platform implementing the deterministic workflows in the supplied ТЗ (01.10.2026). A browser application, Telegram Mini App integration, admin workspace and calculation engine share one Python backend. **No AI provider, AI API calls or AI credentials are used.**
+Local-first insurance surveying platform implementing the deterministic workflows in the supplied ТЗ (01.10.2026). A browser application, Telegram Mini App integration, admin workspace and calculation engine share one Python backend. Financial calculations remain deterministic. An optional personal AI connection assists document extraction, with explicit human review before values are saved.
 
 ## Run locally
 
@@ -107,6 +107,10 @@ Only that administrator, with valid signed Telegram launch data, can use the sub
 
 The Codex screen accepts PDF (up to 10 pages), images, DOCX, XLSX, TXT and CSV, up to 15 MB and 60,000 text characters. Clicking **Analyze document** after checking the cloud-processing consent sends the selected document to OpenAI using your Codex allowance. All PDF pages are rendered, including scanned pages. Temporary files are removed after processing; only a consent/preview event is audited. Values and source quotes are previews for human review and are not automatically saved to inspections or used for pricing. Images cannot establish a property's market value. Shared employee access is not enabled.
 
+Inside an inspection, upload a file under **Materials**, then select **AI · review document**. Consent sends that stored file to the configured provider. Select the proposed fields you have checked, correct any values, and save your review; unchecked suggestions are rejected. Pending proposals survive reopening the screen. On the inspection form, use **Reviewed document fields** to copy accepted values, check the full inspection, and save to generate its report. Existing inspection inputs are replaced only through that explicit copy action or your edits.
+
+Reviewed evidence records the original suggestion and quote, accepted/corrected/rejected decision, reviewer, time, provider, configured model and configuration revision. It appears in the immutable report snapshot and screen/Word/PDF output. Unreviewed proposals never affect reports or calculations. A changed inspection revision or file fingerprint requires re-analysis. Private proposals remain in the operational database and backups; they are excluded from the GitHub public-data snapshot.
+
 After permanent hosting is selected, set `PUBLIC_URL`, `COOKIE_SECURE=true`, `COOKIE_SAMESITE=none`, `APP_ENV=production`, `TELEGRAM_EXPECTED_BOT_ID` and `TELEGRAM_WEBHOOK_SECRET`, then configure the bot:
 
 ```sh
@@ -155,4 +159,4 @@ For Compose, add a strong URL-safe `POSTGRES_PASSWORD` to `.env`, then run `dock
 
 ## Scope and acceptance
 
-See [architecture](docs/architecture.md), [requirement coverage](docs/requirements.md) and [operations](docs/operations.md). Photos/scans require human entry while AI is disabled. The interface and generated report sections support RU/UZ/EN; original source quotations and insurer-authored clauses remain verbatim, with per-language clause fields available. Actual tariffs, normative sources, company claims, approvals, restricted-provider access, production hosting and native Telegram acceptance remain external inputs/acceptance steps, not fabricated demo values.
+See [architecture](docs/architecture.md), [requirement coverage](docs/requirements.md) and [operations](docs/operations.md). Photos/scans support manual review and, for the configured Telegram owner, AI-assisted extraction. The interface and generated report sections support RU/UZ/EN; original source quotations and insurer-authored clauses remain verbatim, with per-language clause fields available. Actual tariffs, normative sources, company claims, approvals, restricted-provider access, production hosting and native Telegram acceptance remain external inputs/acceptance steps, not fabricated demo values.

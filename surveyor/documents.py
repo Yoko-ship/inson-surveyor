@@ -94,7 +94,7 @@ def parse_document(data, filename, max_pages=50):
             "mode": "manual",
             "pages": pages,
             "fields": {},
-            "notice": "ИИ отключён. Фото/скан сохранён: изучите файл и заполните данные вручную.",
+            "notice": "Фото/скан сохранён: изучите файл и проверьте значения по оригиналу.",
         }
     lower = text.lower()
     kind = (

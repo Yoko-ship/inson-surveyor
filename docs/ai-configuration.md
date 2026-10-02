@@ -42,3 +42,9 @@ Secret-pattern checks catch common key formats, not every form of personal or co
 The document result contains ten extracted fields plus a short summary. Each result carries its configuration revision and provider, which are also recorded in the audit event without document contents. [Codex developer instructions](https://learn.chatgpt.com/docs/config-file/config-reference) and [Ollama structured chat output](https://docs.ollama.com/api/chat) are the transport references.
 
 `surveyor/static/ai_text.js` renders summaries with explicit DOM text nodes and a small formatting subset. `**bold**` becomes bold, paragraphs and lists receive normal spacing, and plain-text mode removes paired formatting markers. Model HTML is displayed as text and model links are not made clickable. Source quotations and extracted fields are kept verbatim rather than rewritten by the formatting layer.
+
+## Inspection document review
+
+The inspection workflow reuses this same code-owned configuration. `POST /api/ai-pilot/documents/{id}/analyze` creates a private persisted proposal after consent and revision checks; `GET .../{id}/proposal` resumes the latest pending proposal. `POST .../{id}/proposals/{proposal_id}/review` accepts only explicitly submitted fields, validates corrections, records all decisions and invalidates the inspection's final confirmation. All three endpoints retain the Telegram-owner restriction. Changed inspection versions require re-analysis.
+
+Document evidence and immutable reports include the provider, configured model (or `provider_default`), configuration digest, file hash, source quote, original suggestion, decision, reviewed value, reviewer and timestamp. Rejected and unselected proposals never replace document values. Private proposal/review contents are retained in the operational database and backups, never the GitHub public snapshot. The standalone AI upload screen remains an unsaved preview.

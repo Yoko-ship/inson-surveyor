@@ -10,7 +10,7 @@ from pydantic import Field
 from sqlalchemy import update
 
 from surveyor.auth import current_user
-from surveyor.db import Document, Survey, audit, get_db
+from surveyor.db import Document, Survey, audit, get_db, now
 from surveyor.document_values import derive_document_term, document_number
 from surveyor.schemas import Strict
 from surveyor.services import survey_for
@@ -39,6 +39,13 @@ def review_document(document_id: str, body: DocumentReview, user=Depends(current
     if not document:
         raise HTTPException(404, "Документ не найден")
     survey = survey_for(db, document.survey_id, user, write=True)
+    result = apply_review(db, document, survey, body, user)
+    db.commit()
+    return result
+
+
+def apply_review(db, document, survey, body, user):
+    """Validate and stage a review; caller owns the transaction."""
     fields = dict(document.extracted.get("fields", {}))
     for field, value in body.fields.items():
         if field not in NUMERIC | TEXT:
@@ -88,6 +95,7 @@ def review_document(document_id: str, body: DocumentReview, user=Depends(current
             "source": document.filename,
             "reviewed_by": user.id,
             "review_reason": body.reason,
+            "reviewed_at": now().isoformat() + "Z",
         }
         if field == "term_days":
             fields[field].pop("derived_from", None)
@@ -118,5 +126,4 @@ def review_document(document_id: str, body: DocumentReview, user=Depends(current
         document.id,
         {"before": before, "after": document.extracted, "reason": body.reason},
     )
-    db.commit()
     return {"revision": body.revision + 1, "extracted": document.extracted}

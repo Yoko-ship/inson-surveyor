@@ -67,7 +67,7 @@ The implemented calibration policy uses total payouts / total premiums for three
 
 ## Deliberately deferred or externally dependent acceptance
 
-- AI recognition and the AI specialist: excluded by the user's instruction. Scan/photo manual review works without a model.
+- General AI specialist: deferred. Personal AI extraction is now authorized and implemented as described below; scan/photo manual review still works without a model.
 - Permanent Uzbekistan hosting and real-data operations: not provisioned; current browser and temporary Telegram HTTPS testing run on the local Windows computer. A temporary tunnel does not satisfy permanent-hosting acceptance.
 - Approved company tariffs, normative references, claims history, staff accounts and business-rule approval: the entry/import/approval workflows are built; the insurer must supply and approve its actual values.
 - Restricted-provider credentials and permission: cannot be manufactured by implementation. The fallback/configuration workflows are built; those providers are not represented as live integrations.
@@ -85,7 +85,7 @@ The user has no company tariff sheet or product claims history and requested pub
 - NAPP publishes INSON company-wide premiums, payouts and distinct received/paid/refused/unsettled claim counts for 2023-2025. Product allocations remain unavailable from the sources reviewed. Company-wide totals are not eligible for this application's product-level calibration.
 - IMKON and EUROASIA publish annual KASKO reference rates. Their coverage and eligibility differ; they are not an approved set of comparable quotes. No average or automated adjustment has been created.
 
-Next external input: an insurer contact to confirm the pilot tariff and supply product-level claims and approved rules. Provider credentials, Uzbekistan hosting and native phone acceptance remain separate dependencies. AI recognition remains excluded.
+Next external input: an insurer contact to confirm the pilot tariff and supply product-level claims and approved rules. Provider credentials, Uzbekistan hosting and native phone acceptance remain separate dependencies. Personal AI recognition is now covered below; a general AI specialist remains deferred.
 
 ### Supplied company policy — 1 October 2026
 
@@ -134,3 +134,9 @@ The user supplied a new source list and “Факторы, повышающие 
 Live collection on this Mac imported 240 theft, 16 robbery, 3,536 mortality and 3,757 population observations, plus 653 NAPP reference observations. These are publication observations across historical periods, not counts of insured events. No customer data was sent to the sources. The original PDFs and local database remain outside version control. Test fixtures contain bounded public-table extracts, not complete workbooks.
 
 The [public database snapshot](../database/README.md) is versioned with the code for cross-computer use. It contains 12,808 public observations and empty private tables. The importer preserves existing local observations and approvals; the local synthetic launcher imports missing records on startup.
+
+### Inspection AI extraction and review — 2 October 2026
+
+The user authorized the document → AI extraction → human review → saved inspection → report workflow. The configured Telegram owner can analyze an existing inspection document with consent, resume its stored proposal, accept/correct selected fields and reject the rest. Review is atomic and bound to the original file and inspection revision; it resets final inspection confirmation. An explicit copy action transfers reviewed values into existing inspection inputs before saving. Original suggestions, source quotes, reviewer/time, decisions and provider/configuration provenance persist in immutable reports and screen/Word/PDF output. Calculations remain deterministic and user configuration remains unavailable.
+
+Automated API tests exercise signed-owner access, consent/configuration binding, pending proposal isolation, corrections/rejections, replay/stale versions, changes during inference, file tampering, cross-document protection, report snapshots and exports. Browser coverage exercises consent, resume, editing, source escaping, mobile layout, explicit transfer and saving a report with simulated provider responses. These tests do not measure real-document extraction accuracy.
