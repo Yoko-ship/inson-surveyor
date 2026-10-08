@@ -11,7 +11,7 @@ dependencies = [
   "reportlab>=4.3,<5", "pillow>=11,<13", "defusedxml>=0.7"
 ]
 [dependency-groups]
-dev = ["pytest>=8,<10", "pytest-cov>=6,<8", "ruff>=0.11", "pip-audit>=2.9"]
+dev = ["pytest>=8,<10", "pytest-cov>=6,<8", "ruff>=0.16.10", "pip-audit>=2.9"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
